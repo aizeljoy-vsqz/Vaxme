@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, ChartSpline, FolderGit2, FolderInput, Layers2, UserRound } from 'lucide-react';
+import { ChartSpline, FolderInput, Layers2, UserRound } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 // import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
