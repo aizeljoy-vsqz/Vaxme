@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import { BookOpen, ChartPie, ChartSpline, File, Folder, FolderGit2, FolderInput, FolderOpen, Layers, Layers2, LayoutGrid, UserRound } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -20,7 +20,24 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
-        icon: LayoutGrid,
+        icon: ChartSpline,
+    },
+    {
+        title: 'Inventory',
+        href: '',
+        icon: Layers2,
+    },
+];
+const barangayNavItems: NavItem[] = [
+    {
+        title: 'Vaccine Requests',
+        href: '',
+        icon: FolderInput,
+    },
+    {
+        title: 'Registration',
+        href: '',
+        icon: UserRound,
     },
 ];
 
@@ -53,11 +70,12 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={mainNavItems} groupLabel={'Main'} />
+                <NavMain items={barangayNavItems} groupLabel={'Barangay Managent'} />
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
+                {/* <NavFooter items={footerNavItems} className="mt-auto" /> */}
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
