@@ -1,6 +1,4 @@
-import type { SVGAttributes } from 'react';
-
-export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
+export default function AppLogoIcon() {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-syringe-icon lucide-syringe">
             <path d="m18 2 4 4" /><path d="m17 7 3-3" />
