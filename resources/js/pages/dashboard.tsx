@@ -6,6 +6,7 @@ import type { BreadcrumbItem } from '@/types';
 import { Card, CardDescription, CardHeader, CardTitle, CardAction, CardFooter } from '@/components/ui/card';
 import { CircleAlert, ClipboardCheck, Clock, MapPinHouse, } from 'lucide-react';
 import { ChartBarDefault } from '@/components/chart-bar-default';
+import { ChartAreaDefault } from '@/components/chart-area-default';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -95,6 +96,7 @@ export default function Dashboard() {
                     {/*Container for charts */}
                     <div className='lg:col-span-3 flex flex-col gap-4'>
                         <ChartBarDefault></ChartBarDefault>
+                        <ChartAreaDefault></ChartAreaDefault>
                     </div>
                     {/*Container for calendar and others */}
                     <div className='flex flex-col gap-4'>
