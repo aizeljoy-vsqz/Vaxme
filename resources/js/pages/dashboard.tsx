@@ -27,70 +27,62 @@ export default function Dashboard() {
                     {/* Total Vaccines */}
                     <Card className="@container/card">
                         <CardHeader>
-                            <CardDescription>Total Vaccines</CardDescription>
+                            <CardDescription className='text-primary font-medium'>Total Vaccines</CardDescription>
                             <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
                                 1,256
                             </CardTitle>
-                            <CardAction className='bg-green-100 p-2 rounded-sm'>
-                                <ClipboardCheck className='text-green-500' />
+                            <CardAction className='bg-blue-100 p-2 rounded-sm'>
+                                <ClipboardCheck className='text-blue-500 w-4 h-4' />
                             </CardAction>
-                        </CardHeader>
-                        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                            <div className="text-muted-foreground">
+                            <div className="text-muted-foreground text-xs">
                                 Total for this month
                             </div>
-                        </CardFooter>
+                        </CardHeader>
                     </Card>
                     {/* Total Registered Barangay */}
                     <Card className="@container/card">
                         <CardHeader>
-                            <CardDescription>Total Registered Barangay</CardDescription>
+                            <CardDescription className='text-primary font-medium'>Total Barangay</CardDescription>
                             <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
                                 25
                             </CardTitle>
-                            <CardAction className='bg-blue-100 p-2 rounded-sm'>
-                                <MapPinHouse className='text-blue-500' />
+                            <CardAction className='bg-green-100 p-2 rounded-sm'>
+                                <MapPinHouse className='text-green-500 w-4 h-4' />
                             </CardAction>
-                        </CardHeader>
-                        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                            <div className="text-muted-foreground">
+                            <div className="text-muted-foreground text-xs">
                                 Total for this month
                             </div>
-                        </CardFooter>
+                        </CardHeader>
                     </Card>
                     {/* Total Pending Request */}
                     <Card className="@container/card">
                         <CardHeader>
-                            <CardDescription>Pending Request</CardDescription>
+                            <CardDescription className='text-primary font-medium'>Pending Request</CardDescription>
                             <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
                                 4
                             </CardTitle>
                             <CardAction className='bg-orange-100 p-2 rounded-sm'>
-                                <Clock className='text-orange-500' />
+                                <Clock className='text-orange-500 w-4 h-4' />
                             </CardAction>
-                        </CardHeader>
-                        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                            <div className="text-muted-foreground">
+                            <div className="text-muted-foreground text-xs">
                                 Total for this month
                             </div>
-                        </CardFooter>
+                        </CardHeader>
                     </Card>
                     {/* Low Stock Alert */}
                     <Card className="@container/card">
                         <CardHeader>
-                            <CardDescription>Low Stock Alert</CardDescription>
+                            <CardDescription className='text-primary font-medium'>Low Stock Alert</CardDescription>
                             <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
                                 12
                             </CardTitle>
                             <CardAction className='bg-red-100 p-2 rounded-sm'>
-                                <CircleAlert className='text-red-500' />
+                                <CircleAlert className='text-red-500 w-4 h-4' />
                             </CardAction>
-                        </CardHeader>
-                        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                            <div className="text-muted-foreground">
+                            <div className="text-muted-foreground text-xs">
                                 Total for this month
                             </div>
-                        </CardFooter>
+                        </CardHeader>
                     </Card>
                 </div>
 
