@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
-import { User, Mail } from "lucide-react";
+import { User, Mail, Plus, ChevronRight} from "lucide-react";
 import {Label} from '@/components/ui/label';
 import {
     Card, 
@@ -35,7 +35,9 @@ const barangays: BarangayData[] = [
     {name:"Alawihao", type:"Barangay", contactName:"Aizel Joy Vasquez", contactNumber:"(63) 9936706096" },
     {name:"Cobangbang", type:"Barangay", contactName:"John Carlo Magana", contactNumber:"(63) 9936706096" },
     {name:"Moreno", type:"Barangay", contactName:"Ysmin Rose Reantazo", contactNumber:"(63) 9936706096" },
+    {name:"San Isidro", type:"Barangay", contactName:"Rhanie Mel Reyes", contactNumber:"(63) 9936706096" },
     {name:"San Isidro", type:"Barangay", contactName:"Rhanie Mel Reyes", contactNumber:"(63) 9936706096" }
+
 ]
 
 export default function Registration() {
@@ -44,18 +46,19 @@ export default function Registration() {
     <div className="flex flex-col p-6">
         <div className="flex items-center justify-between mb-6">
             <Label className="text-lg font semibold">Barangay Registration</Label>
-            <Button className="bg-blue-500">
-                + Register New Barangay
+            <Button className="bg-blue-500  hover:bg-blue-700">
+                <Plus/>
+                Register New Barangay
             </Button>
         </div>
-        <div className=" bg-gray-100 p-6 rounded-lg w-full flex-1 min-h-[670px]">
-            <Input placeholder="Enter name" className="mb-6 max-w-sm"/>
-            <div className="bg-white p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className='px-2'>
+            <Input placeholder="Search..." className="mb-6 max-w-sm"/>
+            </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 px-2">
                     {barangays.map((b, idx) => (
                     <Card key={idx} className="w-full">
                         <CardHeader className="relative pb-6 pt-6">
-                        <div className="absolute right-4 top-1">
+                        <div className="absolute right-5 -top-3">
                             <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon">
@@ -65,7 +68,6 @@ export default function Registration() {
                             <DropdownMenuContent align="end">
                                 <DropdownMenuItem>Edit</DropdownMenuItem>
                                 <DropdownMenuItem>Delete</DropdownMenuItem>
-                                <DropdownMenuItem>View</DropdownMenuItem>
                             </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
@@ -78,7 +80,7 @@ export default function Registration() {
                                 className="absolute right-2 text-muted-foreground text-sm flex items-center gap-1"
                             > 
                                 View details
-                                <span className="text-lg">›</span>
+                                <ChevronRight/>
                             </Button>
                             </div>
                         </div>
@@ -92,12 +94,12 @@ export default function Registration() {
                         <h4 className="text-sm font-semibold text-muted-foreground">Contact</h4>
 
                         <div className="flex items-center gap-2 text-sm">
-                            <User className="h-4 w-4" />
+                            <User className="h-4 w-4 text-gray-600" />
                             <span className="text-gray-600">{b.contactName}</span>
                         </div>
 
                         <div className="flex items-center gap-2 text-sm">
-                            <Mail className="h-4 w-4" />
+                            <Mail className="h-4 w-4 text-gray-600" />
                             <span className="text-gray-600">{b.contactNumber}</span>
                         </div>
                         </CardContent>
@@ -105,8 +107,6 @@ export default function Registration() {
                     ))}
                 </div>
             </div>
-        </div>
-    </div>
         </AppLayout>
     );
 }
