@@ -9,6 +9,6 @@ use Inertia\Inertia;
 class InventoryController extends Controller
 {
     public function index(){
-        return Inertia::render('Inventory/inventory',[]);
+        return Inertia::render('Inventory/general-inventory/inventory',[]);
     }
 }
