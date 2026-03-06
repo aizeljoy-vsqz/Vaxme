@@ -23,13 +23,12 @@ const status = [
 
 export function TableVaccineAvailability() {
     return (
-        <Table>
-            
+        <Table>   
             <TableBody>
                 {status.map((stats) => (
                     <TableRow>
                         <TableCell>{stats.name}</TableCell>
-                        <TableCell><Badge className="bg-orange-100 text-orange-400 border border-none" variant="outline">{stats.status}</Badge></TableCell>
+                        <TableCell className="text-right"><Badge className="bg-orange-100 text-orange-400 border border-none" variant="outline">{stats.status}</Badge></TableCell>
                     </TableRow>
                 ))}
             </TableBody>

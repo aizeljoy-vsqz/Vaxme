@@ -4,11 +4,13 @@ import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 import { Card, CardDescription, CardHeader, CardTitle, CardAction, CardFooter } from '@/components/ui/card';
-import { CircleAlert, ClipboardCheck, Clock, MapPinHouse, } from 'lucide-react';
+import { Bookmark, BookMarked, CircleAlert, ClipboardCheck, Clock, MapPinHouse, } from 'lucide-react';
 import { ChartBarDefault } from '@/components/chart-bar-default';
 import { ChartAreaDefault } from '@/components/chart-area-default';
 import { CalendarDemo } from '@/components/calendar';
 import { VaccineTab } from '@/components/tab';
+import { Separator } from '@/components/ui/separator';
+import { DashboardSummary } from '@/components/table-summary';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -96,12 +98,7 @@ export default function Dashboard() {
                     <div className='flex flex-col gap-4'>
                         <CalendarDemo></CalendarDemo>
                         <VaccineTab></VaccineTab>
-                        <div className='rounded-xl border'>
-                            <PlaceholderPattern></PlaceholderPattern>
-                        </div>
-                        <div className='rounded-xl border'>
-                            <PlaceholderPattern></PlaceholderPattern>
-                        </div>
+                        <DashboardSummary></DashboardSummary>
                     </div>
                 </div>
             </div>
