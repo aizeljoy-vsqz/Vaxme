@@ -24,7 +24,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Inventory',
-        href: '',
+        href: '/inventory',
         icon: Layers2,
     },
 ];
@@ -36,7 +36,7 @@ const barangayNavItems: NavItem[] = [
     },
     {
         title: 'Registration',
-        href: '',
+        href: '/registration',
         icon: UserRound,
     },
 ];
