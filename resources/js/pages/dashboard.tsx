@@ -1,15 +1,13 @@
 import { Head } from '@inertiajs/react';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
-import { Card, CardDescription, CardHeader, CardTitle, CardAction, CardFooter } from '@/components/ui/card';
-import { Bookmark, BookMarked, CircleAlert, ClipboardCheck, Clock, MapPinHouse, } from 'lucide-react';
+import { Card, CardDescription, CardHeader, CardTitle, CardAction} from '@/components/ui/card';
+import { CircleAlert, ClipboardCheck, Clock, MapPinHouse, } from 'lucide-react';
 import { ChartBarDefault } from '@/components/chart-bar-default';
 import { ChartAreaDefault } from '@/components/chart-area-default';
 import { CalendarDemo } from '@/components/calendar';
 import { VaccineTab } from '@/components/tab';
-import { Separator } from '@/components/ui/separator';
 import { DashboardSummary } from '@/components/table-summary';
 
 const breadcrumbs: BreadcrumbItem[] = [
