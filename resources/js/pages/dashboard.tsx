@@ -8,6 +8,7 @@ import { CircleAlert, ClipboardCheck, Clock, MapPinHouse, } from 'lucide-react';
 import { ChartBarDefault } from '@/components/chart-bar-default';
 import { ChartAreaDefault } from '@/components/chart-area-default';
 import { CalendarDemo } from '@/components/calendar';
+import { VaccineTab } from '@/components/tab';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -102,6 +103,7 @@ export default function Dashboard() {
                     {/*Container for calendar and others */}
                     <div className='flex flex-col gap-4'>
                         <CalendarDemo></CalendarDemo>
+                        <VaccineTab></VaccineTab>
                         <div className='rounded-xl border'>
                             <PlaceholderPattern></PlaceholderPattern>
                         </div>
