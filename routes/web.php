@@ -1,6 +1,6 @@
 <?php
     use App\Http\Controllers\Registration\Registration_Controller;
-    use App\Http\Controllers\Inventoryy\Inventory_controller;
+    use App\Http\Controllers\Registration\BarangayDetails_Controller;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -15,8 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/registration',[Registration_Controller::class, 'index'])
         ->name('registration');
 
-    Route::get('/inventory',[Inventory_controller::class, 'index'])
-    ->name('inventory');
-
+    Route::get('/registration/brgy-details',[BarangayDetails_Controller::class, 'index'])
+        ->name('registration.brgy-details');
 
 require __DIR__.'/settings.php';

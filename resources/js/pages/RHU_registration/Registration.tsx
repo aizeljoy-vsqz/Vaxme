@@ -1,7 +1,8 @@
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
-import { User, Mail, Plus, ChevronRight} from "lucide-react";
+import { User, Mail, ChevronRight} from "lucide-react";
 import {Label} from '@/components/ui/label';
+import { Link } from "@inertiajs/react";
 import {
     Card, 
     CardHeader, 
@@ -50,12 +51,12 @@ export default function Registration() {
             <DetailsPage/>
         </div>
         <div className='px-2'>
-            <Input placeholder="Search..." className="mb-6 max-w-sm"/>
+            <Input placeholder="Search..." className="mb-4 max-w-sm"/>
             </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 px-2">
                     {barangays.map((b, idx) => (
                     <Card key={idx} className="w-full">
-                        <CardHeader className="relative pb-6 pt-6">
+                        <CardHeader className="relative pb-4 pt-6">
                         <div className="absolute right-5 -top-3">
                             <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -73,13 +74,15 @@ export default function Registration() {
                             <CardTitle className="text-xl font-bold">{b.name}</CardTitle>
                             <p className="text-muted-foreground text-sm">{b.type}</p>
                             <div className="pt-2 text-sm font-medium text-center">
-                            <Button
+                            <Link href="/registration/brgy-details">
+                                <Button
                                 variant="ghost"
-                                className="absolute right-2 text-muted-foreground text-sm flex items-center gap-1"
-                            > 
+                                className="absolute right-2 text-muted-foreground text-sm flex items-center"
+                                >
                                 View details
-                                <ChevronRight/>
-                            </Button>
+                                <ChevronRight />
+                                </Button>
+                            </Link>
                             </div>
                         </div>
                         </CardHeader>
@@ -88,7 +91,7 @@ export default function Registration() {
                             <Separator />
                         </div>
 
-                        <CardContent className="space-y-3">
+                        <CardContent className="pt-[-8] space-y-2">
                         <h4 className="text-sm font-semibold text-muted-foreground">Contact</h4>
 
                         <div className="flex items-center gap-2 text-sm">
