@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Separator} from '@/components/ui/separator';
 import {Input} from "@/components/ui/input";
+import DetailsPage from '@/pages/RHU_registration/Dialogs_Details/Details';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { 
@@ -46,10 +47,7 @@ export default function Registration() {
     <div className="flex flex-col p-6">
         <div className="flex items-center justify-between mb-6">
             <Label className="text-lg font semibold">Barangay Registration</Label>
-            <Button className="bg-blue-500  hover:bg-blue-700">
-                <Plus/>
-                Register New Barangay
-            </Button>
+            <DetailsPage/>
         </div>
         <div className='px-2'>
             <Input placeholder="Search..." className="mb-6 max-w-sm"/>
@@ -108,5 +106,5 @@ export default function Registration() {
                 </div>
             </div>
         </AppLayout>
-    );
+    );  
 }
