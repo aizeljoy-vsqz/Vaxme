@@ -117,5 +117,5 @@
         "resources/js/**/*.ts",
         "resources/js/**/*.d.ts",
         "resources/js/**/*.tsx"
-    ]
+, "resources/js/pages/RHU_registration/Barangay_Details", "resources/js/pages/RHU_registration/Barangay_Details"    ]
 }

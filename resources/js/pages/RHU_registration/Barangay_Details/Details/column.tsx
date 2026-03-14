@@ -18,8 +18,8 @@ export type PopulationData = {
   total: number;
 };
 
-export const populationColumns: ColumnDef<PopulationData>[] = [
-  {
+export const populationColumns = (setSelectedRow: (row: PopulationData) => void): ColumnDef<PopulationData>[] => [
+    {
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -65,7 +65,10 @@ export const populationColumns: ColumnDef<PopulationData>[] = [
   {
   id: "actions",
   header: "Actions",
-  cell: () => {
+  cell: ({ row }) => {
+
+    const population = row.original;
+
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -75,13 +78,17 @@ export const populationColumns: ColumnDef<PopulationData>[] = [
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() => setSelectedRow(population)}
+          >
             Edit
           </DropdownMenuItem>
 
           <DropdownMenuItem className="text-red-600">
             Delete
           </DropdownMenuItem>
+
         </DropdownMenuContent>
       </DropdownMenu>
     );

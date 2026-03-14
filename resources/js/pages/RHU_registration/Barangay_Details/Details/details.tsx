@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { DataTable } from '@/pages/RHU_registration/data-table';
 import { populationColumns, PopulationData } from './column';
+import InputPopulationPage from "../Dialog_Edit/Edit_details";
 
 export function PopulationTable() {
 
-  const [data] = useState<PopulationData[]>([
+  const [data , setData] = useState<PopulationData[]>([
     {
       id: "1",
       ageRange: "All Ages",
@@ -37,9 +38,30 @@ export function PopulationTable() {
     },
   ]);
 
+  const [selectedRow, setSelectedRow] = useState<PopulationData | null>(null);
+
+  const handleSave = (updated: PopulationData) => {
+    setData((prev) =>
+      prev.map((item) =>
+        item.id === updated.id ? updated : item
+      )
+    );
+  };
+
   return (
     <section>
-      <DataTable columns={populationColumns} data={data} />
+      <DataTable
+        columns={populationColumns(setSelectedRow)}
+        data={data}
+      />
+
+      {selectedRow && (
+        <InputPopulationPage
+          data={selectedRow}
+          onSave={handleSave}
+          onClose={() => setSelectedRow(null)}
+        />
+      )}
     </section>
   );
 }

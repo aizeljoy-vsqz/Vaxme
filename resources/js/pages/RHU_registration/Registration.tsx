@@ -91,8 +91,8 @@ export default function Registration() {
                             <Separator />
                         </div>
 
-                        <CardContent className="pt-[-8] space-y-2">
-                        <h4 className="text-sm font-semibold text-muted-foreground">Contact</h4>
+                        <CardContent className="space-y-2">
+                            <Label className=" -top-3 text-sm font-semibold text-muted-foreground">Contact</Label>
 
                         <div className="flex items-center gap-2 text-sm">
                             <User className="h-4 w-4 text-gray-600" />

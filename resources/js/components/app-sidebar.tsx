@@ -24,7 +24,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Inventory',
-        href: '/inventory',
+        href: '',
         icon: Layers2,
     },
 ];
