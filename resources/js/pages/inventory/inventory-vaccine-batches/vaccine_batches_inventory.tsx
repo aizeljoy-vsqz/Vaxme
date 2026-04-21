@@ -26,7 +26,7 @@ export default function InventoryByBatch() {
                 <div className='px-2'>
                     <div className='flex justify-between'>
                         <Label className='text-md flex items-center'>Vaccine Inventory</Label>
-                        <Button className='bg-blue-600'><Plus /> Add Inventory</Button>
+                        <Button className='bg-blue-600 hover:bg-blue-700'><Plus /> Add Inventory</Button>
                     </div>
                     <div className='px-4'>
                         <DataTable columns={columns} data={data} />

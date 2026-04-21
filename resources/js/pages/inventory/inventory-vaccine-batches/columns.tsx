@@ -2,6 +2,8 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
+import { dailyVaccineInventory } from "@/routes"
+import { Link } from "@inertiajs/react"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -42,6 +44,9 @@ export const columns: ColumnDef<VaccineBatch>[] = [
     {
         accessorKey: "facility_name",
         header: "Name of Health Facility",
+        cell: ({ row }) => {
+            return <Link href={dailyVaccineInventory().url}>Name of Health Facility</Link>
+        }
     },
     {
         accessorKey: "batch_lot_no",
