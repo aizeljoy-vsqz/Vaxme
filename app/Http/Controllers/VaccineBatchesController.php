@@ -8,6 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 class VaccineBatchesController extends Controller
 {
     public function Index(Request $request){
-        return Inertia::render('inventory/vaccine_batches_inventory',[]);
+        return Inertia::render('inventory/inventory-vaccine-batches/vaccine_batches_inventory',[]);
     }
 }
