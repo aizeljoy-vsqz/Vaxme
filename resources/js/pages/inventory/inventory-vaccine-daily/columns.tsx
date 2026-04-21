@@ -4,14 +4,14 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { Ellipsis, Ghost } from "lucide-react"
-
+import { Ellipsis} from "lucide-react"
+import { ArrowUpDown } from "lucide-react"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type VaccineBatch = {
     id: number
     batch_id: number
-    date: string
+    date: Date
     quantity_in: number
     expired_lose_damage: number
     quantity_out: number
@@ -44,7 +44,19 @@ export const columns: ColumnDef<VaccineBatch>[] = [
     },
     {
         accessorKey: "date",
-        header: "Date"
+        header:({column})=>{
+            return (
+                <Button variant={"ghost"} 
+                onClick={()=>column.toggleSorting(column.getIsSorted()=== 'asc')}
+                >
+                Date
+                <ArrowUpDown className="ml-2 h-4 w-4"/>
+                </Button>
+            )
+        },
+
+
+
     },
     {
         accessorKey: "quantity_in",

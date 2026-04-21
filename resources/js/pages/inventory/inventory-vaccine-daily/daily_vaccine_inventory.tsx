@@ -8,16 +8,18 @@ import { columns } from './columns';
 
 export default function DailyInventory() {
 
-    const data = [{
+    const data = [
+    {
     id: 1,
     batch_id: 22,
-    date: 'May 6, 2024',
+    date: new Date("2024-06-01"),
     quantity_in: 50,
     expired_lose_damage: 2,
     quantity_out: 10,
     no_of_receipients: 10,
     balance: 38
-    },]
+    },
+]
 
     return (
         <>
