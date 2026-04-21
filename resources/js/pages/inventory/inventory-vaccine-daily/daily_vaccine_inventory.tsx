@@ -1,3 +1,4 @@
+import { dailyVaccineInventory } from '@/routes';
 import { Head } from '@inertiajs/react';
 
 export default function DailyInventory() {
@@ -14,8 +15,8 @@ export default function DailyInventory() {
 DailyInventory.layout = {
     breadcrumbs: [
         {
-            title: 'Dashboard',
-            href: '',
+            title: 'Daily Vaccine Inventory',
+            href: dailyVaccineInventory(),
         },
     ],
 };

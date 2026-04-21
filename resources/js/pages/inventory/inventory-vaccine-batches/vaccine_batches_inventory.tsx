@@ -4,6 +4,7 @@ import { DataTable } from "../data-table"
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import { batchesVaccineInventory } from '@/routes';
 
 export default function InventoryByBatch() {
 
@@ -40,7 +41,7 @@ InventoryByBatch.layout = {
     breadcrumbs: [
         {
             title: 'Vaccine Inventory',
-            href: '',
+            href: batchesVaccineInventory(),
         },
     ],
 };

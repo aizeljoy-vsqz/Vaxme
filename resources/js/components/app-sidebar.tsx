@@ -12,7 +12,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard, vaccineInventory } from '@/routes';
+import { dashboard, batchesVaccineInventory } from '@/routes';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -23,7 +23,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Inventory',
-        href: vaccineInventory(),
+        href: batchesVaccineInventory(),
         icon: Layers,
     },
 ];
