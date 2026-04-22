@@ -1,4 +1,5 @@
 <?php
+    	use App\Http\Controllers\Registrations\BarangayDetails_Controller;
     use App\Http\Controllers\Registrations\Registration_Controller;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -11,8 +12,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 });
 
-      Route::get('/registration',[Registration_Controller::class, 'index'])
+    Route::get('/registration',[Registration_Controller::class, 'index'])
         ->name('registration');
+    
+    Route::get('/registration/brgy-details',[BarangayDetails_Controller::class, 'index'])
+        ->name('registration.brgy-details');
 
 
 require __DIR__.'/settings.php';
