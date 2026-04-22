@@ -35,7 +35,7 @@ const BarangayNavItems: NavItem[] = [
     },
     {
         title: 'Registration',
-        href: '',
+        href: '/registration',
         icon: UsersRound,
     },
 ];
