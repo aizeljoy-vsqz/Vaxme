@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react';
 import { User, Mail, ChevronRight} from "lucide-react";
 import {Label} from '@/components/ui/label';
 import { Link } from "@inertiajs/react";
+import {Input} from '@/components/ui/input';
 import {
     Card, 
     CardHeader, 
@@ -38,66 +39,67 @@ export default function Registration() {
     return (
         <>
             <Head title="Registration" />
-            <div className="flex flex-col p-6">
-        <div className="flex items-center justify-between mb-6">
-            <Label className="text-lg font semibold">Barangay Registration</Label>
-            <DetailsPage/>
-        </div>
-        <div className='px-2'>
+           <div className="flex flex-col p-6">
+            <div className="flex items-center justify-between mb-6">
+                <Label className="text-lg font semibold">Barangay Registration</Label>
+                <DetailsPage/>
             </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 px-2">
-                    {barangays.map((b, idx) => (
-                    <Card key={idx} className="w-full">
-                        <CardHeader className="relative pb-4 pt-6">
-                        <div className="absolute right-5 -top-3">
-                            <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon">
-                                &#8230;
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem>Edit</DropdownMenuItem>
-                                <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
-                        <div className="text-center space-y-1">
-                            <CardTitle className="text-xl font-bold">{b.name}</CardTitle>
-                            <p className="text-muted-foreground text-sm">{b.type}</p>
-                            <div className="pt-2 text-sm font-medium text-center">
-                            <Link href="/registration/brgy-details">
-                                <Button
-                                variant="ghost"
-                                className="absolute right-2 text-muted-foreground text-sm flex items-center"
-                                >
-                                View details
-                                <ChevronRight />
-                                </Button>
-                            </Link>
+            <div className='px-2'>
+                <Input placeholder="Search..." className="mb-4 max-w-sm"/>
+                </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 px-2">
+                        {barangays.map((b, idx) => (
+                        <Card key={idx} className="w-full">
+                            <CardHeader className="relative pb-4 pt-6">
+                            <div className="absolute right-5 -top-3">
+                                <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="icon">
+                                    &#8230;
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                                    <DropdownMenuItem>Delete</DropdownMenuItem>
+                                </DropdownMenuContent>
+                                </DropdownMenu>
                             </div>
-                        </div>
-                        </CardHeader>
+                            <div className="text-center space-y-1">
+                                <CardTitle className="text-xl font-bold">{b.name}</CardTitle>
+                                <p className="text-muted-foreground text-sm">{b.type}</p>
+                                <div className="pt-2 text-sm font-medium text-center">
+                                <Link href="/registration/brgy-details">
+                                    <Button
+                                    variant="ghost"
+                                    className="absolute right-2 text-muted-foreground text-sm flex items-center"
+                                    >
+                                    View details
+                                    <ChevronRight />
+                                    </Button>
+                                </Link>
+                                </div>
+                            </div>
+                            </CardHeader>
 
-                        <div className="px-6">
-                            <Separator />
-                        </div>
+                            <div className="px-6">
+                                <Separator />
+                            </div>
 
-                        <CardContent className="space-y-2">
-                            <Label className=" -top-3 text-sm font-semibold text-muted-foreground">Contact</Label>
+                            <CardContent className="space-y-2">
+                                <Label className=" -top-3 text-sm font-semibold text-muted-foreground">Contact</Label>
 
-                        <div className="flex items-center gap-2 text-sm">
-                            <User className="h-4 w-4 text-gray-600" />
-                            <span className="text-gray-600">{b.contactName}</span>
-                        </div>
+                            <div className="flex items-center gap-2 text-sm">
+                                <User className="h-4 w-4 text-gray-600" />
+                                <span className="text-gray-600">{b.contactName}</span>
+                            </div>
 
-                        <div className="flex items-center gap-2 text-sm">
-                            <Mail className="h-4 w-4 text-gray-600" />
-                            <span className="text-gray-600">{b.contactNumber}</span>
-                        </div>
-                        </CardContent>
-                    </Card>
-                    ))}
+                            <div className="flex items-center gap-2 text-sm">
+                                <Mail className="h-4 w-4 text-gray-600" />
+                                <span className="text-gray-600">{b.contactNumber}</span>
+                            </div>
+                            </CardContent>
+                        </Card>
+                        ))}
                 </div>
             </div>
         </>
