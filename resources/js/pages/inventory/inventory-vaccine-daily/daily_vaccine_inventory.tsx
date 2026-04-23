@@ -5,21 +5,33 @@ import { Head } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 import { DataTable } from '../data-table';
 import { columns } from './columns';
-
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
 export default function DailyInventory() {
 
     const data = [
-    {
-    id: 1,
-    batch_id: 22,
-    date: new Date("2024-06-01"),
-    quantity_in: 50,
-    expired_lose_damage: 2,
-    quantity_out: 10,
-    no_of_receipients: 10,
-    balance: 38
-    },
-]
+        {
+            id: 1,
+            batch_id: 22,
+            date: new Date("2024-06-01"),
+            quantity_in: 50,
+            expired_lose_damage: 2,
+            quantity_out: 10,
+            no_of_receipients: 10,
+            balance: 38
+        },
+    ]
 
     return (
         <>
@@ -28,9 +40,46 @@ export default function DailyInventory() {
                 <div className='flex justify-between'>
                     <Label className='text-md flex items-center'>Penta</Label>
                     <div className='flex gap-2'>
-                    <Button variant={'outline'} className='text-blue-600 border border-blue-600 hover:text-blue-700'><Plus />Export</Button>
-                    <Button className='bg-blue-600 hover:bg-blue-700'><Plus />Add Inventory</Button>
-
+                        <Button variant={'outline'} className='text-blue-600 border border-blue-600 hover:text-blue-700'><Plus />Export</Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button className='bg-blue-600 hover:bg-blue-700'><Plus/> Add Inventory</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Vaccinne (Penta)</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Enter vaccine details.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <div className='flex flex-col gap-4'>
+                                    <div className='flex gap-4'>
+                                        <div className='flex flex-col w-full gap-1'>
+                                            <Label>Daily Dispensed:</Label>
+                                            <Input placeholder='e.g. 5'></Input>
+                                        </div>
+                                        <div className='flex flex-col w-full gap-1'>
+                                            <Label>No. of Receipients:</Label>
+                                            <Input placeholder='e.g. 5'></Input>
+                                        </div>
+                                    </div>
+                                    <div className='flex gap-4'>
+                                        <div className='flex flex-col w-full gap-1'>
+                                            <Label>Stock Transferred:</Label>
+                                            <Input placeholder='e.g. 5'></Input>
+                                        </div>
+                                        <div className='flex flex-col w-full gap-1'>
+                                            <Label>Expiration/Lose/Damage:</Label>
+                                            <Input placeholder='e.g. 2'></Input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction className='!bg-blue-600 hover:!bg-blue-700'>Save</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                 </div>
                 <div className='px-4'>
