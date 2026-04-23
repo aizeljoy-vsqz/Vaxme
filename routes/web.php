@@ -14,6 +14,7 @@ Route::middleware(['auth', 'verified', 'user_type:rhu'])->group(function () {
 Route::middleware(['auth', 'verified', 'user_type:bhc'])->group(function () {
     Route::inertia('bhc/dashboard', 'bhu_module/request_vaccine')->name('bhc.dashboard');
     Route::inertia('bhc/return/vaccines', 'bhu_module/return_vaccine')->name('return.vaccine');
+    Route::inertia('bhc/history/vaccination', 'bhu_module/history_vaccination')->name('history.vaccination');
 });
 
 require __DIR__.'/settings.php';
