@@ -5,6 +5,18 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { batchesVaccineInventory } from '@/routes';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Input } from '@/components/ui/input';
 
 export default function InventoryByBatch() {
 
@@ -26,7 +38,50 @@ export default function InventoryByBatch() {
                 <div className='px-2'>
                     <div className='flex justify-between'>
                         <Label className='text-md flex items-center'>Vaccine Inventory</Label>
-                        <Button className='bg-blue-600 hover:bg-blue-700'><Plus /> Add Inventory</Button>
+                        {/* <Button className='bg-blue-600 hover:bg-blue-700'><Plus /> Add Inventory</Button> */}
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button className='bg-blue-500 hover:bg-blue-700'>Add Inventory</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Vaccinne</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Enter vaccine details.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <div className='flex flex-col gap-2'>
+                                    <div className='w-full'>
+                                        <Label>Name of Health Faculty:</Label>
+                                        <Input></Input>
+                                    </div>
+                                    <div className='flex gap-4'>
+                                        <div className='w-full'>
+                                            <Label>Name of Drug:</Label>
+                                            <Input></Input>
+                                        </div>
+                                        <div className='w-full'>
+                                            <Label>Batch Number:</Label>
+                                            <Input></Input>
+                                        </div>
+                                    </div>
+                                    <div className='flex gap-4'>
+                                        <div className='w-full'>
+                                            <Label>Stock Received:</Label>
+                                            <Input></Input>
+                                        </div>
+                                        <div className='w-full'>
+                                            <Label>Expiration Date:</Label>
+                                            <Input></Input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction className='!bg-blue-500 hover:!bg-blue-700'>Save</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                     <div className='px-4'>
                         <DataTable columns={columns} data={data} />
