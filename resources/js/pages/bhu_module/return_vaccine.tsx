@@ -16,19 +16,13 @@ export default function BhuDashboard() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-6">
                 <div className='flex items-center justify-between'>
                     <div className='flex flex-col'>
-                        <Label className='text-md font-bold'>Request New Vaccine</Label>
-                        <p className='text-xs text-gray-500 font-thin'>Add names and vaccine below to request vaccines</p>
+                        <Label className='text-md font-bold'>Return Vaccine</Label>
+                        <p className='text-xs text-gray-500 font-thin'>Unused vaccine items are auto added below</p>
                     </div>
-                    <Button>Send</Button>
+                    <Button>Return</Button>
                 </div>
                 <div className='h-full'>
-                <RequestTable></RequestTable>
-                </div>
-                <Separator></Separator>
-                <div className='flex gap-2'>
-                    <Input className='flex-1'></Input>
-                    <Request_Select></Request_Select>
-                    <Button>Add</Button>
+                    <RequestTable></RequestTable>
                 </div>
             </div>
         </>
