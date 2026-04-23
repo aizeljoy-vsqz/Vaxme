@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -6,7 +5,7 @@ import { DataTable } from '@/pages/RHU_registration/data-table';
 import { populationColumns, PopulationData } from './Details/column';
 import InputPopulationPage from "./Dialog_Edit/Edit_details";
 
-export function PopulationTable() {
+export function BarangayDetails() {
 
   const [data , setData] = useState<PopulationData[]>([
     {
@@ -47,15 +46,14 @@ export function PopulationTable() {
         item.id === updated.id ? updated : item
       )
     );
-  };
+}; 
 
-  return (
+    return (
     <section>
       <DataTable
         columns={populationColumns(setSelectedRow)}
         data={data}
       />
-
       {selectedRow && (
         <InputPopulationPage
           data={selectedRow}
@@ -67,5 +65,15 @@ export function PopulationTable() {
   );
 }
 
-export default PopulationTable;
+BarangayDetails.layout = {
+    breadcrumbs: [
+        {
 
+        title: 'Registration',
+        href: '/registration/brgy-details',
+
+        },
+    ]
+};
+
+export default BarangayDetails;

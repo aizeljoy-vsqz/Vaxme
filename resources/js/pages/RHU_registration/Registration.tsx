@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {Separator} from '@/components/ui/separator';
+import { DetailsPage } from './Dialogs_Details/Details';
 
 interface BarangayData {
     name: string;
@@ -40,6 +41,7 @@ export default function Registration() {
             <div className="flex flex-col p-6">
         <div className="flex items-center justify-between mb-6">
             <Label className="text-lg font semibold">Barangay Registration</Label>
+            <DetailsPage/>
         </div>
         <div className='px-2'>
             </div>
