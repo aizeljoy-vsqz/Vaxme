@@ -19,37 +19,28 @@ import {
 import {Separator} from '@/components/ui/separator';
 import { DetailsPage } from './Dialogs_Details/Details';
 
-interface BarangayData {
+type Barangay = {
+    id: number;
     name: string;
-    type: string;
-    contactName: string;
-    contactNumber: string;
-}
+    contact_name: string;
+    contact_number: string;
+};
 
-const barangays: BarangayData[] = [
-    {name:"Alawihao", type:"Barangay", contactName:"Aizel Joy Vasquez", contactNumber:"(63) 9936706096" },
-    {name:"Cobangbang", type:"Barangay", contactName:"John Carlo Magana", contactNumber:"(63) 9936706096" },
-    {name:"Moreno", type:"Barangay", contactName:"Ysmin Rose Reantazo", contactNumber:"(63) 9936706096" },
-    {name:"San Isidro", type:"Barangay", contactName:"Rhanie Mel Reyes", contactNumber:"(63) 9936706096" },
-    {name:"San Isidro", type:"Barangay", contactName:"Rhanie Mel Reyes", contactNumber:"(63) 9936706096" }
-
-]
-
-export default function Registration() {
+export default function Registration({ barangays = [] }: { barangays?: Barangay[] }) {
     return (
         <>
             <Head title="Registration" />
            <div className="flex flex-col p-6">
             <div className="flex items-center justify-between mb-6">
                 <Label className="text-lg font semibold">Barangay Registration</Label>
-                <DetailsPage/>
+                <DetailsPage barangays={barangays}/>
             </div>
             <div className='px-2'>
                 <Input placeholder="Search..." className="mb-4 max-w-sm"/>
                 </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 px-2">
-                        {barangays.map((b, idx) => (
-                        <Card key={idx} className="w-full">
+                        {barangays.map((b: any) => (
+                        <Card key={b.id} className="w-full">
                             <CardHeader className="relative pb-4 pt-6">
                             <div className="absolute right-5 -top-3">
                                 <DropdownMenu>
@@ -66,7 +57,7 @@ export default function Registration() {
                             </div>
                             <div className="text-center space-y-1">
                                 <CardTitle className="text-xl font-bold">{b.name}</CardTitle>
-                                <p className="text-muted-foreground text-sm">{b.type}</p>
+                                <p className="text-muted-foreground text-sm">Barangay</p>
                                 <div className="pt-2 text-sm font-medium text-center">
                                 <Link href="/registration/brgy-details">
                                     <Button
@@ -90,12 +81,12 @@ export default function Registration() {
 
                             <div className="flex items-center gap-2 text-sm">
                                 <User className="h-4 w-4 text-gray-600" />
-                                <span className="text-gray-600">{b.contactName}</span>
+                                <span className="text-gray-600">{b.contact_name}</span>
                             </div>
 
                             <div className="flex items-center gap-2 text-sm">
                                 <Mail className="h-4 w-4 text-gray-600" />
-                                <span className="text-gray-600">{b.contactNumber}</span>
+                                <span className="text-gray-600">{b.contact_number}</span>
                             </div>
                             </CardContent>
                         </Card>

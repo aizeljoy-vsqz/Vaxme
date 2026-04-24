@@ -13,13 +13,34 @@ import {
     DialogTitle, 
     DialogTrigger
 } from '@/components/ui/dialog';
+import { useForm } from '@inertiajs/react';
 
+type BarangayOption = {
+    id: number;
+    name: string;
+};
 
+export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
 
-export function DetailsPage() {
+     const {data, setData, post} = useForm({
+        name: '',
+        contact_number: '',
+        contact_name: '',
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        post('/registration', {
+            onSuccess: () => {
+                console.log('Saved!');
+            }
+        });
+    };
+
     return (
             <Dialog>
-             <form>
+             <form onSubmit={handleSubmit}>
                 <DialogTrigger asChild>
                    <Button className="bg-blue-500  hover:bg-blue-700">
                         <Plus/>
@@ -35,18 +56,30 @@ export function DetailsPage() {
                 <Field className='gap-4 pt-4'>
                     <div className="space-y-2">
                     <Label>Name of Barangay:</Label>
-                    <Input placeholder="e.g Alawihao" />
+                    <Input 
+                        placeholder="e.g Alawihao" 
+                        value={data.name}
+                        onChange={(e) => setData('name', e.target.value)}
+                    />
                     </div>
                 </Field>
                 <Field className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                     <Label>Nurse Assign:</Label>
-                    <Input placeholder="e.g Aizel Joy Vasquez" />
+                    <Input 
+                        placeholder="e.g Aizel Joy Vasquez" 
+                        value={data.contact_name}
+                        onChange={(e) => setData('contact_name', e.target.value)}
+                    />
                     </div>
 
                     <div className="space-y-2 pb-4">
                     <Label>Contact No:</Label>
-                    <Input placeholder="e.g 09111111111" />
+                    <Input 
+                        placeholder="e.g 09111111111" 
+                        value={data.contact_number}
+                        onChange={(e) => setData('contact_number', e.target.value)}
+                    />
                     </div>
                 </Field>
                 </FieldGroup>

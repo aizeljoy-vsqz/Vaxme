@@ -14,6 +14,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/registration',[Registration_Controller::class, 'index'])
         ->name('registration');
+    Route::post('/registration', [Registration_Controller::class, 'store'])
+    ->name('registration.store');
+    
+    Route::post('/registration/population',[Registration_Controller::class, 'storePopulation'])
+        ->name('registration.population.store');
     
     Route::get('/registration/brgy-details',[BarangayDetails_Controller::class, 'index'])
         ->name('registration.brgy-details');
