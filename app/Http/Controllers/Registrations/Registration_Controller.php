@@ -7,6 +7,7 @@ use App\Models\Barangay;
 use App\Models\BarangayPopulation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Validation\ValidationException;
 
 class Registration_Controller extends Controller
 {
@@ -21,9 +22,13 @@ class Registration_Controller extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|unique:barangays,name',
-            'nurse_assigned' => 'required|string|max:255',
-            'rhu_id' => 'nullable|integer',
+            'name' => ['required', 'string', 'max:255', 'unique:barangays,name'],
+            'nurse_assigned' => ['required', 'string', 'max:255'],
+            'rhu_id' => ['nullable', 'integer'],
+        ], [
+            'name.required' => 'Barangay name is required.',
+            'name.unique' => 'This barangay already exists.',
+            'nurse_assigned.required' => 'Nurse assigned is required.',
         ]);
 
         Barangay::create([
@@ -33,7 +38,7 @@ class Registration_Controller extends Controller
             'nurse_assigned' => $validated['nurse_assigned'],
         ]);
 
-        return redirect()->route('registration');
+        return back()->withErrors($validated)->withInput();
     }
 
     public function storePopulation(Request $request)

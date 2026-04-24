@@ -4,13 +4,6 @@ import { FieldGroup, Field } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   Dialog,
   DialogDescription,
   DialogContent,
@@ -26,7 +19,13 @@ type BarangayOption = {
   name: string;
 };
 
-export function InputPopulationPage({ barangays }: { barangays: BarangayOption[] }) {
+export function InputPopulationPage({
+  barangays,
+  isValid
+}: {
+  barangays: BarangayOption[];
+  isValid: boolean;
+}) {
 
   const { data, setData, post, processing } = useForm({
     barangay_id: '',
@@ -58,7 +57,10 @@ export function InputPopulationPage({ barangays }: { barangays: BarangayOption[]
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='bg-blue-600 hover:bg-blue-700 cursor-pointer'>Next</Button>
+        <Button 
+        disabled={!isValid} className='bg-blue-600 hover:bg-blue-700 cursor-pointer'>
+          Next
+        </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-xl">
@@ -66,37 +68,17 @@ export function InputPopulationPage({ barangays }: { barangays: BarangayOption[]
           <DialogHeader>
             <DialogTitle className="pb-2">Barangay Details</DialogTitle>
             <Separator />
-            <DialogDescription>Barangay Populations</DialogDescription>
+            <DialogDescription className="pb-2">Barangay Populations</DialogDescription>
           </DialogHeader>
 
           <FieldGroup>
-            <Field className="pt-2">
-              <div className="space-y-2 w-full">
-                <Label>Barangay</Label>
-                <Select
-                  value={data.barangay_id}
-                  onValueChange={(value) => setData('barangay_id', value)}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select barangay" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {barangays.map((barangay) => (
-                      <SelectItem key={barangay.id} value={String(barangay.id)}>
-                        {barangay.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </Field>
 
             {data.populations.map((pop, index) => (
               <div key={index}>
-                <Label className="pt-2 font-semibold">{pop.age_range}</Label>
+                <Label className="pb-10 font-semibold">{pop.age_range}</Label>
 
                 <Field className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Label>Total of Male:</Label>
                     <Input
                       placeholder="e.g 100"
@@ -107,7 +89,7 @@ export function InputPopulationPage({ barangays }: { barangays: BarangayOption[]
                     />
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Label>Total of Female:</Label>
                     <Input
                       placeholder="e.g 100"
@@ -122,7 +104,7 @@ export function InputPopulationPage({ barangays }: { barangays: BarangayOption[]
             ))}
           </FieldGroup>
 
-          <DialogFooter>
+          <DialogFooter className='pt-6'>
             <Button type="submit" className="bg-blue-600  hover:bg-blue-700 cursor-pointer" disabled={processing}>
               Save
             </Button>
