@@ -78,7 +78,7 @@ export const populationColumns = (setSelectedRow: (row: PopulationData) => void)
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+          <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
             ...
           </Button>
         </DropdownMenuTrigger>
@@ -87,11 +87,14 @@ export const populationColumns = (setSelectedRow: (row: PopulationData) => void)
 
           <DropdownMenuItem
             onClick={() => setSelectedRow(population)}
+            className='cursor-pointer'
           >
             Edit
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="text-red-600">
+          <DropdownMenuItem className="text-red-600 cursor-pointer"
+          >
+            
             Delete
           </DropdownMenuItem>
 

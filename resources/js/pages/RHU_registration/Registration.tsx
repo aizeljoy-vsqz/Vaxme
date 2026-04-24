@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { User, Building2, ChevronRight} from "lucide-react";
+import { User, Building2, ChevronRight, Mail} from "lucide-react";
 import {Label} from '@/components/ui/label';
 import { Link } from "@inertiajs/react";
 import {Input} from '@/components/ui/input';
@@ -40,20 +40,20 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
             <div className='px-2'>
                 <Input placeholder="Search..." className="mb-4 max-w-sm"/>
                 </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 px-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
                         {barangays.map((b: any) => (
                         <Card key={b.id} className="w-full">
                             <CardHeader className="relative pb-4 pt-6">
                             <div className="absolute right-5 -top-3">
                                 <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon">
+                                    <Button variant="ghost" size="icon" className='cursor-pointer'>
                                     &#8230;
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                                    <DropdownMenuItem>Delete</DropdownMenuItem>
+                                    <DropdownMenuItem className='cursor-pointer'>Edit</DropdownMenuItem>
+                                    <DropdownMenuItem className='cursor-pointer'>Delete</DropdownMenuItem>
                                 </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>
@@ -64,7 +64,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                                 <Link href={`/registration/brgy-details?barangay_id=${b.id}`}>
                                     <Button
                                     variant="ghost"
-                                    className="absolute right-2 text-muted-foreground text-sm flex items-center"
+                                    className="absolute right-2 cursor-pointer text-muted-foreground text-sm flex items-center"
                                     >
                                     View details
                                     <ChevronRight />
@@ -87,7 +87,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                             </div>
 
                             <div className="flex items-center gap-2 text-sm">
-                                <Building2 className="h-4 w-4 text-gray-600" />
+                                <Mail className="h-4 w-4 text-gray-600" />
                                 <span className="text-gray-600">{b.rhu_id ?? 'N/A'}</span>
                             </div>
                             </CardContent>

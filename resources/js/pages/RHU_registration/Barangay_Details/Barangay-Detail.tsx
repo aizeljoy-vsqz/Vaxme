@@ -19,11 +19,12 @@ export function BarangayDetails({ populations = [] }: { populations?: Population
     return (
     <>
          <Head title="Registration" />
-        <div className="flex flex-col p-6">
+         <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <div className="flex flex-col">
             <div className="flex items-center justify-between mb-2">
                <Label className="text-lg font semibold">Barangay Alawihao Registration (2024)</Label>
                 <Button variant="outline"
-                className="text-blue-500 border-blue-400 hover:bg-blue-600 hover:text-white">
+                className="text-blue-500 border-blue-600 hover:bg-blue-700 cursor-pointer hover:text-white">
                         <Upload/>
                         Export
                    </Button>
@@ -32,6 +33,8 @@ export function BarangayDetails({ populations = [] }: { populations?: Population
              <PopulationTable populations={populations}/>
             </div>
         </div>
+         </div>
+        
     </>
     );
 }

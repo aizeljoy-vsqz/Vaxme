@@ -58,7 +58,7 @@ export function InputPopulationPage({ barangays }: { barangays: BarangayOption[]
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='bg-blue-500 hover:bg-blue-700'>Next</Button>
+        <Button className='bg-blue-600 hover:bg-blue-700 cursor-pointer'>Next</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-xl">
@@ -123,7 +123,7 @@ export function InputPopulationPage({ barangays }: { barangays: BarangayOption[]
           </FieldGroup>
 
           <DialogFooter>
-            <Button type="submit" className="bg-blue-500 hover:bg-blue-700" disabled={processing}>
+            <Button type="submit" className="bg-blue-600  hover:bg-blue-700 cursor-pointer" disabled={processing}>
               Save
             </Button>
           </DialogFooter>

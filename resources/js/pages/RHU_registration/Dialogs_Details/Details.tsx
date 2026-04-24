@@ -42,7 +42,7 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
             <Dialog>
              <form onSubmit={handleSubmit}>
                 <DialogTrigger asChild>
-                   <Button className="bg-blue-500  hover:bg-blue-700">
+                   <Button className="bg-blue-600  hover:bg-blue-700 cursor-pointer">
                         <Plus/>
                         Register New Barangay
                    </Button> 
@@ -74,7 +74,7 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
                     </div>
 
                     <div className="space-y-2 pb-4">
-                    <Label>RHU ID (Optional):</Label>
+                    <Label>Contact:</Label>
                     <Input 
                         placeholder="e.g 1" 
                         value={data.rhu_id}
