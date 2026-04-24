@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { dailyVaccineInventory } from '@/routes';
 import { Head } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
+import { Download, Plus } from 'lucide-react';
 import { DataTable } from '../data-table';
 import { columns } from './columns';
 import {
@@ -17,7 +17,6 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
 export default function DailyInventory() {
 
     const data = [
@@ -41,7 +40,7 @@ export default function DailyInventory() {
 <div className='flex justify-between'>
                     <Label className='text-md flex items-center'>Penta</Label>
                     <div className='flex gap-2'>
-                        <Button variant={'outline'} className='text-blue-600 border border-blue-600 hover:text-blue-700'><Plus />Export</Button>
+                        <Button variant={'outline'} className='text-blue-600 border border-blue-600 hover:text-blue-700'><Download/>Export</Button>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button className='bg-blue-600 hover:bg-blue-700'><Plus/> Add Inventory</Button>
