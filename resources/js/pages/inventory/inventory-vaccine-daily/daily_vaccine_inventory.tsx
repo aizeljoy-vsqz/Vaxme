@@ -37,7 +37,8 @@ export default function DailyInventory() {
         <>
             <Head title="Daily Inventory" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className='flex justify-between'>
+                <div className='px-2'>
+<div className='flex justify-between'>
                     <Label className='text-md flex items-center'>Penta</Label>
                     <div className='flex gap-2'>
                         <Button variant={'outline'} className='text-blue-600 border border-blue-600 hover:text-blue-700'><Plus />Export</Button>
@@ -54,21 +55,21 @@ export default function DailyInventory() {
                                 </AlertDialogHeader>
                                 <div className='flex flex-col gap-4'>
                                     <div className='flex gap-4'>
-                                        <div className='flex flex-col w-full gap-1'>
+                                        <div className='flex flex-col w-full gap-2'>
                                             <Label>Daily Dispensed:</Label>
                                             <Input placeholder='e.g. 5'></Input>
                                         </div>
-                                        <div className='flex flex-col w-full gap-1'>
+                                        <div className='flex flex-col w-full gap-2'>
                                             <Label>No. of Receipients:</Label>
                                             <Input placeholder='e.g. 5'></Input>
                                         </div>
                                     </div>
                                     <div className='flex gap-4'>
-                                        <div className='flex flex-col w-full gap-1'>
+                                        <div className='flex flex-col w-full gap-2'>
                                             <Label>Stock Transferred:</Label>
                                             <Input placeholder='e.g. 5'></Input>
                                         </div>
-                                        <div className='flex flex-col w-full gap-1'>
+                                        <div className='flex flex-col w-full gap-2'>
                                             <Label>Expiration/Lose/Damage:</Label>
                                             <Input placeholder='e.g. 2'></Input>
                                         </div>
@@ -84,6 +85,7 @@ export default function DailyInventory() {
                 </div>
                 <div className='px-4'>
                     <DataTable columns={columns} data={data} />
+                </div>
                 </div>
             </div>
         </>
