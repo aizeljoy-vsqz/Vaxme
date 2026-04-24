@@ -12,13 +12,13 @@ export default function Request_Select() {
     return (
         <Select>
             <SelectTrigger className="flex-1">
-                <SelectValue placeholder="Theme" />
+                <SelectValue placeholder="Select Vaccine" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent position="item-aligned">
                 <SelectGroup>
-                    <SelectItem value="light">Light</SelectItem>
-                    <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="system">System</SelectItem>
+                    <SelectItem value="light">Penta</SelectItem>
+                    <SelectItem value="dark">Tetanus</SelectItem>
+                    <SelectItem value="system">Zietza</SelectItem>
                 </SelectGroup>
             </SelectContent>
         </Select>
