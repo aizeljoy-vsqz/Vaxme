@@ -5,42 +5,21 @@ import { DataTable } from '@/pages/RHU_registration/data-table';
 import { populationColumns, PopulationData } from './Details/column';
 import InputPopulationPage from "./Dialog_Edit/Edit_details";
 
-export function BarangayDetails() {
+type BarangayPopulationRow = PopulationData & {
+  barangayName?: string;
+};
 
-  const [data , setData] = useState<PopulationData[]>([
-    {
-      id: "1",
-      ageRange: "All Ages",
-      male: 100,
-      female: 100,
-      total: 200,
-    },
-    {
-      id: "2",
-      ageRange: "Under 1 (0-11 months)",
-      male: 100,
-      female: 100,
-      total: 200,
-    },
-    {
-      id: "3",
-      ageRange: "0-12 months",
-      male: 100,
-      female: 100,
-      total: 200,
-    },
-    {
-      id: "4",
-      ageRange: "10 years and above",
-      male: 100,
-      female: 100,
-      total: 200,
-    },
-  ]);
+type Props = {
+  populations?: BarangayPopulationRow[];
+};
 
-  const [selectedRow, setSelectedRow] = useState<PopulationData | null>(null);
+export function BarangayDetails({ populations = [] }: Props) {
 
-  const handleSave = (updated: PopulationData) => {
+  const [data, setData] = useState<BarangayPopulationRow[]>(populations);
+
+  const [selectedRow, setSelectedRow] = useState<BarangayPopulationRow | null>(null);
+
+  const handleSave = (updated: BarangayPopulationRow) => {
     setData((prev) =>
       prev.map((item) =>
         item.id === updated.id ? updated : item

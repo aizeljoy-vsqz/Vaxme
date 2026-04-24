@@ -4,6 +4,13 @@ import { FieldGroup, Field } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Dialog,
   DialogDescription,
   DialogContent,
@@ -14,9 +21,14 @@ import {
 } from '@/components/ui/dialog';
 import { useForm } from '@inertiajs/react';
 
-export function InputPopulationPage() {
+type BarangayOption = {
+  id: number;
+  name: string;
+};
 
-  const { data, setData, post } = useForm({
+export function InputPopulationPage({ barangays }: { barangays: BarangayOption[] }) {
+
+  const { data, setData, post, processing } = useForm({
     barangay_id: '',
     populations: [
       { age_range: 'All Ages', male: '', female: '' },
@@ -36,7 +48,7 @@ export function InputPopulationPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    post('/registration', {
+    post('/registration/population', {
       onSuccess: () => {
         console.log('Population saved!');
       }
@@ -58,6 +70,27 @@ export function InputPopulationPage() {
           </DialogHeader>
 
           <FieldGroup>
+            <Field className="pt-2">
+              <div className="space-y-2 w-full">
+                <Label>Barangay</Label>
+                <Select
+                  value={data.barangay_id}
+                  onValueChange={(value) => setData('barangay_id', value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select barangay" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {barangays.map((barangay) => (
+                      <SelectItem key={barangay.id} value={String(barangay.id)}>
+                        {barangay.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </Field>
+
             {data.populations.map((pop, index) => (
               <div key={index}>
                 <Label className="pt-2 font-semibold">{pop.age_range}</Label>
@@ -90,7 +123,7 @@ export function InputPopulationPage() {
           </FieldGroup>
 
           <DialogFooter>
-            <Button type="submit" className="bg-blue-500 hover:bg-blue-700">
+            <Button type="submit" className="bg-blue-500 hover:bg-blue-700" disabled={processing}>
               Save
             </Button>
           </DialogFooter>

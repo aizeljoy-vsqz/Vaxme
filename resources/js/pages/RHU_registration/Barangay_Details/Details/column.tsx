@@ -12,6 +12,7 @@ import {
 
 export type PopulationData = {
   id: string;
+  barangayName?: string;
   ageRange: string;
   male: number;
   female: number;
@@ -40,6 +41,11 @@ export const populationColumns = (setSelectedRow: (row: PopulationData) => void)
     ),
     enableSorting: false,
     enableHiding: false,
+  },
+
+  {
+    accessorKey: "barangayName",
+    header: "Barangay",
   },
 
   {

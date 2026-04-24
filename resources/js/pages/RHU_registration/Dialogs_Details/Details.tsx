@@ -24,8 +24,8 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
 
      const {data, setData, post} = useForm({
         name: '',
-        contact_number: '',
-        contact_name: '',
+    nurse_assigned: '',
+    rhu_id: '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -68,23 +68,23 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
                     <Label>Nurse Assign:</Label>
                     <Input 
                         placeholder="e.g Aizel Joy Vasquez" 
-                        value={data.contact_name}
-                        onChange={(e) => setData('contact_name', e.target.value)}
+                        value={data.nurse_assigned}
+                        onChange={(e) => setData('nurse_assigned', e.target.value)}
                     />
                     </div>
 
                     <div className="space-y-2 pb-4">
-                    <Label>Contact No:</Label>
+                    <Label>RHU ID (Optional):</Label>
                     <Input 
-                        placeholder="e.g 09111111111" 
-                        value={data.contact_number}
-                        onChange={(e) => setData('contact_number', e.target.value)}
+                        placeholder="e.g 1" 
+                        value={data.rhu_id}
+                        onChange={(e) => setData('rhu_id', e.target.value)}
                     />
                     </div>
                 </Field>
                 </FieldGroup>
             <DialogFooter>
-                    <InputPopulationPage/>
+                    <InputPopulationPage barangays={barangays}/>
             </DialogFooter>
                 </DialogContent>
              </form>

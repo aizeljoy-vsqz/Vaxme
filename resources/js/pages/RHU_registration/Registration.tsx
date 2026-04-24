@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { User, Mail, ChevronRight} from "lucide-react";
+import { User, Building2, ChevronRight} from "lucide-react";
 import {Label} from '@/components/ui/label';
 import { Link } from "@inertiajs/react";
 import {Input} from '@/components/ui/input';
@@ -21,9 +21,10 @@ import { DetailsPage } from './Dialogs_Details/Details';
 
 type Barangay = {
     id: number;
+    user_id: number | null;
+    rhu_id: number | null;
     name: string;
-    contact_name: string;
-    contact_number: string;
+    nurse_assigned: string;
 };
 
 export default function Registration({ barangays = [] }: { barangays?: Barangay[] }) {
@@ -77,16 +78,16 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                             </div>
 
                             <CardContent className="space-y-2">
-                                <Label className=" -top-3 text-sm font-semibold text-muted-foreground">Contact</Label>
+                                <Label className=" -top-3 text-sm font-semibold text-muted-foreground">Details</Label>
 
                             <div className="flex items-center gap-2 text-sm">
                                 <User className="h-4 w-4 text-gray-600" />
-                                <span className="text-gray-600">{b.contact_name}</span>
+                                <span className="text-gray-600">{b.nurse_assigned}</span>
                             </div>
 
                             <div className="flex items-center gap-2 text-sm">
-                                <Mail className="h-4 w-4 text-gray-600" />
-                                <span className="text-gray-600">{b.contact_number}</span>
+                                <Building2 className="h-4 w-4 text-gray-600" />
+                                <span className="text-gray-600">{b.rhu_id ?? 'N/A'}</span>
                             </div>
                             </CardContent>
                         </Card>
