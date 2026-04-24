@@ -8,7 +8,7 @@ import RequestTable from '@/components/request_vaccine/request_table';
 import { Input } from '@/components/ui/input';
 import Request_Select from '@/components/request_vaccine/request_select';
 import { Separator } from '@/components/ui/separator';
-import { Plus, Send } from 'lucide-react';
+import { ArrowBigRightDashIcon, Plus, Send } from 'lucide-react';
 
 export default function BhuDashboard() {
     return (
@@ -20,7 +20,7 @@ export default function BhuDashboard() {
                         <Label className='text-md font-bold'>Request New Vaccine</Label>
                         <p className='text-xs text-gray-500 font-thin'>Add names and vaccine below to request vaccines</p>
                     </div>
-                    <Button className='bg-blue-600'>Send <Send></Send></Button>
+                    <Button className='bg-blue-600 w-auto hover:bg-blue-700 cursor-pointer'>Request <ArrowBigRightDashIcon></ArrowBigRightDashIcon></Button>
                 </div>
                 <div className='h-full'>
                 <RequestTable></RequestTable>
@@ -29,7 +29,7 @@ export default function BhuDashboard() {
                 <div className='flex gap-2'>
                     <Input placeholder='Enter full name: e.g. José Protasio Rizal Mercado y Alonso Realonda' className='flex-1'></Input>
                     <Request_Select></Request_Select>
-                    <Button className='bg-blue-600'>Add <Plus></Plus></Button>
+                    <Button className='bg-blue-600 w-auto hover:bg-blue-700 cursor-pointer'>Add <Plus></Plus></Button>
                 </div>
             </div>
         </>
