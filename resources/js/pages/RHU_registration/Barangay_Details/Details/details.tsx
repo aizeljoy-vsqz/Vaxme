@@ -1,37 +1,50 @@
 "use client";
 
-import { useState } from "react";
-import { DataTable } from '../../data-table';
+import { useEffect, useState } from "react";
+import { DataTable } from '@/pages/RHU_registration/data-table';
 import { populationColumns, PopulationData } from './column';
+import InputPopulationPage from "../Dialog_Edit/Edit_details";
 
-export function PopulationTable() {
-  const [data, setData] = useState<PopulationData[]>([
-    {
-      id: "1",
-      ageRange: "All Ages",
-      male: 100,
-      female: 100,
-      total: 200,
-    },
-  ]);
+type BarangayPopulationRow = PopulationData & {
+  barangayName?: string;
+};
 
-  const [selectedRow, setSelectedRow] = useState<PopulationData | null>(null);
+type Props = {
+  populations?: BarangayPopulationRow[];
+};
 
-  const handleSave = (updated: PopulationData) => {
+export function PopulationTable({ populations = [] }: Props) {
+  const [data, setData] = useState<BarangayPopulationRow[]>(populations);
+
+  const [selectedRow, setSelectedRow] = useState<BarangayPopulationRow | null>(null);
+
+  useEffect(() => {
+    setData(populations);
+  }, [populations]);
+
+  const handleSave = (updated: BarangayPopulationRow) => {
     setData((prev) =>
       prev.map((item) =>
         item.id === updated.id ? updated : item
       )
     );
-  };
+}; 
 
-  return (
-    <div>
+    return (
+    <section>
       <DataTable
         columns={populationColumns(setSelectedRow)}
         data={data}
       />
-    </div>
+      {selectedRow && (
+        <InputPopulationPage
+          data={selectedRow}
+          onSave={handleSave}
+          onClose={() => setSelectedRow(null)}
+        />
+      )}
+    </section>
   );
 }
+
 export default PopulationTable;

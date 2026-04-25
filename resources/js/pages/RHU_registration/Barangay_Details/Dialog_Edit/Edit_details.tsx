@@ -14,6 +14,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+  import { router } from '@inertiajs/react';
 
 import { PopulationData } from "../Details/column";
 
@@ -27,6 +28,7 @@ export function InputPopulationPage({ data, onSave, onClose }: Props) {
 
   const [male, setMale] = useState<number | "">(data.male ?? "");
   const [female, setFemale] = useState<number | "">(data.female ?? "");
+  const [processing, setProcessing] = useState(false);
   
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
@@ -153,17 +155,33 @@ export function InputPopulationPage({ data, onSave, onClose }: Props) {
 
         <DialogFooter>
           <Button
+            type="button"
             className='bg-blue-500 hover:bg-blue-700'
             onClick={() => {
-                onSave({
-                ...data,
-                male: Number(male),
-                female: Number(female),
-                total: Number(male) + Number(female)
-                });
+                const nextMale = Number(male) || 0;
+                const nextFemale = Number(female) || 0;
+                setProcessing(true);
 
-                onClose();
+                router.put(`/registration/population/${data.id}`,
+                  {
+                    male: nextMale,
+                    female: nextFemale,
+                  },
+                  {
+                  preserveScroll: true,
+                  onSuccess: () => {
+                    onSave({
+                      ...data,
+                      male: nextMale,
+                      female: nextFemale,
+                      total: nextMale + nextFemale,
+                    });
+                    onClose();
+                  },
+                  onFinish: () => setProcessing(false),
+                });
             }}
+            disabled={processing}
             >
             Save
             </Button>

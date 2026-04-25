@@ -31,7 +31,8 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
     return (
         <>
             <Head title="Registration" />
-           <div className="flex flex-col p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+           <div className="flex flex-col">
             <div className="flex items-center justify-between mb-6">
                 <Label className="text-lg font semibold">Barangay Registration</Label>
                 <DetailsPage barangays={barangays}/>
@@ -60,7 +61,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                                 <CardTitle className="text-xl font-bold">{b.name}</CardTitle>
                                 <p className="text-muted-foreground text-sm">Barangay</p>
                                 <div className="pt-2 text-sm font-medium text-center">
-                                <Link href="/registration/brgy-details">
+                                <Link href={`/registration/brgy-details?barangay_id=${b.id}`}>
                                     <Button
                                     variant="ghost"
                                     className="absolute right-2 text-muted-foreground text-sm flex items-center"
@@ -94,6 +95,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                         ))}
                 </div>
             </div>
+        </div>
         </>
     );
 }
