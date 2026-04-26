@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Layers, LayoutGrid, StickyNote, UsersRound } from 'lucide-react';
+import { Layers, LayoutGrid, List, SquareChartGantt, StickyNote, UsersRound } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -12,7 +12,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard, batchesVaccineInventory } from '@/routes';
+import { dashboard, batchesVaccineInventory, vaccineManagement } from '@/routes';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -25,6 +25,11 @@ const mainNavItems: NavItem[] = [
         title: 'Inventory',
         href: batchesVaccineInventory(),
         icon: Layers,
+    },
+        {
+        title: 'Vaccine Management',
+        href: vaccineManagement(),
+        icon: SquareChartGantt,
     },
 ];
 const BarangayNavItems: NavItem[] = [
