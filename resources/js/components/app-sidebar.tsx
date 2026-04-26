@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ArrowBigLeftDashIcon, ArrowBigRightDashIcon, Clock, Layers, LayoutGrid, StickyNote, UsersRound } from 'lucide-react';
+import { ArrowBigLeftDashIcon, ArrowBigRightDashIcon, Clock, Layers, LayoutGrid, PackageCheck, StickyNote, UsersRound } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -14,6 +14,10 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
+import bhc from '@/routes/bhc';
+import track from '@/routes/track';
+import history from '@/routes/history';
+import returnMethod from '@/routes/return';
 
 
 const mainNavItems: NavItem[] = [
@@ -45,17 +49,22 @@ const BarangayNavItems: NavItem[] = [
 const BHCNavItems: NavItem[] = [
     {
         title: 'Request new vaccines',
-        href: '',
+        href: bhc.dashboard(),
         icon: ArrowBigRightDashIcon,
     },
     {
         title: 'Return vaccines',
-        href: '',
+        href: returnMethod.vaccine(),
         icon: ArrowBigLeftDashIcon,
     },
     {
+        title: 'Track Vaccine Status',
+        href: track.vaccination(),
+        icon: PackageCheck ,
+    },
+    {
         title: 'Vaccination History',
-        href: '',
+        href: history.vaccination(),
         icon: Clock,
     },
 ];

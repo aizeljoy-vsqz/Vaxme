@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react';
 import HistoryItem from '@/components/request_vaccine/history_vaccination_item';
 import { Label } from '@/components/ui/label';
+import history from '@/routes/history';
 
 export default function HistoryVaccination() {
     return (
@@ -21,7 +22,7 @@ HistoryVaccination.layout = {
     breadcrumbs: [
         {
             title: 'History Vaccinatio',
-            href: '',
+            href: history.vaccination(),
         },
     ],
 };
