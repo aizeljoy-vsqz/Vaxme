@@ -16,7 +16,7 @@ type Props = {
 export function PopulationTable({ populations = [] }: Props) {
   const [data, setData] = useState<BarangayPopulationRow[]>(populations);
 
-  const [selectedRow, setSelectedRow] = useState<BarangayPopulationRow | null>(null);
+  const [selectedRow, setSelectedRow] = useState<BarangayPopulationRow | undefined>(undefined);
 
   useEffect(() => {
     setData(populations);
@@ -40,7 +40,7 @@ export function PopulationTable({ populations = [] }: Props) {
         <InputPopulationPage
           data={selectedRow}
           onSave={handleSave}
-          onClose={() => setSelectedRow(null)}
+          onClose={() => setSelectedRow(undefined)}
         />
       )}
     </section>

@@ -14,14 +14,6 @@ return new class extends Migration
     {
         if (Schema::hasTable('barangays')) {
             Schema::table('barangays', function (Blueprint $table) {
-                if (! Schema::hasColumn('barangays', 'user_id')) {
-                    $table->unsignedBigInteger('user_id')->nullable()->after('id')->index();
-                }
-
-                if (! Schema::hasColumn('barangays', 'rhu_id')) {
-                    $table->unsignedBigInteger('rhu_id')->nullable()->after('user_id')->index();
-                }
-
                 if (! Schema::hasColumn('barangays', 'nurse_assigned')) {
                     $table->string('nurse_assigned')->nullable()->after('name');
                 }
@@ -45,15 +37,7 @@ return new class extends Migration
         }
 
         if (Schema::hasTable('barangay_populations')) {
-            Schema::table('barangay_populations', function (Blueprint $table) {
-                if (! Schema::hasColumn('barangay_populations', 'user_id')) {
-                    $table->unsignedBigInteger('user_id')->nullable()->after('barangay_id')->index();
-                }
-
-                if (! Schema::hasColumn('barangay_populations', 'rhu_id')) {
-                    $table->unsignedBigInteger('rhu_id')->nullable()->after('user_id')->index();
-                }
-            });
+            // No schema changes required for `user_id` or `rhu_id` in this migration.
         }
     }
 
@@ -81,27 +65,11 @@ return new class extends Migration
                 if (Schema::hasColumn('barangays', 'nurse_assigned')) {
                     $table->dropColumn('nurse_assigned');
                 }
-
-                if (Schema::hasColumn('barangays', 'rhu_id')) {
-                    $table->dropColumn('rhu_id');
-                }
-
-                if (Schema::hasColumn('barangays', 'user_id')) {
-                    $table->dropColumn('user_id');
-                }
             });
         }
 
         if (Schema::hasTable('barangay_populations')) {
-            Schema::table('barangay_populations', function (Blueprint $table) {
-                if (Schema::hasColumn('barangay_populations', 'rhu_id')) {
-                    $table->dropColumn('rhu_id');
-                }
-
-                if (Schema::hasColumn('barangay_populations', 'user_id')) {
-                    $table->dropColumn('user_id');
-                }
-            });
+            // No rollback changes for `user_id` or `rhu_id` since they were not added here.
         }
     }
 };

@@ -17,11 +17,11 @@ return new class extends Migration
 
         Schema::create('barangay_populations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('barangay_id')->constrained('barangays')->cascadeOnDelete();
+            $table->foreignId('barangay_id')->constrained()->cascadeOnDelete();
             $table->string('age_range');
-            $table->unsignedInteger('male')->default(0);
-            $table->unsignedInteger('female')->default(0);
-            $table->unsignedInteger('total')->default(0);
+            $table->integer('male')->default(0);
+            $table->integer('female')->default(0);
+            $table->integer('total')->default(0);
             $table->timestamps();
         });
     }

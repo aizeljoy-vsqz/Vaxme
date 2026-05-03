@@ -14,8 +14,6 @@ class BarangayPopulation extends Model
 
     protected $fillable = [
         'barangay_id',
-        'user_id',
-        'rhu_id',
         'age_range',
         'male',
         'female',
@@ -24,8 +22,6 @@ class BarangayPopulation extends Model
 
     protected $casts = [
         'barangay_id' => 'integer',
-        'user_id' => 'integer',
-        'rhu_id' => 'integer',
         'male' => 'integer',
         'female' => 'integer',
         'total' => 'integer',

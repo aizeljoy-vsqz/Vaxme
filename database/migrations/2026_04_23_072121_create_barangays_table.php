@@ -17,9 +17,10 @@ return new class extends Migration
 
         Schema::create('barangays', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('contact_name')->nullable();
-            $table->string('contact_number')->nullable();
+            $table->unsignedBigInteger('nurse_id')->default(0);
+            $table->string('barangay_name');
+            $table->string('nurse_assigned'); 
+            $table->string('contact_number')->default('N/A');
             $table->timestamps();
         });
     }

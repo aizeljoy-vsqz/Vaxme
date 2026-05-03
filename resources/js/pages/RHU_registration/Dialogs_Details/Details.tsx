@@ -4,8 +4,9 @@ import {Plus} from 'lucide-react';
 import {FieldGroup, Field} from '@/components/ui/field';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import InputPopulationPage from '@/pages/RHU_registration/Dialogs_Details/Population';
+import { usePage } from '@inertiajs/react';
 import {
     Dialog, 
     DialogContent, 
@@ -14,34 +15,92 @@ import {
     DialogTitle, 
     DialogTrigger
 } from '@/components/ui/dialog';
-import { useForm, usePage  } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 
 type BarangayOption = {
     id: number;
     name: string;
 };
 
+type RegistrationFlashProps = {
+    flash?: {
+        barangay_id?: number | string;
+        success?: string;
+    };
+};
+
 export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
 
-     const {data, setData, post, errors} = useForm({
-        name: '',
+    
+
+    const [barangayId, setBarangayId] = useState<number | null>(null);
+    const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
+    const { props } = usePage<RegistrationFlashProps>();
+    
+    const {data, setData, post, errors} = useForm({
+        barangay_name: '',
         nurse_assigned: '',
-        rhu_id: '',
+        contact_number: '',
         });
+
+    const isFormValid =
+        data.barangay_name.trim() !== '' &&
+        data.nurse_assigned.trim() !== '';
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!data.name || !data.nurse_assigned || !data.rhu_id) {
-        return;
-    }
+        if (!data.barangay_name || !data.nurse_assigned) {
+            return;
+        }
+
+        // debug
+        // eslint-disable-next-line no-console
+        console.log('Details submit', data);
 
         post('/registration', {
-            onSuccess: () => {
-                console.log('Saved!');
-            }
+            preserveScroll: true,
+            onSuccess: (page: any) => {
+                // eslint-disable-next-line no-console
+                console.log('Details post success, page.props:', page.props);
+
+                setData({
+                    barangay_name: '',
+                    nurse_assigned: '',
+                    contact_number: '',
+                });
+
+                const id = Number(page.props?.flash?.barangay_id ?? page.props?.barangay_id);
+
+                // eslint-disable-next-line no-console
+                console.log('Resolved barangay id after submit:', id);
+
+                if (id && id > 0) {
+                    setBarangayId(id);
+                    setPopulationDialogOpen(true);
+                }
+            },
+            onError: (errs: any) => {
+                // eslint-disable-next-line no-console
+                console.log('Details post errors', errs);
+            },
         });
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line no-console
+        console.log('usePage props.flash', props.flash);
+
+        const id = Number(props.flash?.barangay_id);
+
+        // eslint-disable-next-line no-console
+        console.log('Resolved barangay id from page props:', id);
+
+        if (!id || id <= 0) return;
+
+        setBarangayId(id);
+        setPopulationDialogOpen(true);
+    }, [props.flash]);
 
     return (
             <Dialog>
@@ -52,7 +111,7 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
                         Register New Barangay
                    </Button> 
                 </DialogTrigger>
-            <DialogContent className="sm:max-w-xl curs">
+            <DialogContent className="sm:max-w-xl cursor-pointer">
                 <DialogHeader>
                     <DialogTitle className="text pb-2">Barangay Details</DialogTitle>
                     <Separator/>
@@ -63,12 +122,12 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
                     <Label>Name of Barangay:</Label>
                     <Input 
                         placeholder="e.g Alawihao" 
-                        value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
+                        value={data.barangay_name}
+                        onChange={(e) => setData('barangay_name', e.target.value)}
                     />
-                    {errors.name && (
+                    {errors.barangay_name && (
                     <span className="text-red-500 text-sm">
-                        {errors.name}
+                        {errors.barangay_name}
                     </span>
                 )}
                     </div>
@@ -92,19 +151,25 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
                     <Label>Contact:</Label>
                     <Input 
                         placeholder="e.g 0912345678" 
-                        value={data.rhu_id}
-                        onChange={(e) => setData('rhu_id', e.target.value)}
+                        value={data.contact_number}
+                        onChange={(e) => setData('contact_number', e.target.value)}
                     />
-                    {errors.rhu_id && (
+                    {errors.contact_number && (
                         <span className="text-red-500 text-sm">
-                            {errors.rhu_id}
+                            {errors.contact_number}
                         </span>
                     )}
                     </div>
                 </Field>
                 </FieldGroup>
             <DialogFooter>
-                    <InputPopulationPage barangays={barangays}/>
+                    <InputPopulationPage
+                        barangays={barangays}
+                        barangayId={barangayId ?? 0}
+                        disabled={!isFormValid}
+                        isValid={isFormValid}
+                        open={populationDialogOpen}
+                        onOpenChange={setPopulationDialogOpen}/>
             </DialogFooter>
                 </DialogContent>
              </form>
