@@ -9,24 +9,24 @@ import { DropdownMenu,
 import { Button } from "@/components/ui/button"
 import { Ellipsis } from "lucide-react"
 
-export type VaccineBatch = {
+export type VaccineType = {
     id: number
-    vaccine_name: string
-    vaccine_description: string
+    name: string
+    description: string
 }
 
-export const columns: ColumnDef<VaccineBatch>[] = [
+export const columns: ColumnDef<VaccineType>[] = [
     {
-        accessorKey: "vaccine_name",
+        accessorKey: "name",
         header: "Vaccine Name"
     },
     {
-        accessorKey: "vaccine_description",
+        accessorKey: "description",
         header: "Vaccine Description",
         cell: ({ row }) => {
             return (
                 <div className="text-wrap">
-                    {row.getValue("vaccine_description")}
+                    {row.getValue("description")}
                 </div>
             )
         }

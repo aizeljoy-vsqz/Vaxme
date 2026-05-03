@@ -13,29 +13,30 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { DataTable } from "./data-table"
-import { columns } from "./column"
+import { columns, VaccineType } from "./column"
 import { Plus } from "lucide-react"
-import { useForm } from "@inertiajs/react"
+import { useForm, usePage } from "@inertiajs/react"
 
 export default function VaccineManagement() {
-    const dataa = [
-        {
-            id: 1,
-            vaccine_name: "Penta",
-            vaccine_description: "Pentavalent vaccine protects against five diseases."
-        },
-    ]
-
+    
     const { data, setData, post } = useForm({
-        name: "penta",
-        description: "Pentavalent vaccine protects against five diseases.",
+        name: "",
+        description: "",
     })
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         console.log(data)
         post('/vaccine/management/store');
-    }   
+    }
+
+    interface PageProps {
+        [key:string]: unknown
+        vaccines_data: VaccineType[]
+    }
+
+    const {vaccines_data} = usePage<PageProps>().props    
+    console.log(vaccines_data);    
 
     return (
         <>
@@ -48,7 +49,7 @@ export default function VaccineManagement() {
                                 <Button className='bg-blue-600 hover:bg-blue-700'> <Plus /> Add Inventory</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
-                                <form onSubmit={handleSubmit}>
+                                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Vaccine Details</AlertDialogTitle>
                                         <AlertDialogDescription>
@@ -58,11 +59,11 @@ export default function VaccineManagement() {
                                     <div className='flex flex-col gap-2'>
                                         <div className='w-full gap-2 flex flex-col'>
                                             <Label>Name of Vaccine:</Label>
-                                            <Input value={data.name} onChange={(e) => setData('name', e.target.value)}></Input>
+                                            <Input value={data.name} onChange={(e) => setData('name', e.target.value)} placeholder="e.g. Penta"></Input>
                                         </div>
                                         <div className='w-full gap-2 flex flex-col'>
                                             <Label>Vaccine Description:</Label>
-                                            <Input value={data.description} onChange={(e) => setData('description', e.target.value)}></Input>
+                                            <Input value={data.description} onChange={(e) => setData('description', e.target.value)} placeholder="e.g. Pentavalent vaccine protects against five diseases."></Input>
                                         </div>
                                     </div>
                                     <AlertDialogFooter>
@@ -74,7 +75,7 @@ export default function VaccineManagement() {
                         </AlertDialog>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns} data={dataa} />
+                        <DataTable columns={columns} data={vaccines_data} />
                     </div>
                 </div>
             </div>
