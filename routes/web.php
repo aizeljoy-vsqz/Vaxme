@@ -15,6 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/vaccine/inventory', [VaccineBatchesController::class, 'Index'])->name('batchesVaccineInventory');
     Route::get('/daily/vaccine/inventory', [DailyVaccineController::class, 'Index'])->name('dailyVaccineInventory');
     Route::get('/vaccine/management', [VaccineManagementController::class, 'Index'])->name('vaccineManagement');
+    Route::post('/vaccine/management/store', [VaccineManagementController::class, 'Store'])->name('vaccineManagement.store');
 });
 
 require __DIR__.'/settings.php';
