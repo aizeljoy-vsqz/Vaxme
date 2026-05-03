@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class VaccineBatch extends Model
 {
     protected $fillable = [
-        'rhu_id',
+        // 'rhu_id',
         'vaccine_id',
         'batch_number',
         'stock_receive',
-        'expiration_date'
+        'expiration_date',
+        'current_balance'
     ];
 }
