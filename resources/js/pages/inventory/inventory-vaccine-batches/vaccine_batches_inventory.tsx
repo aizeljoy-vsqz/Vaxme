@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { columns } from "./columns"
 import { DataTable } from "../data-table"
 import { Label } from '@/components/ui/label';
@@ -20,7 +20,7 @@ import { Input } from '@/components/ui/input';
 
 export default function InventoryByBatch() {
 
-    const data = [{
+    const dataa = [{
         id: 1,
         facility_name: "RHU 1",
         batch_lot_no: "BLN-001",
@@ -31,6 +31,20 @@ export default function InventoryByBatch() {
         status: "Active",
     },]
 
+    const {data, setData, post} = useForm({
+        // rhu_id: 'ss',
+        vaccine_id: 1,
+        batch_number: '',
+        stock_receive: 0,
+        expiration_date: '',
+        current_balance: 0,
+    })
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log(data);
+        post('/vaccine/inventory/store');
+    }
     return (
         <>
             <Head title="Dashboard" />
@@ -44,47 +58,49 @@ export default function InventoryByBatch() {
                                 <Button className='bg-blue-600 hover:bg-blue-700'> <Plus /> Add Inventory</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Vaccinne</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Enter vaccine details.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <div className='flex flex-col gap-2'>
-                                    <div className='w-full gap-2 flex flex-col'>
-                                        <Label>Name of Health Faculty:</Label>
-                                        <Input></Input>
+                                <form onSubmit={handleSubmit}>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Vaccinne</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Enter vaccine details.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <div className='flex flex-col gap-2'>
+                                        <div className='w-full gap-2 flex flex-col'>
+                                            <Label>Name of Health Faculty:</Label>
+                                            <Input></Input>
+                                        </div>
+                                        <div className='flex gap-4'>
+                                            <div className='w-full flex flex-col gap-2'>
+                                                <Label>Name of Drug:</Label>
+                                                <Input value={data.vaccine_id} onChange={(e) => setData('vaccine_id', Number(e.target.value))}></Input>
+                                            </div>
+                                            <div className='w-full flex flex-col gap-2'>
+                                                <Label>Batch Number:</Label>
+                                                <Input value={data.batch_number} onChange={(e) => setData('batch_number', e.target.value)}></Input>
+                                            </div>
+                                        </div>
+                                        <div className='flex gap-4'>
+                                            <div className='w-full flex flex-col gap-2'>
+                                                <Label>Stock Received:</Label>
+                                                <Input value={data.stock_receive} onChange={(e) => setData('stock_receive', Number(e.target.value))}></Input>
+                                            </div>
+                                            <div className='w-full flex flex-col gap-2'>
+                                                <Label>Expiration Date:</Label>
+                                                <Input value={data.expiration_date} onChange={(e) => setData('expiration_date', e.target.value)}></Input>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='flex gap-4'>
-                                        <div className='w-full flex flex-col gap-2'>
-                                            <Label>Name of Drug:</Label>
-                                            <Input></Input>
-                                        </div>
-                                        <div className='w-full flex flex-col gap-2'>
-                                            <Label>Batch Number:</Label>
-                                            <Input></Input>
-                                        </div>
-                                    </div>
-                                    <div className='flex gap-4'>
-                                        <div className='w-full flex flex-col gap-2'>
-                                            <Label>Stock Received:</Label>
-                                            <Input></Input>
-                                        </div>
-                                        <div className='w-full flex flex-col gap-2'>
-                                            <Label>Expiration Date:</Label>
-                                            <Input></Input>
-                                        </div>
-                                    </div>
-                                </div>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction className='!bg-blue-600 hover:!bg-blue-700'>Save</AlertDialogAction>
-                                </AlertDialogFooter>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction type={'submit'} className='!bg-blue-600 hover:!bg-blue-700'>Save</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </form>
                             </AlertDialogContent>
                         </AlertDialog>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns} data={data} />
+                        <DataTable columns={columns} data={dataa} />
                     </div>
                 </div>
             </div>
