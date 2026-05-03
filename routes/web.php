@@ -13,7 +13,10 @@ Route::inertia('/', 'welcome', [
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
     Route::get('/vaccine/inventory', [VaccineBatchesController::class, 'Index'])->name('batchesVaccineInventory');
+    Route::post('/vaccine/inventory/store', [VaccineBatchesController::class, 'Store'])->name('batchesVaccineInventory.store');
+
     Route::get('/daily/vaccine/inventory', [DailyVaccineController::class, 'Index'])->name('dailyVaccineInventory');
+
     Route::get('/vaccine/management', [VaccineManagementController::class, 'Index'])->name('vaccineManagement');
     Route::post('/vaccine/management/store', [VaccineManagementController::class, 'Store'])->name('vaccineManagement.store');
 });
