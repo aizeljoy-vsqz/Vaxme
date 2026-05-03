@@ -70,10 +70,11 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
                     contact_number: '',
                 });
 
-                const id = Number(page.props?.flash?.barangay_id ?? page.props?.barangay_id);
+                // Get barangay_id from props (not flash)
+                const id = Number(page.props?.barangay_id);
 
                 // eslint-disable-next-line no-console
-                console.log('Resolved barangay id after submit:', id);
+                console.log('Got barangay_id from props:', id);
 
                 if (id && id > 0) {
                     setBarangayId(id);
@@ -104,7 +105,6 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
 
     return (
             <Dialog>
-             <form onSubmit={handleSubmit}>
                 <DialogTrigger asChild>
                    <Button className="bg-blue-600  hover:bg-blue-700 cursor-pointer">
                         <Plus/>
@@ -112,6 +112,7 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
                    </Button> 
                 </DialogTrigger>
             <DialogContent className="sm:max-w-xl cursor-pointer">
+             <form onSubmit={handleSubmit}>
                 <DialogHeader>
                     <DialogTitle className="text pb-2">Barangay Details</DialogTitle>
                     <Separator/>
@@ -171,8 +172,8 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
                         open={populationDialogOpen}
                         onOpenChange={setPopulationDialogOpen}/>
             </DialogFooter>
+                </form>
                 </DialogContent>
-             </form>
             </Dialog>
     );
 }

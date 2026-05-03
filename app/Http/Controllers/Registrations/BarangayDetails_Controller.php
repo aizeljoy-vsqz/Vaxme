@@ -11,27 +11,25 @@ class BarangayDetails_Controller extends Controller
 {
     public function index(Request $request)
     {
-        $selectedBarangayId = $request->integer('barangay_id');
+        $selectedBarangayId = $request->query('barangay_id');
 
-        $query = BarangayPopulation::query()->with('barangay:id,name')->latest();
+        $query = BarangayPopulation::query()
+            ->with('barangay:id,barangay_name')
+            ->latest();
 
         if ($selectedBarangayId) {
             $query->where('barangay_id', $selectedBarangayId);
         }
 
         return Inertia::render('RHU_registration/Barangay_Details/Barangay-Detail', [
-            'populations' => $query
-                ->get()
-                ->map(fn (BarangayPopulation $population) => [
-                    'id' => (string) $population->id,
-                    'barangayName' => $population->barangay?->name,
-                    'ageRange' => $population->age_range,
-                    'male' => $population->male,
-                    'female' => $population->female,
-                    'total' => $population->total,
-                ])
-                ->values()
-                ->all(),
+            'populations' => $query->get()->map(fn ($population) => [
+                'id' => (string) $population->id,
+                'barangayName' => $population->barangay?->barangay_name,
+                'ageRange' => $population->age_range,
+                'male' => $population->male,
+                'female' => $population->female,
+                'total' => $population->total,
+            ]),
             'selectedBarangayId' => $selectedBarangayId,
         ]);
     }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { DataTable } from '@/pages/RHU_registration/data-table';
 import { populationColumns, PopulationData } from './column';
-import InputPopulationPage from "../Dialog_Edit/Edit_details";
+import EditPopulationDialog from "../Dialog_Edit/Edit_details";
 
 type BarangayPopulationRow = PopulationData & {
   barangayName?: string;
@@ -37,7 +37,7 @@ export function PopulationTable({ populations = [] }: Props) {
         data={data}
       />
       {selectedRow && (
-        <InputPopulationPage
+        <EditPopulationDialog
           data={selectedRow}
           onSave={handleSave}
           onClose={() => setSelectedRow(undefined)}

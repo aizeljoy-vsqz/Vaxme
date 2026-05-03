@@ -24,7 +24,7 @@ type Props = {
   onClose: () => void;
 };
 
-export function InputPopulationPage({ data, onSave, onClose }: Props) {
+export function EditPopulationDialog({ data, onSave, onClose }: Props) {
 
   const [male, setMale] = useState<number | "">(data.male ?? "");
   const [female, setFemale] = useState<number | "">(data.female ?? "");
@@ -193,4 +193,4 @@ export function InputPopulationPage({ data, onSave, onClose }: Props) {
   );
 }
 
-export default InputPopulationPage;
+export default EditPopulationDialog;

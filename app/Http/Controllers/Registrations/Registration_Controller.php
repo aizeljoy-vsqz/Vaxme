@@ -50,12 +50,25 @@ class Registration_Controller extends Controller
         $barangay->nurse_assigned = $validated['nurse_assigned'];
         $barangay->save();
 
-        // Redirect with flash so Inertia receives the flashed id consistently
-        return redirect()->route('registration')->with('barangay_id', $barangay->id)->with('success', 'Barangay created successfully');
+        // Return as Inertia response with barangay_id so frontend gets it immediately
+        return Inertia::render('RHU_registration/Registration', [
+            'barangays' => Barangay::query()
+                ->latest()
+                ->get(['id', 'barangay_name', 'nurse_id', 'nurse_assigned', 'contact_number']),
+            'barangay_id' => $barangay->id,
+        ])->with([
+            'success' => 'Barangay created successfully',
+        ]);
     }
 
     public function storePopulation(Request $request)
     {
+        \Log::info('storePopulation request:', [
+            'all' => $request->all(),
+            'barangay_id' => $request->input('barangay_id'),
+            'populations' => $request->input('populations'),
+        ]);
+
         $validated = $request->validate([
             'barangay_id' => ['required', 'integer', 'exists:barangays,id'],
             'populations' => ['required', 'array', 'min:1'],
@@ -64,8 +77,9 @@ class Registration_Controller extends Controller
             'populations.*.female' => ['required', 'integer', 'min:0'],
         ]);
 
+        \Log::info('storePopulation validated:', $validated);
+
         DB::transaction(function () use ($validated): void {
-            $barangay = Barangay::query()->findOrFail($validated['barangay_id']);
 
             BarangayPopulation::query()
                 ->where('barangay_id', $validated['barangay_id'])
@@ -83,8 +97,9 @@ class Registration_Controller extends Controller
             }
         });
 
-        return redirect()->route('registration.brgy-details', [
-            'barangay_id' => $validated['barangay_id'],
-        ])->with('success', 'Barangay population saved successfully');
+        \Log::info('storePopulation success');
+
+        return redirect()->to('/registration/brgy-details?barangay_id=' . $validated['barangay_id'])
+        ->with('success', 'Saved');
     }
 }

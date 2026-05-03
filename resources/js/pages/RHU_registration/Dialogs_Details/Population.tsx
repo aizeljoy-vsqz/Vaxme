@@ -31,7 +31,6 @@ export function InputPopulationPage({
   open,
   onOpenChange,
   disabled,
-  showTrigger,
 }: {
   barangays: BarangayOption[];
   barangayId: number;
@@ -81,11 +80,25 @@ export function InputPopulationPage({
     e.preventDefault();
 
     if (data.barangay_id <= 0) {
+      // eslint-disable-next-line no-console
+      console.log('Population submit: barangay_id invalid', data.barangay_id);
       return;
     }
 
+    // eslint-disable-next-line no-console
+    console.log('Population submit payload:', JSON.stringify(data, null, 2));
+
     post('/registration/population', {
       preserveScroll: true,
+      onSuccess: (response: any) => {
+        // eslint-disable-next-line no-console
+        console.log('Population submit success:', response);
+        onOpenChange(false);
+      },
+      onError: (errors: any) => {
+        // eslint-disable-next-line no-console
+        console.log('Population submit error:', errors);
+      },
     });
   };
 
