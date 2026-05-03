@@ -92,7 +92,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
               <Label>Total of Male:</Label>
               <Input
                 placeholder='e.g 100'
-                value={data.ageRange === "0-12 months" ? male : ""}
+                value={data.ageRange === "Under 0-12 months" ? male : ""}
                 onChange={(e) => setMale(Number(e.target.value))}
               />
             </div>
@@ -101,7 +101,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
               <Label>Total of Female:</Label>
               <Input
                 placeholder='e.g 100'
-                value={data.ageRange === "0-12 months" ? female : ""}
+                value={data.ageRange === "Under 0-12 months" ? female : ""}
                 onChange={(e) => setFemale(Number(e.target.value))}
               />
             </div>
@@ -114,7 +114,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
               <Label>Total of Male:</Label>
               <Input
                 placeholder='e.g 100'
-                value={data.ageRange === "0-53 months" ? male : ""}
+                value={data.ageRange === "Under 0-53 months" ? male : ""}
                 onChange={(e) => setMale(Number(e.target.value))}
               />
             </div>
@@ -123,7 +123,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
               <Label>Total of Female:</Label>
               <Input
                 placeholder='e.g 100'
-                value={data.ageRange === "0-53 months" ? female : ""}
+                value={data.ageRange === "Under 0-53 months" ? female : ""}
                 onChange={(e) => setFemale(Number(e.target.value))}
               />
             </div>

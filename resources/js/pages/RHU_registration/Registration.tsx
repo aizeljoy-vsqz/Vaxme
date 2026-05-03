@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Separator} from '@/components/ui/separator';
 import { DetailsPage } from './Dialogs_Details/Details';
+import { EditBarangayDialog } from './Dialogs_Edit/Edit_barangay';
 
 type Barangay = {
     id: number;
@@ -65,8 +66,8 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <DropdownMenuItem className='cursor-pointer'>Edit</DropdownMenuItem>
-                                    <DropdownMenuItem className='cursor-pointer'>Delete</DropdownMenuItem>
+                                    <EditBarangayDialog barangay={barangay} />
+                                    <DropdownMenuItem className='text-red-600 cursor-pointer'>Delete</DropdownMenuItem>
                                 </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>

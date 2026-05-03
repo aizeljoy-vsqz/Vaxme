@@ -33,14 +33,12 @@ class Registration_Controller extends Controller
             'nurse_assigned.required' => 'Nurse assigned is required.',
         ]);
 
-        // double-check required value present to avoid DB NOT NULL errors
         $barangayName = $validated['barangay_name'] ?? $request->input('barangay_name');
 
         if (! $barangayName) {
             return back()->withErrors(['barangay_name' => 'Barangay name is required.'])->withInput();
         }
 
-        // create explicitly to avoid any unexpected mass-assignment/filtering
         $barangay = new Barangay();
         $barangay->nurse_id = $validated['nurse_id'] ?? 0;
         $barangay->barangay_name = (string) $barangayName;
@@ -50,7 +48,6 @@ class Registration_Controller extends Controller
         $barangay->nurse_assigned = $validated['nurse_assigned'];
         $barangay->save();
 
-        // Return as Inertia response with barangay_id so frontend gets it immediately
         return Inertia::render('RHU_registration/Registration', [
             'barangays' => Barangay::query()
                 ->latest()
@@ -101,5 +98,24 @@ class Registration_Controller extends Controller
 
         return redirect()->to('/registration/brgy-details?barangay_id=' . $validated['barangay_id'])
         ->with('success', 'Saved');
+    }
+    public function update(Request $request, Barangay $barangay)
+    {
+        
+        $validated = $request->validate([
+            'barangay_name' => ['required', 'string', 'max:255', 'unique:barangays,barangay_name,' . $barangay->id],
+            'nurse_id' => ['nullable', 'integer'],
+            'contact_number' => ['nullable', 'string'],
+            'nurse_assigned' => ['required', 'string', 'max:255'],
+            
+        ]);
+
+        $barangay->barangay_name = $validated['barangay_name'];
+        $barangay->nurse_assigned = $validated['nurse_assigned'];
+        $barangay->contact_number = $validated['contact_number'] ?? 'N/A';
+
+        $barangay->save();
+
+        return redirect()->route('registration')->with('success', 'Barangay updated successfully');
     }
 }

@@ -4,9 +4,8 @@ import {Plus} from 'lucide-react';
 import {FieldGroup, Field} from '@/components/ui/field';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import InputPopulationPage from '@/pages/RHU_registration/Dialogs_Details/Population';
-import { usePage } from '@inertiajs/react';
 import {
     Dialog, 
     DialogContent, 
@@ -22,20 +21,12 @@ type BarangayOption = {
     name: string;
 };
 
-type RegistrationFlashProps = {
-    flash?: {
-        barangay_id?: number | string;
-        success?: string;
-    };
-};
-
 export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
 
     
 
     const [barangayId, setBarangayId] = useState<number | null>(null);
     const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
-    const { props } = usePage<RegistrationFlashProps>();
     
     const {data, setData, post, errors} = useForm({
         barangay_name: '',
@@ -87,21 +78,6 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
             },
         });
     };
-
-    useEffect(() => {
-        // eslint-disable-next-line no-console
-        console.log('usePage props.flash', props.flash);
-
-        const id = Number(props.flash?.barangay_id);
-
-        // eslint-disable-next-line no-console
-        console.log('Resolved barangay id from page props:', id);
-
-        if (!id || id <= 0) return;
-
-        setBarangayId(id);
-        setPopulationDialogOpen(true);
-    }, [props.flash]);
 
     return (
             <Dialog>
