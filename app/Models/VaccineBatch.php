@@ -12,6 +12,7 @@ class VaccineBatch extends Model
         'batch_number',
         'stock_receive',
         'expiration_date',
-        'current_balance'
+        'current_balance',
+        'status',
     ];
 }
