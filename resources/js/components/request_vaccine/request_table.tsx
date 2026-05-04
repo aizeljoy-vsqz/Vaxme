@@ -8,7 +8,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-export default function RequestTable() {
+type Props = {
+  items: { name: string; vaccine: string }[];
+};
+
+export default function RequestTable({ items }: Props) {
 
   return (
     <Table>
@@ -20,11 +24,14 @@ export default function RequestTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow>
-          <TableCell>Aizel Joy Vasquez</TableCell>
-          <TableCell>Neozep</TableCell>
-        </TableRow>
-      </TableBody>  
+        {items.map((item, index) => (
+          <TableRow key={index}>
+            <TableCell>{item.name}</TableCell>
+            <TableCell>{item.vaccine}</TableCell>
+          </TableRow>
+        ))}
+
+      </TableBody>
     </Table>
   )
 
