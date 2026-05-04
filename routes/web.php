@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RequestController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -16,6 +17,7 @@ Route::middleware(['auth', 'verified', 'user_type:bhc'])->group(function () {
     Route::inertia('bhc/return/vaccines', 'bhu_module/return_vaccine')->name('return.vaccine');
     Route::inertia('bhc/track/vaccination', 'bhu_module/track_vaccine')->name('track.vaccination');
     Route::inertia('bhc/history/vaccination', 'bhu_module/history_vaccination')->name('history.vaccination');
+    Route::post('/request/vaccine', [RequestController::class, 'addRequest'])->name('request.vaccine');
 });
 
 require __DIR__.'/settings.php';
