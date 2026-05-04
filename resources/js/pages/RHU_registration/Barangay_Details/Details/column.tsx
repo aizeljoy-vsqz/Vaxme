@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { useForm } from "@inertiajs/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -74,6 +75,21 @@ export const populationColumns = (setSelectedRow: (row: PopulationData) => void)
   cell: ({ row }) => {
 
     const population = row.original;
+    const {delete: destroy} = useForm();
+
+    const handleDelete = (id: string) => {
+      if (confirm('Are you sure you want to delete this population record?')) {
+        destroy(`/registration/population/${id}`, {
+          preserveScroll: true,
+          onSuccess: () => {
+            window.location.reload();
+          },
+          onError: (errs) => {
+            console.log('Delete error:', errs);
+          }
+        });
+      }
+    };
 
     return (
       <DropdownMenu>
@@ -92,10 +108,13 @@ export const populationColumns = (setSelectedRow: (row: PopulationData) => void)
             Edit
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="text-red-600 cursor-pointer"
+          <DropdownMenuItem 
+            onClick={() => handleDelete(population.id)}
           >
+            <span className="text-red-600 hover:text-red-700 cursor-pointer transition-colors">
+              Delete
+            </span>
             
-            Delete
           </DropdownMenuItem>
 
         </DropdownMenuContent>

@@ -50,4 +50,15 @@ class BarangayDetails_Controller extends Controller
         return back();
     }
 
+    public function destroyPopulation(BarangayPopulation $population)
+        {
+            if (!$population->id) {
+                return back()->with('error', 'Invalid population');
+            }
+
+            $population->delete();
+
+            return back()->with('success', 'Population deleted successfully');
+        }
+
 }

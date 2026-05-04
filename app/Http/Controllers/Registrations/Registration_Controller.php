@@ -141,4 +141,15 @@ class Registration_Controller extends Controller
 
         return back()->with('success', 'Barangay deleted successfully');    
     }
+
+    public function destroyPopulation(BarangayPopulation $population)
+    {
+        if (! $population->id) {
+            return back()->with('error', 'Invalid population record');
+        }
+
+        $population->delete();
+
+        return back()->with('success', 'Population record deleted successfully');
+    }
 }

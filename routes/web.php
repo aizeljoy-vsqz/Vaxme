@@ -27,6 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/registration/population',[Registration_Controller::class, 'storePopulation'])
         ->name('registration.population.store');
+    
+    Route::delete('/registration/population/{population}', [Registration_Controller::class, 'destroyPopulation'])
+        ->name('registration.population.destroy');
 
     Route::put('/registration/population/{population}',[BarangayDetails_Controller::class, 'updatePopulation'])
         ->name('registration.population.update');
