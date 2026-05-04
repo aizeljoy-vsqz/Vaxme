@@ -7,10 +7,15 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-export default function Request_Select() {
+type RequestSelectProps = {
+    value: string;
+    onChange: (value: string) => void;
+};
+
+export default function Request_Select({ value, onChange }: RequestSelectProps) {
 
     return (
-        <Select>
+        <Select value={value} onValueChange={onChange}>
             <SelectTrigger className="flex-1">
                 <SelectValue placeholder="Select Vaccine" />
             </SelectTrigger>
