@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('expiration_date');
             $table->integer('current_balance');
             $table->integer('stock_receive');
+            $table->boolean('status')->default(true);
         });
     }
 
