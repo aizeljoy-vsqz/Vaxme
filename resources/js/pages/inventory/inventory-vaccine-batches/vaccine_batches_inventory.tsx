@@ -1,5 +1,5 @@
-import { Head, useForm } from '@inertiajs/react';
-import { columns } from "./columns"
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { columns, VaccineBatch } from "./columns"
 import { DataTable } from "../data-table"
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -20,23 +20,12 @@ import { Input } from '@/components/ui/input';
 
 export default function InventoryByBatch() {
 
-    const dataa = [{
-        id: 1,
-        facility_name: "RHU 1",
-        batch_lot_no: "BLN-001",
-        drug_name: "Pentavalent Vaccine",
-        expiration_date: "2024-12-31",
-        stock_received: 100,
-        balance: 80,
-        status: "Active",
-    },]
-
-    const {data, setData, post} = useForm({
+    const { data, setData, post } = useForm({
         // rhu_id: 'ss',
-        vaccine_id: 1,
         batch_number: '',
-        stock_receive: 0,
+        vaccine_id: 1,
         expiration_date: '',
+        stock_receive: 0,
         current_balance: 0,
     })
 
@@ -45,6 +34,14 @@ export default function InventoryByBatch() {
         console.log(data);
         post('/vaccine/inventory/store');
     }
+
+    interface PageProps {
+        [key: string]: unknown
+        vaccine_batches: VaccineBatch[]
+    }
+
+    const { vaccine_batches } = usePage<PageProps>().props
+
     return (
         <>
             <Head title="Dashboard" />
@@ -52,7 +49,6 @@ export default function InventoryByBatch() {
                 <div className='px-2'>
                     <div className='flex justify-between'>
                         <Label className='text-md flex items-center'>Vaccine Inventory</Label>
-                        {/* <Button className='bg-blue-600 hover:bg-blue-700'><Plus /> Add Inventory</Button> */}
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button className='bg-blue-600 hover:bg-blue-700'> <Plus /> Add Inventory</Button>
@@ -100,7 +96,7 @@ export default function InventoryByBatch() {
                         </AlertDialog>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns} data={dataa} />
+                        <DataTable columns={columns} data={vaccine_batches} />
                     </div>
                 </div>
             </div>

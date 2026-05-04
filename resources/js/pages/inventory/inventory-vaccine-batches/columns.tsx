@@ -1,7 +1,6 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Checkbox } from "@/components/ui/checkbox"
 import { dailyVaccineInventory } from "@/routes"
 import { Link } from "@inertiajs/react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -13,28 +12,28 @@ import { Ellipsis } from "lucide-react"
 export type VaccineBatch = {
     id: number
     facility_name: string
-    batch_lot_no: string
-    drug_name: string
-    expiration_date: string
-    stock_received: number
-    balance: number
+    batch_number: string
+    vaccine_id: number
+    expiration_date: Date
+    stock_receive: number
+    current_balance: number
     status: string
 }
 
 export const columns: ColumnDef<VaccineBatch>[] = [
     {
-        accessorKey: "facility_name",
+        accessorKey: "batch_number",
         header: "Name of Health Facility",
         cell: ({ row }) => {
-            return <Link href={dailyVaccineInventory().url}>Name of Health Facility</Link>
+            return <Link href={dailyVaccineInventory().url}>RHU</Link>
         }
     },
     {
-        accessorKey: "batch_lot_no",
+        accessorKey: "batch_number",
         header: "Batch Lot Number",
     },
     {
-        accessorKey: "drug_name",
+        accessorKey: "vaccine_id",
         header: "Name of Drug",
     },
     {
@@ -42,11 +41,11 @@ export const columns: ColumnDef<VaccineBatch>[] = [
         header: "Expiration Date",
     },
     {
-        accessorKey: "stock_received",
+        accessorKey: "stock_receive",
         header: "Stock Received",
     },
     {
-        accessorKey: "balance",
+        accessorKey: "current_balance",
         header: "Balance",
     },
     {
