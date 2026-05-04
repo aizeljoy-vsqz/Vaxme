@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {Separator} from '@/components/ui/separator';
+import { useForm } from "@inertiajs/react";
 import { DetailsPage } from './Dialogs_Details/Details';
 import { EditBarangayDialog } from './Dialogs_Edit/Edit_barangay';
 
@@ -41,6 +42,22 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
         contact_number: barangay.contact_number ?? 'N/A',
         nurse_assigned: barangay.nurse_assigned,
     }));
+    const { delete: destroy } = useForm();
+
+    const handleDelete = (id: number) => {
+        if (confirm('Are you sure you want to delete this barangay?')) {
+            destroy(`/registration/${id}`, {
+                preserveScroll: true,
+                onSuccess: () => {
+                },
+                onError: (errs) => {
+                    console.log('Delete error:', errs);
+                }
+            });
+        }
+    };
+
+    
 
     return (
         <>
@@ -67,7 +84,13 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                     <EditBarangayDialog barangay={barangay} />
-                                    <DropdownMenuItem className='text-red-600 cursor-pointer'>Delete</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleDelete(barangay.id)}>
+                                        <span 
+                                            className="text-red-600 hover:text-red-700 cursor-pointer transition-colors"
+                                        >
+                                            Delete
+                                    </span> 
+                                    </DropdownMenuItem>
                                 </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>

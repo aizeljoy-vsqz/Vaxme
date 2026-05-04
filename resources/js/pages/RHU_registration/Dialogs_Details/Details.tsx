@@ -14,7 +14,7 @@ import {
     DialogTitle, 
     DialogTrigger
 } from '@/components/ui/dialog';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 
 type BarangayOption = {
     id: number;
@@ -23,7 +23,7 @@ type BarangayOption = {
 
 export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
 
-    
+    const { props } = usePage();
 
     const [barangayId, setBarangayId] = useState<number | null>(null);
     const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
@@ -62,7 +62,7 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
                 });
 
                 // Get barangay_id from props (not flash)
-                const id = Number(page.props?.barangay_id);
+                const id = Number(page.props.flash?.barangay_id ?? page.props.barangay_id ?? 0);
 
                 // eslint-disable-next-line no-console
                 console.log('Got barangay_id from props:', id);

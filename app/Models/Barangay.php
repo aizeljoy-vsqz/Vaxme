@@ -15,10 +15,10 @@ class Barangay extends Model
     protected $table = 'barangays';
 
     protected $fillable = [
-        'user_id',
-        'rhu_id',
-        'name',
+        'barangay_name',
+        'nurse_id',
         'nurse_assigned',
+        'contact_number',
     ];
 
     public function populations(): HasMany

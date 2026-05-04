@@ -48,13 +48,11 @@ class Registration_Controller extends Controller
         $barangay->nurse_assigned = $validated['nurse_assigned'];
         $barangay->save();
 
-        return Inertia::render('RHU_registration/Registration', [
-            'barangays' => Barangay::query()
-                ->latest()
-                ->get(['id', 'barangay_name', 'nurse_id', 'nurse_assigned', 'contact_number']),
-            'barangay_id' => $barangay->id,
-        ])->with([
+        return redirect()
+        ->route('registration')
+        ->with([
             'success' => 'Barangay created successfully',
+            'barangay_id' => $barangay->id,
         ]);
     }
 
@@ -66,12 +64,19 @@ class Registration_Controller extends Controller
             'populations' => $request->input('populations'),
         ]);
 
+        // Log DB connection info to help diagnose missing records
+        \Log::info('storePopulation db-info', [
+            'default_connection' => config('database.default'),
+            'current_connection' => DB::getDefaultConnection(),
+            'sqlite_database' => config('database.connections.sqlite.database'),
+        ]);
+
         $validated = $request->validate([
             'barangay_id' => ['required', 'integer', 'exists:barangays,id'],
             'populations' => ['required', 'array', 'min:1'],
-            'populations.*.age_range' => ['required', 'string', 'distinct'],
-            'populations.*.male' => ['required', 'integer', 'min:0'],
-            'populations.*.female' => ['required', 'integer', 'min:0'],
+            'populations.*.age_range' => ['required', 'string'],
+            'populations.*.male' => ['required', 'numeric', 'min:0'],
+            'populations.*.female' => ['required', 'numeric', 'min:0'],
         ]);
 
         \Log::info('storePopulation validated:', $validated);
@@ -83,22 +88,27 @@ class Registration_Controller extends Controller
                 ->delete();
 
             foreach ($validated['populations'] as $pop) {
+                $male = (int) ($pop['male'] ?? 0);
+                $female = (int) ($pop['female'] ?? 0);
+
                 BarangayPopulation::create([
                     'barangay_id' => $validated['barangay_id'],
-
-                    'age_range' => $pop['age_range'],
-                    'male' => $pop['male'],
-                    'female' => $pop['female'],
-                    'total' => $pop['male'] + $pop['female'],
+                    'age_range' => (string) ($pop['age_range'] ?? ''),
+                    'male' => $male,
+                    'female' => $female,
+                    'total' => $male + $female,
                 ]);
             }
         });
 
         \Log::info('storePopulation success');
 
-        return redirect()->to('/registration/brgy-details?barangay_id=' . $validated['barangay_id'])
-        ->with('success', 'Saved');
-    }
+        return redirect()
+            ->route('registration.brgy-details', ['barangay_id' => $validated['barangay_id']])
+            ->with('success', 'Saved')
+            ->with('barangay_id', $validated['barangay_id']);
+        }
+
     public function update(Request $request, Barangay $barangay)
     {
         
@@ -117,5 +127,18 @@ class Registration_Controller extends Controller
         $barangay->save();
 
         return redirect()->route('registration')->with('success', 'Barangay updated successfully');
+    }
+
+    public function destroy(Barangay $barangay)
+    {
+        if (!$barangay->id) {
+            return back()->with('error', 'Invalid barangay');
+        }
+
+        BarangayPopulation::where('barangay_id', $barangay->id)->delete();
+
+        $barangay->delete();
+
+        return back()->with('success', 'Barangay deleted successfully');    
     }
 }

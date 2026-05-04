@@ -14,13 +14,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/registration',[Registration_Controller::class, 'index'])
         ->name('registration');
+
     Route::post('/registration', [Registration_Controller::class, 'store'])
     ->name('registration.store');
+
+    Route::delete('/registration/{barangay}', [Registration_Controller::class, 'destroy'])
+        ->name('registration.destroy');
+
     Route::put('/registration/{barangay}', [Registration_Controller::class, 'update'])
         ->name('registration.update');
 
+
     Route::post('/registration/population',[Registration_Controller::class, 'storePopulation'])
         ->name('registration.population.store');
+
     Route::put('/registration/population/{population}',[BarangayDetails_Controller::class, 'updatePopulation'])
         ->name('registration.population.update');
     
