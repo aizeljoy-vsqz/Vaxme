@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bhc_id');
-            $table->foreignId('rhu_id');
-            $table->string('type');
+            // $table->foreignId('bhc_id');
+            // $table->foreignId('rhu_id');
+            $table->enum('type', ['request', 'return']);
             $table->enum('status', ['submitted', 'reviewed', 'approved']);
             $table->timestamps();
         });
