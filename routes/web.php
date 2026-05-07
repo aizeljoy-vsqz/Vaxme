@@ -16,6 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/vaccine/inventory/store', [VaccineBatchesController::class, 'Store'])->name('batchesVaccineInventory.store');
 
     Route::get('/daily/vaccine/inventory', [DailyBatchesInventoryController::class, 'Index'])->name('dailyVaccineInventory');
+    Route::post('/daily/vaccine/inventory/store', [DailyBatchesInventoryController::class, 'Store'])->name('dailyVaccineInventory.store');
 
     Route::get('/vaccine/management', [VaccineManagementController::class, 'Index'])->name('vaccineManagement');
     Route::post('/vaccine/management/store', [VaccineManagementController::class, 'Store'])->name('vaccineManagement.store');
