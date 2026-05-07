@@ -18,18 +18,40 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Input } from '@/components/ui/input';
 
+import * as React from "react"
+import { format } from "date-fns"
+import { ChevronDownIcon } from "lucide-react"
+import { Calendar } from "@/components/ui/calendar"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { VaccineType } from '@/pages/vaccine-management/column';
+import { Value } from '@radix-ui/react-select';
+
 export default function InventoryByBatch() {
 
     const { data, setData, post } = useForm({
         // rhu_id: 'ss',
         batch_number: '',
-        vaccine_id: 1,
+        vaccine_id: Number(),
         expiration_date: '',
         stock_receive: 0,
         current_balance: 0,
     })
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         console.log(data);
         post('/vaccine/inventory/store');
@@ -38,9 +60,16 @@ export default function InventoryByBatch() {
     interface PageProps {
         [key: string]: unknown
         vaccine_batches: VaccineBatch[]
+        vaccines_data: VaccineType[]
     }
 
-    const { vaccine_batches } = usePage<PageProps>().props
+    const { vaccine_batches, vaccines_data } = usePage<PageProps>().props
+    vaccines_data.map((test) => {
+        console.log(test.name);
+
+    })
+
+    const [date, setDate] = React.useState<Date>()
 
     return (
         <>
@@ -69,7 +98,18 @@ export default function InventoryByBatch() {
                                         <div className='flex gap-4'>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Name of Drug:</Label>
-                                                <Input value={data.vaccine_id} onChange={(e) => setData('vaccine_id', Number(e.target.value))}></Input>
+                                                <Select onValueChange={(val) => { setData('vaccine_id', parseInt(val)) }}>
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue placeholder="Select Drug" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            {vaccines_data.map((vaccineName) => {
+                                                                return <SelectItem value={String(vaccineName.id)}>{vaccineName.name}</SelectItem>
+                                                            })}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
                                             </div>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Batch Number:</Label>
@@ -83,7 +123,30 @@ export default function InventoryByBatch() {
                                             </div>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Expiration Date:</Label>
-                                                <Input value={data.expiration_date} onChange={(e) => setData('expiration_date', e.target.value)}></Input>
+                                                {/* <Input value={data.expiration_date} onChange={(e) => setData('expiration_date', e.target.value)}></Input> */}
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant="outline"
+                                                            data-empty={!date}
+                                                            className="w-[212px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+                                                        >
+                                                            {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                                            <ChevronDownIcon />
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0" align="start">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={date}
+                                                            onSelect={(date) => {
+                                                                if (!date) return
+                                                                setDate(date)
+                                                                setData('expiration_date', date.toLocaleDateString())
+                                                            }}
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
                                             </div>
                                         </div>
                                     </div>
@@ -96,7 +159,7 @@ export default function InventoryByBatch() {
                         </AlertDialog>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns} data={vaccine_batches} />
+                        <DataTable columns={columns} data={vaccine_batches.reverse()} />
                     </div>
                 </div>
             </div>
