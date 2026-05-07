@@ -37,4 +37,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(Rhu::class);
     }
+
+    public function bhc(): HasOne{
+        return $this->hasOne(Bhc::class);
+    }
 }
