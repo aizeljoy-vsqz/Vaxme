@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('daily_dispense');
             $table->integer('number_of_receipients');
             $table->integer('current_balance');
+            $table->integer('vaccine_lose');
         }); 
     }
 
