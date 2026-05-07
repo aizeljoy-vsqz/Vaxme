@@ -47,17 +47,12 @@ export function EditBarangayDialog({ barangay }: Props) {
     const handleUpdate = (e: React.FormEvent) => { 
         e.preventDefault();
 
-        // eslint-disable-next-line no-console
-        console.log('Edit submit, data:', JSON.stringify(data, null, 2));
-
         put(`/registration/${barangay.id}`, {
             preserveScroll: true,
             onSuccess: () => {
                 setOpen(false);
             },
-            onError: (errs) => {
-                console.log('Edit error:', errs);
-            }
+            onError: () => {}
         });
     };
 

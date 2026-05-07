@@ -84,9 +84,7 @@ export const populationColumns = (setSelectedRow: (row: PopulationData) => void)
           onSuccess: () => {
             window.location.reload();
           },
-          onError: (errs) => {
-            console.log('Delete error:', errs);
-          }
+          onError: () => {}
         });
       }
     };

@@ -16,9 +16,7 @@ type PopulationRow = {
 };
 
 export function BarangayDetails({ populations = [] }: { populations?: PopulationRow[] }) {
-    
-    console.log("POPULATION DATA:", populations);
-    
+
     return (
     <>
          <Head title="Registration" />

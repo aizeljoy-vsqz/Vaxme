@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Registrations;
 
 use App\Http\Controllers\Controller;
+use App\Exports\BarangayExport;
 use App\Models\Barangay;
 use Illuminate\Support\Facades\Schema;
 use App\Models\BarangayPopulation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Registration_Controller extends Controller
 {
@@ -169,5 +171,19 @@ class Registration_Controller extends Controller
         $population->delete();
 
         return back()->with('success', 'Population record deleted successfully');
+    }
+
+    public function export(Request $request)
+    {
+        $fileName = trim((string) $request->query('file_name', 'barangay_registration_' . now()->format('Y-m-d')));
+        $fileName = preg_replace('/[^A-Za-z0-9_\-]+/', '_', $fileName) ?: 'barangay_registration_' . now()->format('Y-m-d');
+        $fileName = trim($fileName, '_');
+        $fileName = $fileName !== '' ? $fileName : 'barangay_registration_' . now()->format('Y-m-d');
+
+        if (! str_ends_with(strtolower($fileName), '.xlsx')) {
+            $fileName .= '.xlsx';
+        }
+
+        return Excel::download(new BarangayExport(), $fileName);
     }
 }

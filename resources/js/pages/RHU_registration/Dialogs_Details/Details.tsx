@@ -14,12 +14,7 @@ import {
     DialogTitle, 
     DialogTrigger
 } from '@/components/ui/dialog';
-import { useForm, usePage } from '@inertiajs/react';
-
-type BarangayOption = {
-    id: number;
-    name: string;
-};
+import { useForm } from '@inertiajs/react';
 
 type DetailsFormData = {
     barangay_name: string;
@@ -27,9 +22,7 @@ type DetailsFormData = {
     contact_number: string;
 };
 
-export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
-
-    const { props } = usePage();
+export function DetailsPage() {
 
     const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
     const [detailsFormData, setDetailsFormData] = useState<DetailsFormData | null>(null);
@@ -48,9 +41,6 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
         if (!isFormValid) {
             return;
         }
-
-        // eslint-disable-next-line no-console
-        console.log('Next clicked, storing details:', data);
 
         // Store details form data to pass to Population
         setDetailsFormData(data);

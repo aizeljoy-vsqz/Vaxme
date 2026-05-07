@@ -14,11 +14,6 @@ import {
 import { useState } from 'react';
 import { useForm } from '@inertiajs/react';
 
-type BarangayOption = {
-  id: number;
-  name: string;
-};
-
 type PopulationItem = {
   age_range: string;
   male: number;
@@ -80,21 +75,14 @@ export function InputPopulationPage({
     e.preventDefault();
 
     if (!detailsData || !isDetailsValid) {
-      // eslint-disable-next-line no-console
-      console.log('Save: Details data invalid');
       return;
     }
 
     setIsSaving(true);
 
     try {
-      // eslint-disable-next-line no-console
-      console.log('Unified Save: Submitting Details first', detailsData);
-
-      // Get CSRF token from meta tag
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
-      // Step 1: Submit Details to create Barangay
       const detailsResponse = await fetch('/registration', {
         method: 'POST',
         headers: {
@@ -106,29 +94,18 @@ export function InputPopulationPage({
       });
 
       if (!detailsResponse.ok) {
-        const errorData = await detailsResponse.json();
-        // eslint-disable-next-line no-console
-        console.log('Details submit error:', errorData);
         setIsSaving(false);
         return;
       }
 
       const detailsResult = await detailsResponse.json();
-      // eslint-disable-next-line no-console
-      console.log('Details submit success:', detailsResult);
 
       const barangayId = detailsResult.barangay_id || detailsResult.id;
 
       if (!barangayId || barangayId <= 0) {
-        // eslint-disable-next-line no-console
-        console.log('Save: Failed to get barangay_id from response');
         setIsSaving(false);
         return;
       }
-
-      // Step 2: Submit Population with the new barangay_id
-      // eslint-disable-next-line no-console
-      console.log('Unified Save: Submitting Population with barangay_id:', barangayId);
 
       const populationPayload = {
         barangay_id: barangayId,
@@ -146,18 +123,12 @@ export function InputPopulationPage({
       });
 
       if (!populationResponse.ok) {
-        const errorData = await populationResponse.json();
-        // eslint-disable-next-line no-console
-        console.log('Population submit error:', errorData);
         setIsSaving(false);
         return;
       }
 
       const populationResult = await populationResponse.json();
-      // eslint-disable-next-line no-console
-      console.log('Population submit success:', populationResult);
 
-      // Both submitted successfully
       setData('populations', [
         { age_range: 'All Ages', male: 0, female: 0 },
         { age_range: 'Under 1 (0-11 months)', male: 0, female: 0 },
@@ -170,11 +141,8 @@ export function InputPopulationPage({
       onOpenChange(false);
       setIsSaving(false);
 
-      // Auto refresh page to show the new barangay in the list
       window.location.reload();
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Unified Save error:', error);
       setIsSaving(false);
     }
   };
