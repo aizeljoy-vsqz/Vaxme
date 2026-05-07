@@ -48,6 +48,15 @@ class Registration_Controller extends Controller
         $barangay->nurse_assigned = $validated['nurse_assigned'];
         $barangay->save();
 
+        // Check if this is a JSON request (from fetch)
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Barangay created successfully',
+                'barangay_id' => $barangay->id,
+            ], 201);
+        }
+
         return redirect()
         ->route('registration')
         ->with([
@@ -102,6 +111,15 @@ class Registration_Controller extends Controller
         });
 
         \Log::info('storePopulation success');
+
+        // Check if this is a JSON request (from fetch)
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Population saved successfully',
+                'barangay_id' => $validated['barangay_id'],
+            ], 201);
+        }
 
         return redirect()
             ->route('registration.brgy-details', ['barangay_id' => $validated['barangay_id']])

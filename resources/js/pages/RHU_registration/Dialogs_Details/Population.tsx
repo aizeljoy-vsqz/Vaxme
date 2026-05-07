@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from '@inertiajs/react';
 
 type BarangayOption = {
@@ -25,27 +25,31 @@ type PopulationItem = {
   female: number;
 };
 
+type DetailsFormData = {
+  barangay_name: string;
+  nurse_assigned: string;
+  contact_number: string;
+};
+
 export function InputPopulationPage({
-  barangayId,
-  isValid,
+  detailsData,
+  isDetailsValid,
   open,
   onOpenChange,
+  onNext,
   disabled,
 }: {
-  barangays: BarangayOption[];
-  barangayId: number;
-  isValid: boolean;
+  detailsData: DetailsFormData | null;
+  isDetailsValid: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onNext: () => void;
   disabled?: boolean;
-  showTrigger?: boolean;
 }) {
 
-  const { data, setData, post, processing } = useForm<{
-      barangay_id: number;
+  const { data, setData, processing } = useForm<{
       populations: PopulationItem[];
     }>({
-      barangay_id: barangayId,
       populations: [
         { age_range: 'All Ages', male: 0, female: 0 },
         { age_range: 'Under 1 (0-11 months)', male: 0, female: 0 },
@@ -55,11 +59,7 @@ export function InputPopulationPage({
       ],
     });
 
-    useEffect(() => {
-      if (typeof barangayId === 'number' && barangayId > 0) {
-        setData('barangay_id', barangayId);
-      }
-    }, [barangayId]);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleChange = (
       index: number,
@@ -76,38 +76,115 @@ export function InputPopulationPage({
       setData('populations', updated);
     };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSaveUnified = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (data.barangay_id <= 0) {
+    if (!detailsData || !isDetailsValid) {
       // eslint-disable-next-line no-console
-      console.log('Population submit: barangay_id invalid', data.barangay_id);
+      console.log('Save: Details data invalid');
       return;
     }
 
-    // eslint-disable-next-line no-console
-    console.log('Population submit payload:', JSON.stringify(data, null, 2));
+    setIsSaving(true);
 
-    post('/registration/population', {
-      preserveScroll: true,
-      onSuccess: (response: any) => {
+    try {
+      // eslint-disable-next-line no-console
+      console.log('Unified Save: Submitting Details first', detailsData);
+
+      // Get CSRF token from meta tag
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+      // Step 1: Submit Details to create Barangay
+      const detailsResponse = await fetch('/registration', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify(detailsData),
+      });
+
+      if (!detailsResponse.ok) {
+        const errorData = await detailsResponse.json();
         // eslint-disable-next-line no-console
-        console.log('Population submit success:', response);
-        onOpenChange(false);
-      },
-      onError: (errors: any) => {
+        console.log('Details submit error:', errorData);
+        setIsSaving(false);
+        return;
+      }
+
+      const detailsResult = await detailsResponse.json();
+      // eslint-disable-next-line no-console
+      console.log('Details submit success:', detailsResult);
+
+      const barangayId = detailsResult.barangay_id || detailsResult.id;
+
+      if (!barangayId || barangayId <= 0) {
         // eslint-disable-next-line no-console
-        console.log('Population submit error:', errors);
-      },
-    });
+        console.log('Save: Failed to get barangay_id from response');
+        setIsSaving(false);
+        return;
+      }
+
+      // Step 2: Submit Population with the new barangay_id
+      // eslint-disable-next-line no-console
+      console.log('Unified Save: Submitting Population with barangay_id:', barangayId);
+
+      const populationPayload = {
+        barangay_id: barangayId,
+        populations: data.populations,
+      };
+
+      const populationResponse = await fetch('/registration/population', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify(populationPayload),
+      });
+
+      if (!populationResponse.ok) {
+        const errorData = await populationResponse.json();
+        // eslint-disable-next-line no-console
+        console.log('Population submit error:', errorData);
+        setIsSaving(false);
+        return;
+      }
+
+      const populationResult = await populationResponse.json();
+      // eslint-disable-next-line no-console
+      console.log('Population submit success:', populationResult);
+
+      // Both submitted successfully
+      setData('populations', [
+        { age_range: 'All Ages', male: 0, female: 0 },
+        { age_range: 'Under 1 (0-11 months)', male: 0, female: 0 },
+        { age_range: 'Under 0-12 months', male: 0, female: 0 },
+        { age_range: 'Under 0-53 months', male: 0, female: 0 },
+        { age_range: '10 years and above', male: 0, female: 0 },
+      ]);
+
+      // Close dialog
+      onOpenChange(false);
+      setIsSaving(false);
+
+      // Auto refresh page to show the new barangay in the list
+      window.location.reload();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Unified Save error:', error);
+      setIsSaving(false);
+    }
   };
 
   return (
     <>
       <Button
         type="button"
-        disabled={disabled || !isValid || processing}
-        onClick={() => onOpenChange(true)}
+        disabled={disabled || !isDetailsValid || processing}
+        onClick={onNext}
         className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
       >
         Next
@@ -115,7 +192,7 @@ export function InputPopulationPage({
 
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-xl">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSaveUnified}>
             <DialogHeader>
               <DialogTitle className="pb-2">Barangay Details</DialogTitle>
               <Separator />
@@ -132,6 +209,8 @@ export function InputPopulationPage({
                     <div className="flex flex-col gap-2">
                       <Label>Total of Male:</Label>
                       <Input
+                        type="number"
+                        min="0"
                         placeholder="e.g 100"
                         value={pop.male}
                         onChange={(e) =>
@@ -143,6 +222,8 @@ export function InputPopulationPage({
                     <div className="flex flex-col gap-2">
                       <Label>Total of Female:</Label>
                       <Input
+                        type="number"
+                        min="0"
                         placeholder="e.g 100"
                         value={pop.female}
                         onChange={(e) =>
@@ -159,9 +240,9 @@ export function InputPopulationPage({
               <Button
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
-                disabled={processing}
+                disabled={isSaving || processing}
               >
-                Save
+                {isSaving ? 'Saving...' : 'Save Barangay & Population'}
               </Button>
             </DialogFooter>
           </form>

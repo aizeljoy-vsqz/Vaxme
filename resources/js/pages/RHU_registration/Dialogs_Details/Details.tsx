@@ -21,14 +21,20 @@ type BarangayOption = {
     name: string;
 };
 
+type DetailsFormData = {
+    barangay_name: string;
+    nurse_assigned: string;
+    contact_number: string;
+};
+
 export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
 
     const { props } = usePage();
 
-    const [barangayId, setBarangayId] = useState<number | null>(null);
     const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
+    const [detailsFormData, setDetailsFormData] = useState<DetailsFormData | null>(null);
     
-    const {data, setData, post, errors} = useForm({
+    const {data, setData, errors} = useForm({
         barangay_name: '',
         nurse_assigned: '',
         contact_number: '',
@@ -38,45 +44,18 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
         data.barangay_name.trim() !== '' &&
         data.nurse_assigned.trim() !== '';
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!data.barangay_name || !data.nurse_assigned) {
+    const handleNext = () => {
+        if (!isFormValid) {
             return;
         }
 
-        // debug
         // eslint-disable-next-line no-console
-        console.log('Details submit', data);
+        console.log('Next clicked, storing details:', data);
 
-        post('/registration', {
-            preserveScroll: true,
-            onSuccess: (page: any) => {
-                // eslint-disable-next-line no-console
-                console.log('Details post success, page.props:', page.props);
-
-                setData({
-                    barangay_name: '',
-                    nurse_assigned: '',
-                    contact_number: '',
-                });
-
-                // Get barangay_id from props (not flash)
-                const id = Number(page.props.flash?.barangay_id ?? page.props.barangay_id ?? 0);
-
-                // eslint-disable-next-line no-console
-                console.log('Got barangay_id from props:', id);
-
-                if (id && id > 0) {
-                    setBarangayId(id);
-                    setPopulationDialogOpen(true);
-                }
-            },
-            onError: (errs: any) => {
-                // eslint-disable-next-line no-console
-                console.log('Details post errors', errs);
-            },
-        });
+        // Store details form data to pass to Population
+        setDetailsFormData(data);
+        // Open population modal - no submission yet
+        setPopulationDialogOpen(true);
     };
 
     return (
@@ -88,7 +67,7 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
                    </Button> 
                 </DialogTrigger>
             <DialogContent className="sm:max-w-xl cursor-pointer">
-             <form onSubmit={handleSubmit}>
+             <div>
                 <DialogHeader>
                     <DialogTitle className="text pb-2">Barangay Details</DialogTitle>
                     <Separator/>
@@ -139,16 +118,16 @@ export function DetailsPage({ barangays }: { barangays: BarangayOption[] }) {
                     </div>
                 </Field>
                 </FieldGroup>
+            </div>
             <DialogFooter>
                     <InputPopulationPage
-                        barangays={barangays}
-                        barangayId={barangayId ?? 0}
-                        disabled={!isFormValid}
-                        isValid={isFormValid}
+                        detailsData={detailsFormData}
+                        isDetailsValid={isFormValid}
                         open={populationDialogOpen}
-                        onOpenChange={setPopulationDialogOpen}/>
+                        onOpenChange={setPopulationDialogOpen}
+                        onNext={handleNext}
+                        disabled={!isFormValid}/>
             </DialogFooter>
-                </form>
                 </DialogContent>
             </Dialog>
     );
