@@ -159,7 +159,7 @@ export default function InventoryByBatch() {
                         </AlertDialog>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns} data={vaccine_batches.reverse()} />
+                        <DataTable columns={columns} data={vaccine_batches} />
                     </div>
                 </div>
             </div>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class DailyVaccineController extends Controller
+class DailyBatchesInventoryController extends Controller
 {
     public function Index()
     {

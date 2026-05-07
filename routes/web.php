@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\DailyVaccineController;
+use App\Http\Controllers\DailyBatchesInventoryController;
 use App\Http\Controllers\VaccineBatchesController;
 use App\Http\Controllers\VaccineManagementController;
 use Illuminate\Support\Facades\Route;
@@ -15,7 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/vaccine/inventory', [VaccineBatchesController::class, 'Index'])->name('batchesVaccineInventory');
     Route::post('/vaccine/inventory/store', [VaccineBatchesController::class, 'Store'])->name('batchesVaccineInventory.store');
 
-    Route::get('/daily/vaccine/inventory', [DailyVaccineController::class, 'Index'])->name('dailyVaccineInventory');
+    Route::get('/daily/vaccine/inventory', [DailyBatchesInventoryController::class, 'Index'])->name('dailyVaccineInventory');
 
     Route::get('/vaccine/management', [VaccineManagementController::class, 'Index'])->name('vaccineManagement');
     Route::post('/vaccine/management/store', [VaccineManagementController::class, 'Store'])->name('vaccineManagement.store');

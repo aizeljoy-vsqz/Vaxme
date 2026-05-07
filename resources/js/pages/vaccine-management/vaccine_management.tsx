@@ -75,7 +75,7 @@ export default function VaccineManagement() {
                         </AlertDialog>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns} data={vaccines_data.reverse()} />
+                        <DataTable columns={columns} data={vaccines_data} />
                     </div>
                 </div>
             </div>
