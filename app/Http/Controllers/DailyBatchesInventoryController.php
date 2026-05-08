@@ -10,7 +10,8 @@ class DailyBatchesInventoryController extends Controller
 {
     public function Index()
     {
-        return Inertia::render('inventory/inventory-vaccine-daily/daily_vaccine_inventory', []);
+        $daily_vaccine = DailyBatchesInventory::all();
+        return Inertia::render('inventory/inventory-vaccine-daily/daily_vaccine_inventory', compact('daily_vaccine'));
     }
 
     public function Store(Request $request)
