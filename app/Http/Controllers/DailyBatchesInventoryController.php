@@ -8,10 +8,11 @@ use Inertia\Inertia;
 
 class DailyBatchesInventoryController extends Controller
 {
-    public function Index()
+    public function Index($id)
     {
         $daily_vaccine = DailyBatchesInventory::all();
-        return Inertia::render('inventory/inventory-vaccine-daily/daily_vaccine_inventory', compact('daily_vaccine'));
+        $batch_id = $id;
+        return Inertia::render('inventory/inventory-vaccine-daily/daily_vaccine_inventory', compact(['daily_vaccine', 'batch_id']));
     }
 
     public function Store(Request $request)
