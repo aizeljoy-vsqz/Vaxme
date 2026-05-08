@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { dailyVaccineInventory } from '@/routes';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { Download, Plus } from 'lucide-react';
 import { DataTable } from '../data-table';
-import { columns } from './columns';
+import { columns, DailyVaccine } from './columns';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -47,8 +47,15 @@ export default function DailyInventory() {
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault();
         console.log(data);
-        post('/daily/vaccine/inventory/store');        
+        post('/daily/vaccine/inventory/store');
     }
+
+    interface PageProps {
+        [key: string]: unknown
+        daily_vaccine: DailyVaccine[]
+    }
+
+    const { daily_vaccine } = usePage<PageProps>().props
 
     return (
         <>
@@ -103,7 +110,7 @@ export default function DailyInventory() {
                         </div>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns} data={dataa} />
+                        <DataTable columns={columns} data={daily_vaccine} />
                     </div>
                 </div>
             </div>
