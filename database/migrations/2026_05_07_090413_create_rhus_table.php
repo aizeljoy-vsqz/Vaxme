@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('rhus', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('facility_name');
             $table->string('address');
             $table->string('nurse_assigned');
