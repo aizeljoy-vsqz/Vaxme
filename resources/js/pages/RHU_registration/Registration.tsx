@@ -20,6 +20,7 @@ import {Separator} from '@/components/ui/separator';
 import { useForm } from "@inertiajs/react";
 import { DetailsPage } from './Dialogs_Details/Details';
 import { EditBarangayDialog } from './Dialogs_Edit/Edit_barangay';
+import { useState, useMemo } from 'react';
 
 type Barangay = {
     id: number;
@@ -43,6 +44,20 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
         nurse_assigned: barangay.nurse_assigned,
     }));
     const { delete: destroy } = useForm();
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filteredBarangays = useMemo(() => {
+        if (!searchQuery.trim()) {
+            return registrationBarangays;
+        }
+
+        const q = searchQuery.toLowerCase();
+        return registrationBarangays.filter((barangay) =>
+            barangay.barangay_name.toLowerCase().includes(q) ||
+            barangay.nurse_assigned.toLowerCase().includes(q) ||
+            barangay.contact_number.toLowerCase().includes(q)
+        );
+    }, [registrationBarangays, searchQuery]);
 
     const handleDelete = (id: number) => {
         if (confirm('Are you sure you want to delete this barangay?')) {
@@ -50,9 +65,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                 preserveScroll: true,
                 onSuccess: () => {
                 },
-                onError: (errs) => {
-                    console.log('Delete error:', errs);
-                }
+                onError: () => {}
             });
         }
     };
@@ -66,13 +79,19 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
            <div className="flex flex-col">
             <div className="flex items-center justify-between mb-6">
                 <Label className="text-lg font semibold">Barangay Registration</Label>
-                <DetailsPage barangays={registrationBarangays.map((barangay) => ({ id: barangay.id, name: barangay.barangay_name }))} />
+                <DetailsPage />
             </div>
             <div className='px-2'>
-                <Input placeholder="Search..." className="mb-4 max-w-sm"/>
-                </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
-                        {registrationBarangays.map((barangay) => (
+                <Input 
+                    placeholder="Search..." 
+                    className="mb-4 max-w-sm"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
+                {filteredBarangays.length > 0 ? (
+                    filteredBarangays.map((barangay) => (
                         <Card key={barangay.id} className="w-full">
                             <CardHeader className="relative pb-4 pt-6">
                             <div className="absolute right-5 -top-3">
@@ -129,7 +148,12 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                             </div>
                             </CardContent>
                         </Card>
-                        ))}
+                    ))
+                ) : (
+                    <div className="col-span-full text-center py-8 text-gray-500">
+                        {searchQuery ? 'No barangays found matching your search.' : 'No barangays available.'}
+                    </div>
+                )}
                 </div>
             </div>
         </div>

@@ -14,6 +14,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/registration',[Registration_Controller::class, 'index'])
         ->name('registration');
 
+    Route::get('/registration/search', [Registration_Controller::class, 'search'])
+        ->name('registration.search');
+
     Route::post('/registration', [Registration_Controller::class, 'store'])
     ->name('registration.store');
 

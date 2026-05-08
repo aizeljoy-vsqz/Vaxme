@@ -50,7 +50,6 @@ class Registration_Controller extends Controller
         $barangay->nurse_assigned = $validated['nurse_assigned'];
         $barangay->save();
 
-        // Check if this is a JSON request (from fetch)
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
@@ -75,7 +74,6 @@ class Registration_Controller extends Controller
             'populations' => $request->input('populations'),
         ]);
 
-        // Log DB connection info to help diagnose missing records
         \Log::info('storePopulation db-info', [
             'default_connection' => config('database.default'),
             'current_connection' => DB::getDefaultConnection(),
@@ -114,7 +112,6 @@ class Registration_Controller extends Controller
 
         \Log::info('storePopulation success');
 
-        // Check if this is a JSON request (from fetch)
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
