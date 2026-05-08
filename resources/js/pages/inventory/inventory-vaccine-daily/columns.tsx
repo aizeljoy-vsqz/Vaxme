@@ -8,7 +8,7 @@ import { ArrowUpDown } from "lucide-react"
 export type DailyVaccine = {
     id: number
     created_at: Date
-    vaccine_batches_id: number,
+    vaccine_batch_id: number,
     stock_transferred: number,
     daily_dispense: number,
     number_of_receipients: number,
