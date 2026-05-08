@@ -8,12 +8,19 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class BarangayExport implements FromCollection, WithHeadings
 {
+    protected $barangayId;
+
+    public function __construct($barangayId = null)
+    {
+        $this->barangayId = $barangayId;
+    }
+
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return BarangayPopulation::query()
+        $query = BarangayPopulation::query()
             ->join('barangays', 'barangay_populations.barangay_id', '=', 'barangays.id')
             ->select(
                 'barangays.barangay_name',
@@ -23,8 +30,14 @@ class BarangayExport implements FromCollection, WithHeadings
                 'barangay_populations.male',
                 'barangay_populations.female',
                 'barangay_populations.total'
-            )
-            ->get();    
+            );
+
+        // Filter by barangay_id if provided
+        if ($this->barangayId) {
+            $query->where('barangay_populations.barangay_id', $this->barangayId);
+        }
+
+        return $query->get();    
     }
     public function headings(): array
     {

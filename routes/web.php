@@ -10,7 +10,6 @@ Route::inertia('/', 'welcome', [
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
-});
 
     Route::get('/registration',[Registration_Controller::class, 'index'])
         ->name('registration');
@@ -23,7 +22,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::put('/registration/{barangay}', [Registration_Controller::class, 'update'])
         ->name('registration.update');
-
+        
+    Route::get('/registration/export', [Registration_Controller::class, 'export'])
+        ->name('registration.export');
 
     Route::post('/registration/population',[Registration_Controller::class, 'storePopulation'])
         ->name('registration.population.store');
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::get('/registration/brgy-details',[BarangayDetails_Controller::class, 'index'])
         ->name('registration.brgy-details');
+});
 
 
 require __DIR__.'/settings.php';

@@ -184,6 +184,8 @@ class Registration_Controller extends Controller
             $fileName .= '.xlsx';
         }
 
-        return Excel::download(new BarangayExport(), $fileName);
+        $barangayId = $request->query('barangay_id');
+
+        return Excel::download(new BarangayExport($barangayId), $fileName);
     }
 }

@@ -2,8 +2,7 @@
 
 import { Head } from '@inertiajs/react';
 import {Label} from '@/components/ui/label';
-import {Button} from '@/components/ui/button';
-import {Upload} from 'lucide-react';
+import ExportDialog from './Dialog_Edit/ExportDetails';
 import { PopulationTable } from './Details/details';
 
 type PopulationRow = {
@@ -15,7 +14,7 @@ type PopulationRow = {
     total: number;
 };
 
-export function BarangayDetails({ populations = [] }: { populations?: PopulationRow[] }) {
+export function BarangayDetails({ populations = [], selectedBarangayId }: { populations?: PopulationRow[]; selectedBarangayId?: string }) {
 
     return (
     <>
@@ -24,11 +23,7 @@ export function BarangayDetails({ populations = [] }: { populations?: Population
             <div className="flex flex-col">
             <div className="flex items-center justify-between mb-2">
                <Label className="text-lg font semibold">Barangay Alawihao Registration (2024)</Label>
-                <Button variant="outline"
-                className="text-blue-500 border-blue-600 hover:bg-blue-700 cursor-pointer hover:text-white">
-                        <Upload/>
-                        Export
-                   </Button>
+                <ExportDialog barangayId={selectedBarangayId} />
             </div >
             <div className='px-2'>
              <PopulationTable populations={populations}/>
