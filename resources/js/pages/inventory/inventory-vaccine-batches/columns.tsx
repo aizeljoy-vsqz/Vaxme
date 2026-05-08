@@ -25,7 +25,9 @@ export const columns: ColumnDef<VaccineBatch>[] = [
         accessorKey: "batch_number",
         header: "Name of Health Facility",
         cell: ({ row }) => {
-            return <Link href={dailyVaccineInventory().url}>RHU</Link>
+            console.log(row.original.id);
+            
+            return <Link href={dailyVaccineInventory(row.original.id).url}>RHU</Link>
         }
     },
     {
