@@ -28,15 +28,53 @@ interface DataTableProps<TData, TValue> {
     data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends Record<string, unknown>, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
+    const [globalFilter, setGlobalFilter] = React.useState<string>("");
+    const filteredData = React.useMemo(() => {
+        if (!globalFilter) return data;
+        const q = globalFilter.trim().toLowerCase();
+        const rangeMatch = q.match(/^(\d{1,3})\s*[-–]\s*(\d{1,3})$/);
+        const isRange = !!rangeMatch;
+        const qLow = isRange ? parseInt(rangeMatch![1], 10) : null;
+        const qHigh = isRange ? parseInt(rangeMatch![2], 10) : null;
+
+        const parseAgeRange = (ageRange: string | undefined) => {
+            if (!ageRange) return null;
+            const s = ageRange.replace(/\s+/g, "");
+            // formats: "20-24", "65+", "18-59"
+            const m = s.match(/^(\d{1,3})-(\d{1,3})$/);
+            if (m) return [parseInt(m[1], 10), parseInt(m[2], 10)];
+            const plus = s.match(/^(\d{1,3})\+$/);
+            if (plus) return [parseInt(plus[1], 10), Infinity];
+            const single = s.match(/^(\d{1,3})$/);
+            if (single) return [parseInt(single[1], 10), parseInt(single[1], 10)];
+            return null;
+        };
+
+        return data.filter((row) => {
+            // if query is a numeric range, try to match against `ageRange` field
+            if (isRange) {
+                const ar = (row as any).ageRange as string | undefined;
+                const parsed = parseAgeRange(ar);
+                if (!parsed) return false;
+                const [aLow, aHigh] = parsed;
+                return !(aHigh < (qLow as number) || aLow > (qHigh as number));
+            }
+
+            // otherwise perform a general text search across row values (including ageRange)
+            return Object.values(row).some((v) =>
+                String(v ?? "").toLowerCase().includes(q),
+            );
+        });
+    }, [data, globalFilter]);
     const table = useReactTable({
-        data,
+        data: filteredData,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -54,25 +92,10 @@ export function DataTable<TData, TValue>({
         <div>
            <div className="flex items-center py-4 text-black">
             <Input
-              placeholder="Search..."
-              value={
-                (table
-                  .getColumn(
-                    table
-                      .getAllColumns()
-                      .find((col) => col.getCanFilter())?.id ?? ""
-                  )
-                  ?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) => {
-                const colId = table
-                  .getAllColumns()
-                  .find((col) => col.getCanFilter())?.id;
-                if (colId) {
-                  table.getColumn(colId)?.setFilterValue(event.target.value);
-                }
-              }}
-              className="max-w-sm"
+                            placeholder="Search..."
+                            value={globalFilter}
+                            onChange={(event) => setGlobalFilter(event.target.value)}
+                            className="max-w-sm"
             />
           </div>
             <div className="overflow-hidden rounded-md border">

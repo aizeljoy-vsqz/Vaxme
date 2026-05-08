@@ -22,8 +22,9 @@ type DetailsFormData = {
     contact_number: string;
 };
 
-export function DetailsPage() {
+export function DetailsPage(props?: { barangays?: unknown[] }) {
 
+    const { barangays } = props ?? {};
     const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
     const [detailsFormData, setDetailsFormData] = useState<DetailsFormData | null>(null);
     
