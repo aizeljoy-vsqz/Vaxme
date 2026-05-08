@@ -1,59 +1,61 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { Ellipsis} from "lucide-react"
+import { Ellipsis } from "lucide-react"
 import { ArrowUpDown } from "lucide-react"
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type VaccineBatch = {
+export type DailyVaccine = {
     id: number
-    batch_id: number
-    date: Date
-    quantity_in: number
-    expired_lose_damage: number
-    quantity_out: number
-    no_of_receipients: number
-    balance: number
+    created_at: Date
+    vaccine_batches_id: number,
+    stock_transferred: number,
+    daily_dispense: number,
+    number_of_receipients: number,
+    current_balance: number,
+    vaccine_lose: number
 }
 
-export const columns: ColumnDef<VaccineBatch>[] = [
+export const columns: ColumnDef<DailyVaccine>[] = [
     {
-        accessorKey: "date",
-        header:({column})=>{
+        accessorKey: "created_at",
+        header: ({ column }) => {
             return (
-                <Button variant={"ghost"} 
-                onClick={()=>column.toggleSorting(column.getIsSorted()=== 'asc')}
+                <Button variant={"ghost"}
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                 >
-                Date
-                <ArrowUpDown className="ml-2 h-4 w-4"/>
+                    Date
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
-
-
-
+        cell: ({ row }) => {
+            const date = row.getValue("created_at") as string
+            return new Date(date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            })
+        }
     },
     {
-        accessorKey: "quantity_in",
+        accessorKey: "stock_transferred",
         header: "Stock Transfered"
     },
     {
-        accessorKey: "expired_lose_damage",
+        accessorKey: "vaccine_lose",
         header: "Expired/lose/damage"
     },
     {
-        accessorKey: "quantity_out",
+        accessorKey: "daily_dispense",
         header: "Daily Dispensed"
     },
     {
-        accessorKey: "no_of_receipients",
+        accessorKey: "number_of_receipients",
         header: "No. of Receipients"
     },
     {
-        accessorKey: "balance",
+        accessorKey: "current_balance",
         header: "Balance"
     },
     {
