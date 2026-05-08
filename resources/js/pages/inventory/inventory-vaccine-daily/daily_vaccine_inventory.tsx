@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { dailyVaccineInventory } from '@/routes';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { Download, Plus } from 'lucide-react';
 import { DataTable } from '../data-table';
@@ -18,25 +17,19 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Input } from '@/components/ui/input';
 import { SyntheticEvent } from 'react';
-import { setDate } from 'date-fns';
 export default function DailyInventory() {
 
-    const dataa = [
-        {
-            id: 1,
-            batch_id: 22,
-            date: new Date("2024-06-01"),
-            quantity_in: 50,
-            expired_lose_damage: 2,
-            quantity_out: 10,
-            no_of_receipients: 10,
-            balance: 38
-        },
-    ]
+    interface PageProps {
+        [key: string]: unknown
+        daily_vaccine: DailyVaccine[]
+        batch_id: number
+    }
+
+    const { daily_vaccine, batch_id } = usePage<PageProps>().props
 
     // For Form Submission
     const { data, setData, post } = useForm({
-        vaccine_batches_id: 1,
+        vaccine_batch_id: batch_id,
         stock_transferred: 0,
         daily_dispense: 0,
         number_of_receipients: 0,
@@ -49,13 +42,6 @@ export default function DailyInventory() {
         console.log(data);
         post('/daily/vaccine/inventory/store');
     }
-
-    interface PageProps {
-        [key: string]: unknown
-        daily_vaccine: DailyVaccine[]
-    }
-
-    const { daily_vaccine } = usePage<PageProps>().props
 
     return (
         <>
@@ -122,7 +108,6 @@ DailyInventory.layout = {
     breadcrumbs: [
         {
             title: 'Daily Vaccine Inventory',
-            href: dailyVaccineInventory(),
         },
     ],
 };
