@@ -39,6 +39,14 @@ export const columns: ColumnDef<VaccineBatch>[] = [
     {
         accessorKey: "expiration_date",
         header: "Expiration Date",
+        cell: ({ row }) => {
+            const date = row.getValue("expiration_date") as string
+            return new Date(date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            })
+        }
     },
     {
         accessorKey: "stock_receive",
