@@ -42,6 +42,14 @@ import { Value } from '@radix-ui/react-select';
 
 export default function InventoryByBatch() {
 
+    interface PageProps {
+        [key: string]: unknown
+        vaccine_batches: VaccineBatch[]
+        vaccines_data: VaccineType[]
+    }
+
+    const { vaccine_batches, vaccines_data } = usePage<PageProps>().props   
+
     const { data, setData, post } = useForm({
         // rhu_id: 'ss',
         batch_number: '',
@@ -57,17 +65,6 @@ export default function InventoryByBatch() {
         post('/vaccine/inventory/store');
     }
 
-    interface PageProps {
-        [key: string]: unknown
-        vaccine_batches: VaccineBatch[]
-        vaccines_data: VaccineType[]
-    }
-
-    const { vaccine_batches, vaccines_data } = usePage<PageProps>().props
-    vaccines_data.map((test) => {
-        console.log(test.name);
-
-    })
 
     const [date, setDate] = React.useState<Date>()
 
@@ -119,7 +116,7 @@ export default function InventoryByBatch() {
                                         <div className='flex gap-4'>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Stock Received:</Label>
-                                                <Input value={data.stock_receive} onChange={(e) => setData('stock_receive', Number(e.target.value))}></Input>
+                                                <Input value={data.stock_receive} onChange={(e) => { setData('stock_receive', Number(e.target.value)); setData('current_balance', Number(e.target.value)); }}></Input>
                                             </div>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Expiration Date:</Label>

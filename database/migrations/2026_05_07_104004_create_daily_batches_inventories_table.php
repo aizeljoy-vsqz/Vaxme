@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('daily_batches_inventories', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('vaccine_batches_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('vaccine_batch_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('stock_transferred');
             $table->integer('daily_dispense');
             $table->integer('number_of_receipients');
