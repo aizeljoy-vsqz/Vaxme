@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\VaccineBatch;
-use App\Models\Vaccines;
+use App\Models\Vaccine;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -12,8 +12,8 @@ class VaccineBatchesController extends Controller
 {
     public function Index(Request $request)
     {
-        $vaccine_batches = VaccineBatch::all();
-        $vaccines_data = Vaccines::all();
+        $vaccines_data = Vaccine::all();
+        $vaccine_batches = VaccineBatch::with(['vaccine'])->get();
         return Inertia::render('inventory/inventory-vaccine-batches/vaccine_batches_inventory', compact('vaccine_batches', 'vaccines_data'));
     }
 

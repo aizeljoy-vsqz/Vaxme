@@ -33,12 +33,10 @@ import {
     SelectContent,
     SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
 import { VaccineType } from '@/pages/vaccine-management/column';
-import { Value } from '@radix-ui/react-select';
 
 export default function InventoryByBatch() {
 
@@ -48,7 +46,7 @@ export default function InventoryByBatch() {
         vaccines_data: VaccineType[]
     }
 
-    const { vaccine_batches, vaccines_data } = usePage<PageProps>().props   
+    const { vaccine_batches, vaccines_data} = usePage<PageProps>().props    
 
     const { data, setData, post } = useForm({
         // rhu_id: 'ss',

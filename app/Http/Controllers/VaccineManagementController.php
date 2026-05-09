@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Vaccines;
+use App\Models\Vaccine;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -10,7 +10,7 @@ class VaccineManagementController extends Controller
 {
     public function Index()
     {
-        $vaccines_data = Vaccines::all();
+        $vaccines_data = Vaccine::all();
         return Inertia::render('vaccine-management/vaccine_management', compact('vaccines_data'));
     }
 
@@ -20,6 +20,6 @@ class VaccineManagementController extends Controller
             'name' => 'required|string',
             'description' => 'required|string',
         ]);
-        Vaccines::create($request->all());
+        Vaccine::create($request->all());
     }
 }
