@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DailyBatchesInventory;
+use App\Models\VaccineBatch;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -10,9 +11,9 @@ class DailyBatchesInventoryController extends Controller
 {
     public function Index($id)
     {
-        $daily_vaccine = DailyBatchesInventory::all();
         $batch_id = $id;
-        return Inertia::render('inventory/inventory-vaccine-daily/daily_vaccine_inventory', compact(['daily_vaccine', 'batch_id']));
+        $daily_inventory = VaccineBatch::with(['dailyVaccine'])->findOrFail($id);
+        return Inertia::render('inventory/inventory-vaccine-daily/daily_vaccine_inventory', compact(['batch_id', 'daily_inventory']));
     }
 
     public function Store(Request $request)
