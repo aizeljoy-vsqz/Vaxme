@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('bhc_id');
-            // $table->foreignId('rhu_id');
+            $table->foreignId('bhc_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('rhu_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('type', ['request', 'return']);
             $table->enum('status', ['submitted', 'reviewed', 'approved']);
             $table->timestamps();
