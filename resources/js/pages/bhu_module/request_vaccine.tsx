@@ -10,7 +10,8 @@ import Request_Select from '@/components/request_vaccine/request_select';
 import { Separator } from '@/components/ui/separator';
 import { ArrowBigRightDashIcon, Plus } from 'lucide-react';
 import { useForm } from "@inertiajs/react";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from "sonner"
 
 export default function BhuDashboard() {
 
@@ -38,8 +39,39 @@ export default function BhuDashboard() {
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        post('/request/vaccine');
+        post('/request/vaccine',
+            {
+                onSuccess: () => {
+                    toast("Event has been created", {
+                                description:
+                                    (<pre className="whitespace-pre-line text-sm">
+                                        Success
+                                    </pre>),
+                                action: {
+                                    label: "Close",
+                                    onClick: () => console.log("Closed"),
+                                },
+                            })
+                },
+                onError: (errors) => {
+                    const message = errors.items;
+
+                    toast("Duplicate Vaccination", {
+                        description:
+                            (<pre className="whitespace-pre-line text-sm">
+                                {String(errors.items)}
+                            </pre>),
+                        action: {
+                            label: "Close",
+                            onClick: () => console.log("Closed"),
+                        },
+                    });
+                }
+            }
+        );
     }
+
+    console.log(errors.items);
 
     return (
         <>
@@ -62,11 +94,24 @@ export default function BhuDashboard() {
                         <Request_Select value={vaccine} onChange={(value) => setVaccine(value)} ></Request_Select>
                         <Button type="button" onClick={handleAdd} className='bg-blue-600 w-auto hover:bg-blue-700 cursor-pointer'>Add <Plus></Plus></Button>
                     </div>
-                    
-                    {errors.items && (
-                        <p className="text-red-500">{errors.items}</p>
-                    )}
-                    
+
+                    <Button
+                        variant="outline"
+                        onClick={() =>
+                            toast("Event has been created", {
+                                description:
+                                    (<pre className="whitespace-pre-line text-sm">
+                                        {String(errors.items)}
+                                    </pre>),
+                                action: {
+                                    label: "Close",
+                                    onClick: () => console.log("Closed"),
+                                },
+                            })
+                        }
+                    >
+                        Show Toast
+                    </Button>
                 </div>
             </form>
 
