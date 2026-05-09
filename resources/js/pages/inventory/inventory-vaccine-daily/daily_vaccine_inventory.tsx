@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Input } from '@/components/ui/input';
 import { SyntheticEvent } from 'react';
+import EmptyPage from '@/components/vaccine_components/empty-page';
 export default function DailyInventory() {
 
     interface PageProps {
@@ -51,7 +52,7 @@ export default function DailyInventory() {
         <>
             <Head title="Daily Inventory" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className='px-2'>
+                <div className='px-2 h-full'>
                     <div className='flex justify-between'>
                         <Label className='text-md flex items-center'>Penta</Label>
                         <div className='flex gap-2'>
