@@ -21,11 +21,15 @@ export default function DailyInventory() {
 
     interface PageProps {
         [key: string]: unknown
-        daily_vaccine: DailyVaccine[]
         batch_id: number
+        daily_inventory: DailyInventoryType
     }
 
-    const { daily_vaccine, batch_id } = usePage<PageProps>().props
+    interface DailyInventoryType {
+        daily_vaccine: DailyVaccine[]
+    }
+
+    const { batch_id, daily_inventory } = usePage<PageProps>().props
 
     // For Form Submission
     const { data, setData, post } = useForm({
@@ -96,7 +100,7 @@ export default function DailyInventory() {
                         </div>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns} data={daily_vaccine} />
+                        <DataTable columns={columns} data={daily_inventory.daily_vaccine} />
                     </div>
                 </div>
             </div>
