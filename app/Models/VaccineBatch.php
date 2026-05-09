@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VaccineBatch extends Model
 {
@@ -15,4 +16,8 @@ class VaccineBatch extends Model
         'current_balance',
         'status',
     ];
+    public function dailyVaccine():HasMany
+    {
+        return $this->hasMany(DailyBatchesInventory::class);
+    }
 }
