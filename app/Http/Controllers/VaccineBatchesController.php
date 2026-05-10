@@ -22,10 +22,10 @@ class VaccineBatchesController extends Controller
     {
         $request->validate([
             // 'rhu_id' => 'required',
-            'vaccine_id' => 'required',
+            'vaccine_id' => ['required',],
             'batch_number' => ['required', Rule::string()],
-            'stock_receive' => ['required', 'integer:strict'],
-            'current_balance' => ['required', 'integer:strict'],
+            'stock_receive' => ['required', 'integer'],
+            'current_balance' => ['required', 'integer'],
             'expiration_date' => ['required', Rule::date()]
         ]);
 

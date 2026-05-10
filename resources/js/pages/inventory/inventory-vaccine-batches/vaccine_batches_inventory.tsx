@@ -48,29 +48,36 @@ export default function InventoryByBatch() {
 
     const { vaccine_batches, vaccines_data } = usePage<PageProps>().props
 
-    const { data, setData, post } = useForm({
+    const { data, setData, post, delete: destroy, errors, reset } = useForm({
         // rhu_id: 'ss',
         batch_number: '',
-        vaccine_id: Number(),
+        vaccine_id: '',
         expiration_date: '',
-        stock_receive: 0,
+        stock_receive: '',
         current_balance: 0,
     })
 
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         console.log(data);
-        post('/vaccine/inventory/store');
+        post('/vaccine/inventory/store', {
+            onSuccess: () => {
+                reset()
+                setDate(undefined)
+            }
+        });
+
     }
 
 
     const [date, setDate] = React.useState<Date>()
 
-    const {delete: destroy} = useForm()
-    const handleDelete = (delete_vaccine:number) => {
-        destroy(`/vaccine/inventory/delete/${delete_vaccine}`);        
+    const handleDelete = (delete_vaccine: number) => {
+        destroy(`/vaccine/inventory/delete/${delete_vaccine}`);
         console.log('del', delete_vaccine);
     }
+    console.log(errors);
+
     return (
         <>
             <Head title="Dashboard" />
@@ -98,7 +105,7 @@ export default function InventoryByBatch() {
                                         <div className='flex gap-4'>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Name of Drug:</Label>
-                                                <Select onValueChange={(val) => { setData('vaccine_id', parseInt(val)) }}>
+                                                <Select value={data.vaccine_id} onValueChange={(val) => { setData('vaccine_id', val) }}>
                                                     <SelectTrigger className="w-full">
                                                         <SelectValue placeholder="Select Drug" />
                                                     </SelectTrigger>
@@ -110,16 +117,19 @@ export default function InventoryByBatch() {
                                                         </SelectGroup>
                                                     </SelectContent>
                                                 </Select>
+                                                <div className='text-red-500 text-sm'>{errors.vaccine_id}</div>
                                             </div>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Batch Number:</Label>
                                                 <Input value={data.batch_number} onChange={(e) => setData('batch_number', e.target.value)}></Input>
+                                                <div className='text-red-500 text-sm'>{errors.batch_number}</div>
                                             </div>
                                         </div>
                                         <div className='flex gap-4'>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Stock Received:</Label>
-                                                <Input value={data.stock_receive} onChange={(e) => { setData('stock_receive', Number(e.target.value)); setData('current_balance', Number(e.target.value)); }}></Input>
+                                                <Input value={data.stock_receive} onChange={(e) => { setData('stock_receive', e.target.value); setData('current_balance', Number(e.target.value)); }}></Input>
+                                                <div className='text-red-500 text-sm'>{errors.stock_receive}</div>
                                             </div>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Expiration Date:</Label>
@@ -147,12 +157,13 @@ export default function InventoryByBatch() {
                                                         />
                                                     </PopoverContent>
                                                 </Popover>
+                                                <div className='text-red-500 text-sm'>{errors.expiration_date}</div>
                                             </div>
                                         </div>
                                     </div>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction type={'submit'} className='!bg-blue-600 hover:!bg-blue-700'>Save</AlertDialogAction>
+                                        <Button type={'submit'} className='!bg-blue-600 hover:!bg-blue-700'>Save</Button>
                                     </AlertDialogFooter>
                                 </form>
                             </AlertDialogContent>
