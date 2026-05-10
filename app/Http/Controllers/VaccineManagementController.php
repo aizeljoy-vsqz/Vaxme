@@ -22,4 +22,9 @@ class VaccineManagementController extends Controller
         ]);
         Vaccine::create($request->all());
     }
+
+    public function Delete(Vaccine $delete_vaccine_id)
+    {
+        $delete_vaccine_id->delete();
+    }
 }
