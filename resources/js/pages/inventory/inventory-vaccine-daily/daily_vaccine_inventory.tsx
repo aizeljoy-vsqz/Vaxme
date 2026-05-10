@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Input } from '@/components/ui/input';
 import { SyntheticEvent } from 'react';
-import EmptyPage from '@/components/vaccine_components/empty-page';
 export default function DailyInventory() {
 
     interface PageProps {
@@ -47,7 +46,13 @@ export default function DailyInventory() {
         console.log(data);
         post('/daily/vaccine/inventory/store');
     }
-
+    
+    const {delete: destroy} = useForm()
+    const handleDelete = (daily_inventory_id:number)=>{
+        destroy(`/daily/vaccine/inventory/delete/${daily_inventory_id}`);
+        console.log('deleteeee.', daily_inventory_id);
+    }
+    
     return (
         <>
             <Head title="Daily Inventory" />
@@ -101,7 +106,7 @@ export default function DailyInventory() {
                         </div>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns} data={daily_inventory.daily_vaccine} />
+                        <DataTable columns={columns(handleDelete)} data={daily_inventory.daily_vaccine} />
                     </div>
                 </div>
             </div>

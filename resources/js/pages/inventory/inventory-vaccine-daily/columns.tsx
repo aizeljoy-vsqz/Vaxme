@@ -16,7 +16,7 @@ export type DailyVaccine = {
     vaccine_lose: number
 }
 
-export const columns: ColumnDef<DailyVaccine>[] = [
+export const columns = (handleDelete:(daily_inventory_id:number)=>void): ColumnDef<DailyVaccine>[] => [
     {
         accessorKey: "created_at",
         header: ({ column }) => {
@@ -61,19 +61,22 @@ export const columns: ColumnDef<DailyVaccine>[] = [
     {
         accessorKey: "actions",
         id: "actions",
-        cell: () => (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
-                        <Ellipsis />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-32">
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        )
+        cell: ({row}) => {
+            const daily_inventory_id = (row.original.id);  
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
+                            <Ellipsis />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-32">
+                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem variant="destructive" onClick={()=>{handleDelete(daily_inventory_id)}}>Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )
+        }
     },
 ]
