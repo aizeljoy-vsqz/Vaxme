@@ -27,4 +27,9 @@ class DailyBatchesInventoryController extends Controller
         ]);
         DailyBatchesInventory::create($request->all());
     }
+
+    public function Delete(DailyBatchesInventory $daily_inventory_id)
+    {
+        $daily_inventory_id->delete();
+    }
 }
