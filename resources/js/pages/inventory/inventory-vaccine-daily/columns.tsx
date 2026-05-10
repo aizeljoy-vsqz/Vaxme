@@ -103,9 +103,9 @@ export const columns = (handleDelete: (daily_inventory_id: number) => void): Col
                                 <Trash2Icon className="" />
                             </div>
                             <div className="flex flex-col gap-1">
-                                <span className="font-medium">Delete vaccine?</span>
+                                <span className="font-medium">Delete daily vaccine invetory?</span>
                                 <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete your vaccine info.
+                                    This action cannot be undone. This will permanently delete your vaccine invetory info.
                                 </AlertDialogDescription>
                             </div>
                         </AlertDialogHeader>
