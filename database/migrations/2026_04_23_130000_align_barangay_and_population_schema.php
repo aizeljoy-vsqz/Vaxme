@@ -15,7 +15,7 @@ return new class extends Migration
         if (Schema::hasTable('barangays')) {
             Schema::table('barangays', function (Blueprint $table) {
                 if (! Schema::hasColumn('barangays', 'nurse_assigned')) {
-                    $table->string('nurse_assigned')->nullable()->after('name');
+                    $table->string('nurse_assigned')->nullable();
                 }
             });
 
@@ -27,17 +27,22 @@ return new class extends Migration
 
             Schema::table('barangays', function (Blueprint $table) {
                 if (Schema::hasColumn('barangays', 'contact_name')) {
-                    $table->dropColumn('contact_name');
+                    try {
+                        $table->dropColumn('contact_name');
+                    } catch (\Throwable $throwable) {
+                    }
                 }
 
                 if (Schema::hasColumn('barangays', 'contact_number')) {
-                    $table->dropColumn('contact_number');
+                    try {
+                        $table->dropColumn('contact_number');
+                    } catch (\Throwable $throwable) {
+                    }
                 }
             });
         }
 
         if (Schema::hasTable('barangay_populations')) {
-            // No schema changes required for `user_id` or `rhu_id` in this migration.
         }
     }
 
@@ -49,11 +54,11 @@ return new class extends Migration
         if (Schema::hasTable('barangays')) {
             Schema::table('barangays', function (Blueprint $table) {
                 if (! Schema::hasColumn('barangays', 'contact_name')) {
-                    $table->string('contact_name')->nullable()->after('name');
+                    $table->string('contact_name')->nullable();
                 }
 
                 if (! Schema::hasColumn('barangays', 'contact_number')) {
-                    $table->string('contact_number')->nullable()->after('contact_name');
+                    $table->string('contact_number')->nullable();
                 }
             });
 
@@ -63,7 +68,11 @@ return new class extends Migration
 
             Schema::table('barangays', function (Blueprint $table) {
                 if (Schema::hasColumn('barangays', 'nurse_assigned')) {
-                    $table->dropColumn('nurse_assigned');
+                    try {
+                        $table->dropColumn('nurse_assigned');
+                    } catch (\Throwable $throwable) {
+                        // SQLite may require a table rebuild for destructive column changes.
+                    }
                 }
             });
         }
