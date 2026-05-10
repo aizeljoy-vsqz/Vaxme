@@ -16,6 +16,8 @@ import { columns, VaccineType } from "./column"
 import { CircleAlert, CircleCheckBig, Plus, } from "lucide-react"
 import { useForm, usePage } from "@inertiajs/react"
 import { toast } from "sonner"
+import EmptyPage from "@/components/vaccine_components/empty-page"
+import { Separator } from "@/components/ui/separator"
 
 export default function VaccineManagement() {
 
@@ -62,8 +64,8 @@ export default function VaccineManagement() {
     return (
         <>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="px-2">
-                    <div className='flex justify-between'>
+                <div className="px-2 h-full">
+                    <div className='flex justify-between '>
                         <Label className='text-md flex items-center'>Vaccine Management</Label>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
@@ -97,8 +99,10 @@ export default function VaccineManagement() {
                             </AlertDialogContent>
                         </AlertDialog>
                     </div>
-                    <div className='px-4'>
-                        <DataTable columns={columns(handleDelete)} data={vaccines_data} />
+                    <div className='px-2 py-4  h-8/10'>
+                        {
+                            vaccines_data.length > 0 ? (<DataTable columns={columns(handleDelete)} data={vaccines_data} />) : (<EmptyPage title={'Vaccines Empty'} description={`You haven't created any vaccines yet. Start creating your vaccines.`}></EmptyPage>)
+                        }
                     </div>
                 </div>
             </div>

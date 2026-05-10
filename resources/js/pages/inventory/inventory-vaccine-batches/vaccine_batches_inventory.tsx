@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/select"
 import { VaccineType } from '@/pages/vaccine-management/column';
 import { toast } from 'sonner';
+import EmptyPage from '@/components/vaccine_components/empty-page';
 
 export default function InventoryByBatch() {
 
@@ -95,7 +96,7 @@ export default function InventoryByBatch() {
         <>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className='px-2'>
+                <div className='px-2 h-full'>
                     <div className='flex justify-between'>
                         <Label className='text-md flex items-center'>Vaccine Inventory</Label>
                         <AlertDialog>
@@ -182,8 +183,10 @@ export default function InventoryByBatch() {
                             </AlertDialogContent>
                         </AlertDialog>
                     </div>
-                    <div className='px-4'>
-                        <DataTable columns={columns(handleDelete)} data={vaccine_batches} />
+                    <div className='px-2 py-4 h-8/10'>
+                        {
+                            vaccine_batches.length > 0 ? (<DataTable columns={columns(handleDelete)} data={vaccine_batches} />) : (<EmptyPage title={'Empty vaccine batch inventory'} description={`You haven't created any vaccines batches yet. Start creating your inventory.`}></EmptyPage>)
+                        }
                     </div>
                 </div>
             </div>
