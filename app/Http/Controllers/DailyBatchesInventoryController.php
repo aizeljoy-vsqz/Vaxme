@@ -19,11 +19,11 @@ class DailyBatchesInventoryController extends Controller
     public function Store(Request $request)
     {
         $request->validate([
-            'stock_transferred' => ['required', 'integer:strict'],
-            'daily_dispense' => ['required', 'integer:strict'],
-            'number_of_receipients' => ['required', 'integer:strict'],
-            'current_balance' => ['required', 'integer:strict'],
-            'vaccine_lose' => ['required', 'integer:strict'],
+            'stock_transferred' => ['required', 'integer'],
+            'daily_dispense' => ['required', 'integer'],
+            'number_of_receipients' => ['required', 'integer'],
+            'current_balance' => ['required', 'integer'],
+            'vaccine_lose' => ['required', 'integer'],
         ]);
         DailyBatchesInventory::create($request->all());
     }
