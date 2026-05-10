@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             // $table->foreignId('rhu_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('vaccine_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('batch_number');
+            $table->string('batch_number')->unique();
             $table->date('expiration_date');
             $table->integer('current_balance');
             $table->integer('stock_receive');
