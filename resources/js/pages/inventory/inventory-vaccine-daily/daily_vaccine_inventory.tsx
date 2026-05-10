@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { CircleCheckBig, Download, Plus } from 'lucide-react';
+import { CircleAlert, CircleCheckBig, Download, Plus } from 'lucide-react';
 import { DataTable } from '../data-table';
 import { columns, DailyVaccine } from './columns';
 import {
@@ -53,15 +53,22 @@ export default function DailyInventory() {
                     <div className="flex gap-1 justify-center">
                         <CircleCheckBig className="p-1 text-green-500" />
                         <Label>Daily vaccine inventory has been created.</Label>
-                    </div>, {position:'top-right'});
+                    </div>, { position: 'top-right' });
             }
         });
     }
 
     const { delete: destroy } = useForm()
     const handleDelete = (daily_inventory_id: number) => {
-        destroy(`/daily/vaccine/inventory/delete/${daily_inventory_id}`);
-        console.log('deleteeee.', daily_inventory_id);
+        destroy(`/daily/vaccine/inventory/delete/${daily_inventory_id}`, {
+            onSuccess: () => {
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleAlert className="p-1 text-red-500" />
+                        <Label>Daily vaccine inventory has been deleted.</Label>
+                    </div>, { position: 'top-right' });
+            }
+        });
     }
     console.log(errors);
 

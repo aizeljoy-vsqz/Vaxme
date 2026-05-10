@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { DataTable } from "./data-table"
 import { columns, VaccineType } from "./column"
-import { CircleCheckBig, IceCream, Plus } from "lucide-react"
+import { CircleAlert, CircleCheckBig, IceCream, Plus, Trash } from "lucide-react"
 import { useForm, usePage } from "@inertiajs/react"
 import { reset } from "@/routes/password"
 import { toast } from "sonner"
@@ -36,7 +36,7 @@ export default function VaccineManagement() {
                     <div className="flex gap-1 justify-center">
                         <CircleCheckBig className="p-1 text-green-500" />
                         <Label>Vaccine has been created.</Label>
-                    </div>, {position:'top-right'});
+                    </div>, { position: 'top-right' });
             }
         });
     }
@@ -50,8 +50,15 @@ export default function VaccineManagement() {
     console.log(vaccines_data);
 
     const handleDelete = (delete_vaccine_id: number) => {
-        destroy(`/vaccine/management/delete/${delete_vaccine_id}`);
-        console.log(delete_vaccine_id);
+        destroy(`/vaccine/management/delete/${delete_vaccine_id}`, {
+            onSuccess: () => {
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleAlert className="p-1 text-red-500" />
+                        <Label>Vaccine has been deleted.</Label>
+                    </div>, { position: 'top-right' });
+            }
+        });
     }
     return (
         <>

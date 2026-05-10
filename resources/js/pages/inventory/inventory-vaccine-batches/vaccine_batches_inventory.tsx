@@ -3,7 +3,7 @@ import { columns, VaccineBatch } from "./columns"
 import { DataTable } from "../data-table"
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { CircleCheckBig, Plus } from 'lucide-react';
+import { CircleAlert, CircleCheckBig, Plus } from 'lucide-react';
 import { batchesVaccineInventory } from '@/routes';
 import {
     AlertDialog,
@@ -69,7 +69,7 @@ export default function InventoryByBatch() {
                     <div className="flex gap-1 justify-center">
                         <CircleCheckBig className="p-1 text-green-500" />
                         <Label>Vaccine inventory has been created.</Label>
-                    </div>, {position:'top-right'});
+                    </div>, { position: 'top-right' });
             }
         });
 
@@ -79,8 +79,15 @@ export default function InventoryByBatch() {
     const [date, setDate] = React.useState<Date>()
 
     const handleDelete = (delete_vaccine: number) => {
-        destroy(`/vaccine/inventory/delete/${delete_vaccine}`);
-        console.log('del', delete_vaccine);
+        destroy(`/vaccine/inventory/delete/${delete_vaccine}`, {
+            onSuccess: () => {
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleAlert className="p-1 text-red-500" />
+                        <Label>Vaccine inventory has been deleted.</Label>
+                    </div>, { position: 'top-right' });
+            }
+        });
     }
     console.log(errors);
 
