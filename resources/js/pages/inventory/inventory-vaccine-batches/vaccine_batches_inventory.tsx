@@ -3,7 +3,7 @@ import { columns, VaccineBatch } from "./columns"
 import { DataTable } from "../data-table"
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { CircleCheckBig, Plus } from 'lucide-react';
 import { batchesVaccineInventory } from '@/routes';
 import {
     AlertDialog,
@@ -37,6 +37,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { VaccineType } from '@/pages/vaccine-management/column';
+import { toast } from 'sonner';
 
 export default function InventoryByBatch() {
 
@@ -64,6 +65,11 @@ export default function InventoryByBatch() {
             onSuccess: () => {
                 reset()
                 setDate(undefined)
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleCheckBig className="p-1 text-green-500" />
+                        <Label>Vaccine inventory has been created.</Label>
+                    </div>, {position:'top-right'});
             }
         });
 

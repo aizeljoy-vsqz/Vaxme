@@ -14,9 +14,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { DataTable } from "./data-table"
 import { columns, VaccineType } from "./column"
-import { Plus } from "lucide-react"
+import { CircleCheckBig, IceCream, Plus } from "lucide-react"
 import { useForm, usePage } from "@inertiajs/react"
 import { reset } from "@/routes/password"
+import { toast } from "sonner"
 
 export default function VaccineManagement() {
 
@@ -30,7 +31,12 @@ export default function VaccineManagement() {
         console.log(data)
         post('/vaccine/management/store', {
             onSuccess: () => {
-                reset()
+                reset();
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleCheckBig className="p-1 text-green-500" />
+                        <Label>Vaccine has been created.</Label>
+                    </div>, {position:'top-right'});
             }
         });
     }

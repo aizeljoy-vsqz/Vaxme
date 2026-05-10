@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { Download, Plus } from 'lucide-react';
+import { CircleCheckBig, Download, Plus } from 'lucide-react';
 import { DataTable } from '../data-table';
 import { columns, DailyVaccine } from './columns';
 import {
@@ -18,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { SyntheticEvent } from 'react';
 import { reset } from '@/routes/password';
+import { toast } from 'sonner';
 export default function DailyInventory() {
 
     interface PageProps {
@@ -48,6 +49,11 @@ export default function DailyInventory() {
         post('/daily/vaccine/inventory/store', {
             onSuccess: () => {
                 reset();
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleCheckBig className="p-1 text-green-500" />
+                        <Label>Daily vaccine inventory has been created.</Label>
+                    </div>, {position:'top-right'});
             }
         });
     }
@@ -70,7 +76,7 @@ export default function DailyInventory() {
                             <Button variant={'outline'} className='text-blue-600 border border-blue-600 hover:text-blue-700'><Download />Export</Button>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button onClick={()=>clearErrors()} className='bg-blue-600 hover:bg-blue-700'><Plus /> Add Inventory</Button>
+                                    <Button onClick={() => clearErrors()} className='bg-blue-600 hover:bg-blue-700'><Plus /> Add Inventory</Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                     <form onSubmit={handleSubmit}>
