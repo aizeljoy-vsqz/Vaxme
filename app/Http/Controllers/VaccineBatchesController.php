@@ -40,4 +40,9 @@ class VaccineBatchesController extends Controller
             'vaccine_lose'=> '0',
         ]);
     }
+
+    public function Delete(VaccineBatch $delete_vaccine)
+    {
+        $delete_vaccine->delete();
+    }
 }
