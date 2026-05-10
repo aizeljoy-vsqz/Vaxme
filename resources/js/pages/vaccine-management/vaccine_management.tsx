@@ -16,10 +16,11 @@ import { DataTable } from "./data-table"
 import { columns, VaccineType } from "./column"
 import { Plus } from "lucide-react"
 import { useForm, usePage } from "@inertiajs/react"
+import { reset } from "@/routes/password"
 
 export default function VaccineManagement() {
 
-    const { data, setData, post } = useForm({
+    const { data, setData, post, delete: destroy, errors, reset, clearErrors } = useForm({
         name: "",
         description: "",
     })
@@ -27,7 +28,11 @@ export default function VaccineManagement() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         console.log(data)
-        post('/vaccine/management/store');
+        post('/vaccine/management/store', {
+            onSuccess: () => {
+                reset()
+            }
+        });
     }
 
     interface PageProps {
@@ -38,8 +43,7 @@ export default function VaccineManagement() {
     const { vaccines_data } = usePage<PageProps>().props
     console.log(vaccines_data);
 
-    const {delete: destroy} = useForm()
-    const handleDelete = (delete_vaccine_id:number) => {
+    const handleDelete = (delete_vaccine_id: number) => {
         destroy(`/vaccine/management/delete/${delete_vaccine_id}`);
         console.log(delete_vaccine_id);
     }
@@ -51,7 +55,7 @@ export default function VaccineManagement() {
                         <Label className='text-md flex items-center'>Vaccine Management</Label>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button className='bg-blue-600 hover:bg-blue-700'> <Plus /> Add Inventory</Button>
+                                <Button onClick={() => clearErrors()} className='bg-blue-600 hover:bg-blue-700'> <Plus /> Add Inventory</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -65,15 +69,17 @@ export default function VaccineManagement() {
                                         <div className='w-full gap-2 flex flex-col'>
                                             <Label>Name of Vaccine:</Label>
                                             <Input value={data.name} onChange={(e) => setData('name', e.target.value)} placeholder="e.g. Penta"></Input>
+                                            <div className='text-red-500 text-sm'>{errors.name}</div>
                                         </div>
                                         <div className='w-full gap-2 flex flex-col'>
                                             <Label>Vaccine Description:</Label>
                                             <Input value={data.description} onChange={(e) => setData('description', e.target.value)} placeholder="e.g. Pentavalent vaccine protects against five diseases."></Input>
+                                            <div className='text-red-500 text-sm'>{errors.description}</div>
                                         </div>
                                     </div>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction type="submit" className='!bg-blue-600 hover:!bg-blue-700'>Save</AlertDialogAction>
+                                        <Button type="submit" className='!bg-blue-600 hover:!bg-blue-700'>Save</Button>
                                     </AlertDialogFooter>
                                 </form>
                             </AlertDialogContent>
