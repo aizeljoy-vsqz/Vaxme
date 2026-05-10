@@ -18,7 +18,7 @@ import { Plus } from "lucide-react"
 import { useForm, usePage } from "@inertiajs/react"
 
 export default function VaccineManagement() {
-    
+
     const { data, setData, post } = useForm({
         name: "",
         description: "",
@@ -31,13 +31,18 @@ export default function VaccineManagement() {
     }
 
     interface PageProps {
-        [key:string]: unknown
+        [key: string]: unknown
         vaccines_data: VaccineType[]
     }
 
-    const {vaccines_data} = usePage<PageProps>().props    
-    console.log(vaccines_data);    
+    const { vaccines_data } = usePage<PageProps>().props
+    console.log(vaccines_data);
 
+    const {delete: destroy} = useForm()
+    const handleDelete = (delete_vaccine_id:number) => {
+        destroy(`/vaccine/management/delete/${delete_vaccine_id}`);
+        console.log(delete_vaccine_id);
+    }
     return (
         <>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
@@ -75,7 +80,7 @@ export default function VaccineManagement() {
                         </AlertDialog>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns} data={vaccines_data} />
+                        <DataTable columns={columns(handleDelete)} data={vaccines_data} />
                     </div>
                 </div>
             </div>
