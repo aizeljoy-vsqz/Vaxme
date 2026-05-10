@@ -8,7 +8,7 @@ import RequestTable from '@/components/request_vaccine/request_table';
 import { Input } from '@/components/ui/input';
 import Request_Select from '@/components/request_vaccine/request_select';
 import { Separator } from '@/components/ui/separator';
-import { ArrowBigRightDashIcon, Plus } from 'lucide-react';
+import { ArrowBigRightDashIcon, Check, CheckCheck, CheckCircle, CheckCircle2, CheckIcon, CheckSquare2, Cross, LucideThumbsDown, LucideThumbsUp, Plus, ThumbsUp, ThumbsUpIcon, X } from 'lucide-react';
 import { useForm } from "@inertiajs/react";
 import { useEffect, useState } from 'react';
 import { toast } from "sonner"
@@ -42,27 +42,38 @@ export default function BhuDashboard() {
         post('/request/vaccine',
             {
                 onSuccess: () => {
-                    toast("Event has been created", {
-                                description:
-                                    (<pre className="whitespace-pre-line text-sm">
-                                        Success
-                                    </pre>),
-                                action: {
-                                    label: "Close",
-                                    onClick: () => console.log("Closed"),
-                                },
-                            })
+                    toast("Success", {
+                        description:
+                            (<div className='flex items-end justify-center gap-2'>
+                                <pre className="whitespace-pre-line text-sm w-auto">
+                                    Request sent successfully
+                                </pre>
+                                <LucideThumbsUp className='text-blue-500 py-1' />
+                            </div>
+                            ),
+                        action: {
+                            label: "x",
+                            onClick: () => console.log("Closed"),
+                        },
+                    })
                 },
                 onError: (errors) => {
                     const message = errors.items;
 
                     toast("Duplicate Vaccination", {
                         description:
-                            (<pre className="whitespace-pre-line text-sm">
-                                {String(errors.items)}
-                            </pre>),
+                            (<div className='flex  items-start justify-start gap-2'>
+
+                                <pre className="whitespace-pre-line text-sm">
+                                    {String(errors.items).replace(/name:/g, '\nname:')
+                                        .replace(/\|/g, ' | ')
+                                        .trim()}
+                                </pre>
+                                <LucideThumbsDown className='text-blue-500 py-1' />
+
+                            </div>),
                         action: {
-                            label: "Close",
+                            label: <X className='py-1'></X>,
                             onClick: () => console.log("Closed"),
                         },
                     });
@@ -72,6 +83,10 @@ export default function BhuDashboard() {
     }
 
     console.log(errors.items);
+
+    const handleRemove = (ind: number) => {
+        setData("items", data.items.filter((_, index) => index !== ind));
+    }
 
     return (
         <>
@@ -86,7 +101,7 @@ export default function BhuDashboard() {
                         <Button type="submit" className='bg-blue-600 w-auto hover:bg-blue-700 cursor-pointer'>Request <ArrowBigRightDashIcon></ArrowBigRightDashIcon></Button>
                     </div>
                     <div className='h-full'>
-                        <RequestTable items={data.items} ></RequestTable>
+                        <RequestTable items={data.items} handleRemove={handleRemove} ></RequestTable>
                     </div>
                     <Separator></Separator>
                     <div className='flex gap-2'>
@@ -94,24 +109,6 @@ export default function BhuDashboard() {
                         <Request_Select value={vaccine} onChange={(value) => setVaccine(value)} ></Request_Select>
                         <Button type="button" onClick={handleAdd} className='bg-blue-600 w-auto hover:bg-blue-700 cursor-pointer'>Add <Plus></Plus></Button>
                     </div>
-
-                    <Button
-                        variant="outline"
-                        onClick={() =>
-                            toast("Event has been created", {
-                                description:
-                                    (<pre className="whitespace-pre-line text-sm">
-                                        {String(errors.items)}
-                                    </pre>),
-                                action: {
-                                    label: "Close",
-                                    onClick: () => console.log("Closed"),
-                                },
-                            })
-                        }
-                    >
-                        Show Toast
-                    </Button>
                 </div>
             </form>
 
