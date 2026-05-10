@@ -46,7 +46,7 @@ export default function InventoryByBatch() {
         vaccines_data: VaccineType[]
     }
 
-    const { vaccine_batches, vaccines_data} = usePage<PageProps>().props    
+    const { vaccine_batches, vaccines_data } = usePage<PageProps>().props
 
     const { data, setData, post } = useForm({
         // rhu_id: 'ss',
@@ -66,6 +66,11 @@ export default function InventoryByBatch() {
 
     const [date, setDate] = React.useState<Date>()
 
+    const {delete: destroy} = useForm()
+    const handleDelete = (delete_vaccine:number) => {
+        destroy(`/vaccine/inventory/delete/${delete_vaccine}`);        
+        console.log('del', delete_vaccine);
+    }
     return (
         <>
             <Head title="Dashboard" />
@@ -154,7 +159,7 @@ export default function InventoryByBatch() {
                         </AlertDialog>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns} data={vaccine_batches} />
+                        <DataTable columns={columns(handleDelete)} data={vaccine_batches} />
                     </div>
                 </div>
             </div>

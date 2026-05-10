@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { dailyVaccineInventory } from "@/routes"
-import { Link } from "@inertiajs/react"
+import { Link, useForm } from "@inertiajs/react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Ellipsis } from "lucide-react"
@@ -22,13 +22,12 @@ export type VaccineBatch = {
     vaccine: VaccineType
 }
 
-export const columns: ColumnDef<VaccineBatch>[] = [
+
+export const columns = (handleDelete:(delete_vaccine:number)=>void): ColumnDef<VaccineBatch>[] => [
     {
         accessorKey: "batch_number",
         header: "Name of Health Facility",
         cell: ({ row }) => {
-            console.log(row.original.id);
-            
             return <Link href={dailyVaccineInventory(row.original.id).url}>RHU</Link>
         }
     },
@@ -39,7 +38,7 @@ export const columns: ColumnDef<VaccineBatch>[] = [
     {
         accessorKey: "vaccine_id",
         header: "Name of Drug",
-        cell: ({row})=>{
+        cell: ({ row }) => {
             return row.original.vaccine.name
         }
     },
@@ -66,7 +65,7 @@ export const columns: ColumnDef<VaccineBatch>[] = [
     {
         accessorKey: "status",
         header: "Status",
-        cell:({row})=>{
+        cell: ({ row }) => {
             const status = row.original.status == '1' ? 'active' : 'inactive'
             return status
         }
@@ -74,19 +73,22 @@ export const columns: ColumnDef<VaccineBatch>[] = [
     {
         accessorKey: "actions",
         id: "actions",
-        cell: () => (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
-                        <Ellipsis />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-32">
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        )
+        cell: ({ row }) => {
+            const delete_vaccine = row.original.id
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
+                            <Ellipsis />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-32">
+                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem variant="destructive" onClick={()=> handleDelete(delete_vaccine)}>Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )
+        }
     },
 ]
