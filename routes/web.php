@@ -22,6 +22,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/vaccine/management', [VaccineManagementController::class, 'Index'])->name('vaccineManagement');
     Route::post('/vaccine/management/store', [VaccineManagementController::class, 'Store'])->name('vaccineManagement.store');
+    Route::delete('/vaccine/management/delete/{delete_vaccine_id}', [VaccineManagementController::class, 'Delete'])->name('vaccineManagement.delete');
 });
 
 require __DIR__.'/settings.php';
