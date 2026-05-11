@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Ellipsis } from "lucide-react"
 import DeleteConfirmation from "@/components/vaccine_components/alert-dialog"
 import VaccineForm from "@/components/vaccine_components/vaccine-management-form"
+import { SetDataAction } from "@inertiajs/react"
 export type VaccineType = {
     id: number
     name: string
@@ -39,7 +40,6 @@ export const columns = (handleDelete: (delete_vaccine_id: number) => void): Colu
         id: "actions",
         cell: ({ row }) => {
             const delete_vaccine_id = row.original.id
-
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -47,16 +47,12 @@ export const columns = (handleDelete: (delete_vaccine_id: number) => void): Colu
                             <Ellipsis />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent    >
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                    <DropdownMenuContent >
+                        {/* Edit */}
+                        <VaccineForm update_vaccine_id={row.original}></VaccineForm>
                         <DropdownMenuSeparator></DropdownMenuSeparator>
-                        {/* <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem> */}
-                        <Button variant="destructive">
-                            <DeleteConfirmation handleDelete={() => handleDelete(delete_vaccine_id)} delete_vaccine_id={delete_vaccine_id} />
-                        </Button>
-                        <Button variant="ghost">
-                            <VaccineForm></VaccineForm>
-                        </Button>
+                        {/* Delete */}
+                        <DeleteConfirmation handleDelete={() => handleDelete(delete_vaccine_id)} delete_vaccine_id={delete_vaccine_id} />
                     </DropdownMenuContent>
                 </DropdownMenu>
             )

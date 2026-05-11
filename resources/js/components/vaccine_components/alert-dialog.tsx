@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Separator } from "../ui/separator"
 import { Trash2Icon } from "lucide-react"
+import { Button } from "../ui/button";
 
 const handleDelete = (delete_vaccine_id: number) => {
     console.log(delete_vaccine_id);
@@ -24,7 +25,7 @@ export default function DeleteConfirmation({handleDelete, delete_vaccine_id}:han
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <span>Delete</span>
+                <Button>Delete</Button>
             </AlertDialogTrigger>
             <AlertDialogContent size="sm">
                 <AlertDialogHeader className="flex flex-col gap-3">
