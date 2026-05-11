@@ -17,16 +17,19 @@ import { CircleAlert, CircleCheckBig, Plus, } from "lucide-react"
 import { useForm, usePage } from "@inertiajs/react"
 import { toast } from "sonner"
 import EmptyPage from "@/components/vaccine_components/empty-page"
-import { Separator } from "@/components/ui/separator"
 
 export default function VaccineManagement() {
+    interface PageProps {
+        [key: string]: unknown
+        vaccines_data: VaccineType[]
+    }
 
     const { data, setData, post, delete: destroy, errors, reset, clearErrors } = useForm({
         name: "",
         description: "",
     })
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault()
         console.log(data)
         post('/vaccine/management/store', {
@@ -39,11 +42,6 @@ export default function VaccineManagement() {
                     </div>, { position: 'top-right' });
             }
         });
-    }
-
-    interface PageProps {
-        [key: string]: unknown
-        vaccines_data: VaccineType[]
     }
 
     const { vaccines_data } = usePage<PageProps>().props
