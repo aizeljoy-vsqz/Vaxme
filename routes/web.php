@@ -15,6 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/vaccine/inventory', [VaccineBatchesController::class, 'Index'])->name('batchesVaccineInventory');
     Route::post('/vaccine/inventory/store', [VaccineBatchesController::class, 'Store'])->name('batchesVaccineInventory.store');
     Route::delete('/vaccine/inventory/delete/{delete_vaccine}', [VaccineBatchesController::class, 'Delete'])->name('batchesVaccineInventory.delete');
+    Route::put('/vaccine/inventory/update/{update_batch_id}', [VaccineBatchesController::class, 'Update'])->name('batchesVaccineInventory.update');
 
     Route::get('/daily/vaccine/inventory/{id}', [DailyBatchesInventoryController::class, 'Index'])->name('dailyVaccineInventory');
     Route::post('/daily/vaccine/inventory/store', [DailyBatchesInventoryController::class, 'Store'])->name('dailyVaccineInventory.store');

@@ -32,17 +32,36 @@ class VaccineBatchesController extends Controller
         $newVaccineBatch = VaccineBatch::create($request->all());
 
         DailyBatchesInventory::create([
-            'vaccine_batch_id'=> $newVaccineBatch->id,
-            'stock_transferred'=> $newVaccineBatch->current_balance,
-            'daily_dispense'=> '0',
-            'number_of_receipients'=> '0',
-            'current_balance'=>  $newVaccineBatch->current_balance,
-            'vaccine_lose'=> '0',
+            'vaccine_batch_id' => $newVaccineBatch->id,
+            'stock_transferred' => $newVaccineBatch->current_balance,
+            'daily_dispense' => '0',
+            'number_of_receipients' => '0',
+            'current_balance' =>  $newVaccineBatch->current_balance,
+            'vaccine_lose' => '0',
         ]);
     }
 
     public function Delete(VaccineBatch $delete_vaccine)
     {
         $delete_vaccine->delete();
+    }
+    public function Update(Request $request, VaccineBatch $update_batch_id)
+    {
+        $validatedData = $request->validate([
+            // 'rhu_id' => 'required',
+            'vaccine_id' => ['required',],
+            'batch_number' => ['required', Rule::string(), Rule::unique('vaccine_batches')->ignore($update_batch_id->id)],
+            'stock_receive' => ['required', 'integer'],
+            'current_balance' => ['required', 'integer'],
+            'expiration_date' => ['required', Rule::date()]
+        ]);
+        // Update vaccine batch
+        $update_batch_id->update($validatedData);
+
+        // Update related daily inventory
+        DailyBatchesInventory::where('vaccine_batch_id', $update_batch_id->id)->update([
+            'stock_transferred' => $validatedData['current_balance'],
+            'current_balance' => $validatedData['current_balance'],
+        ]);
     }
 }
