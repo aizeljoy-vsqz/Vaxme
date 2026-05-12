@@ -13,6 +13,9 @@ import { useForm } from "@inertiajs/react"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
 import { DailyVaccine } from "@/pages/inventory/inventory-vaccine-daily/columns"
+import { SyntheticEvent } from "react"
+import { toast } from "sonner"
+import { CircleCheck, CircleCheckBigIcon } from "lucide-react"
 
 interface DailyInventoryType {
     update_daily_inventory: DailyVaccine
@@ -25,8 +28,18 @@ export default function DailyBatchesForm({ update_daily_inventory }: DailyInvent
         vaccine_lose: String(update_daily_inventory.vaccine_lose)
     })
 
-    const handleEdit = ()=>{
-        put(`/daily/vaccine/inventory/update/${update_daily_inventory.id}`);
+    const handleEdit = (e: SyntheticEvent) => {
+        e.preventDefault()
+
+        put(`/daily/vaccine/inventory/update/${update_daily_inventory.id}`, {
+            onSuccess: () => {
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleCheckBigIcon className="p-1 text-green-500"/>
+                        <Label>Daily batch updated successfully!</Label>
+                    </div>,{ position: 'top-right' })
+            }
+        });
     }
 
     return (
