@@ -32,4 +32,16 @@ class DailyBatchesInventoryController extends Controller
     {
         $daily_inventory_id->delete();
     }
+    public function Update(Request $request, DailyBatchesInventory $update_daily_inventory)
+    {
+        $validateData = $request->validate([
+            'stock_transferred' => ['required', 'integer'],
+            'daily_dispense' => ['required', 'integer'],
+            'number_of_receipients' => ['required', 'integer'],
+            'vaccine_lose' => ['required', 'integer'],
+        ]);
+
+        $update_daily_inventory->update($validateData);
+
+    }
 }

@@ -20,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/daily/vaccine/inventory/{id}', [DailyBatchesInventoryController::class, 'Index'])->name('dailyVaccineInventory');
     Route::post('/daily/vaccine/inventory/store', [DailyBatchesInventoryController::class, 'Store'])->name('dailyVaccineInventory.store');
     Route::delete('/daily/vaccine/inventory/delete/{daily_inventory_id}', [DailyBatchesInventoryController::class, 'Delete'])->name('dailyVaccineInventory.delete');
+    Route::put('/daily/vaccine/inventory/update/{update_daily_inventory}', [DailyBatchesInventoryController::class, 'Update'])->name('dailyVaccineInventory.update');
 
     Route::get('/vaccine/management', [VaccineManagementController::class, 'Index'])->name('vaccineManagement');
     Route::post('/vaccine/management/store', [VaccineManagementController::class, 'Store'])->name('vaccineManagement.store');

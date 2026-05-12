@@ -2,26 +2,17 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { Ellipsis, Trash2Icon } from "lucide-react"
+import { Ellipsis } from "lucide-react"
 import { ArrowUpDown } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Separator } from "@/components/ui/separator"
+
+import DeleteConfirmation from "@/components/vaccine_components/alert-dialog"
+import DailyBatchesForm from "@/components/vaccine_components/daily-batches-form"
 
 export type DailyVaccine = {
     id: number
@@ -82,40 +73,21 @@ export const columns = (handleDelete: (daily_inventory_id: number) => void): Col
         cell: ({ row }) => {
             const daily_inventory_id = (row.original.id);
             return (
-                <AlertDialog>
-                    <DropdownMenu >
-                        <DropdownMenuTrigger asChild>
-                            <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
-                                <Ellipsis />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-32">
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <AlertDialogTrigger asChild>
-                                <DropdownMenuItem variant="destructive" >Delete</DropdownMenuItem>
-                            </AlertDialogTrigger>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <AlertDialogContent size="sm">
-                        <AlertDialogHeader className="flex flex-col gap-3">
-                            <div className="p-2 rounded-md bg-red-100 text-destructive dark:bg-destructive/20 dark:text-destructive">
-                                <Trash2Icon className="" />
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <span className="font-medium">Delete daily vaccine invetory?</span>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete your vaccine invetory info.
-                                </AlertDialogDescription>
-                            </div>
-                        </AlertDialogHeader>
-                        <Separator />
-                        <AlertDialogFooter>
-                            <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-                            <AlertDialogAction className="bg-red-100 text-red-600 hover:bg-red-200" onClick={() => { handleDelete(daily_inventory_id) }}>Delete</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
+                            <Ellipsis />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent >
+                        {/* Edit */}
+                        <DailyBatchesForm update_daily_inventory = {row.original}></DailyBatchesForm>
+                        <DropdownMenuSeparator></DropdownMenuSeparator>
+                        {/* Delete */}
+                        <DeleteConfirmation handleDelete={() => handleDelete(daily_inventory_id)} delete_vaccine_id={daily_inventory_id} />
+                    </DropdownMenuContent>
+                </DropdownMenu>
             )
         }
     },
