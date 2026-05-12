@@ -13,6 +13,8 @@ import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { useForm } from "@inertiajs/react"
 import { VaccineType } from "@/pages/vaccine-management/column"
+import { toast } from "sonner"
+import { CircleCheckBigIcon } from "lucide-react"
 interface VaccineFormType {
     update_vaccine_id: VaccineType
 }
@@ -31,7 +33,15 @@ export default function VaccineForm({ update_vaccine_id }: VaccineFormType) {
     const submit = (e: React.SyntheticEvent) => {
         e.preventDefault()
 
-        put(`/vaccine/management/update/${update_vaccine_id.id}`)
+        put(`/vaccine/management/update/${update_vaccine_id.id}`, {
+            onSuccess: () => {
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleCheckBigIcon className="p-1 text-green-500" />
+                        <Label>Vaccine updated successfully!</Label>
+                    </div>, { position: 'top-right' })
+            }
+        });
         console.log(update_vaccine_id);
 
     }
