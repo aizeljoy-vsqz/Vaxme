@@ -20,6 +20,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import DeleteConfirmation from "@/components/vaccine_components/alert-dialog"
 import VaccineBatchesForm from "@/components/vaccine_components/vaccine-batches-form"
+import { useState } from "react"
 
 
 export type VaccineBatch = {
@@ -89,14 +90,14 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
             const delete_vaccine = row.original.id
             return (
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger asChild >
                         <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
                             <Ellipsis />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent >
                         {/* Edit */}
-                        <VaccineBatchesForm update_batch_id={row.original}></VaccineBatchesForm>
+                        <VaccineBatchesForm update_batch_id={row.original} />
                         <DropdownMenuSeparator></DropdownMenuSeparator>
                         {/* Delete */}
                         <DeleteConfirmation handleDelete={() => handleDelete(delete_vaccine)} delete_vaccine_id={delete_vaccine} />

@@ -13,19 +13,20 @@ import { Input } from "../ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, CircleCheckBigIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { format, setDate } from "date-fns";
 import { useForm, usePage } from "@inertiajs/react";
 import { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns";
-import React from "react";
+import React, { useState } from "react";
 import { VaccineType } from "@/pages/vaccine-management/column";
+import { toast } from "sonner";
 
 interface VaccineBatchesFormProps {
     update_batch_id: VaccineBatch
 }
 
-export default function VaccineBatchesForm({ update_batch_id }: VaccineBatchesFormProps) {
+export default function VaccineBatchesForm({ update_batch_id}: VaccineBatchesFormProps) {
     const { data, setData, put, errors, processing } = useForm({
         // rhu_id: 'ss',
         batch_number: update_batch_id.batch_number,
@@ -38,6 +39,9 @@ export default function VaccineBatchesForm({ update_batch_id }: VaccineBatchesFo
 
     const [date, setDate] = React.useState<Date>()
 
+    // For dialog open state 
+    const [openDialog, setOpenDialog] = useState(false)
+
     interface PageProps {
         [key: string]: unknown
         vaccines_data: VaccineType[]
@@ -48,12 +52,21 @@ export default function VaccineBatchesForm({ update_batch_id }: VaccineBatchesFo
     const handleEdit = (e: React.SyntheticEvent) => {
         e.preventDefault()
 
-        put(`/vaccine/inventory/update/${update_batch_id.id}`)
+        put(`/vaccine/inventory/update/${update_batch_id.id}`, {
+            onSuccess: () => {
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleCheckBigIcon className="p-1 text-green-500" />
+                        <Label>Vaccine batch updated successfully!</Label>
+                    </div>, { position: 'top-right' })
+                setOpenDialog(false)
+            }
+        });
         console.log(update_batch_id);
 
     }
     return (
-        <Dialog>
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
             <DialogTrigger>Edit</DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleEdit}>
@@ -91,7 +104,7 @@ export default function VaccineBatchesForm({ update_batch_id }: VaccineBatchesFo
                     <div className='flex gap-4'>
                         <div className='w-full flex flex-col gap-2'>
                             <Label>Stock Received:</Label>
-                            <Input value={data.stock_receive} onChange={(e) => {setData('stock_receive', e.target.value); setData('current_balance', Number(e.target.value))}}></Input>
+                            <Input value={data.stock_receive} onChange={(e) => { setData('stock_receive', e.target.value); setData('current_balance', Number(e.target.value)) }}></Input>
                             <div className='text-red-500 text-sm'>{errors.stock_receive}</div>
                         </div>
                         <div className='w-full flex flex-col gap-2'>
