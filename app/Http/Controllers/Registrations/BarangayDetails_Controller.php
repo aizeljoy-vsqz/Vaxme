@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Registrations;
 
 use App\Http\Controllers\Controller;
-use App\Models\Barangay;
 use App\Models\BarangayPopulation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,22 +12,30 @@ class BarangayDetails_Controller extends Controller
     public function index(Request $request)
     {
         $selectedBarangayId = $request->query('barangay_id');
-        $rhuId = $request->user()?->rhu?->id;
+        $user = $request->user();
 
-        $query = BarangayPopulation::query()
-            ->when($rhuId, function ($query) use ($rhuId): void {
-                $query->whereHas('barangay.bhc.rhu', function ($rhuQuery) use ($rhuId): void {
-                    $rhuQuery->whereKey($rhuId);
-                });
-            }, function ($query): void {
-                $query->whereRaw('1 = 0');
-            })
-            ->with([
-                'barangay:id,bhc_id,barangay_name',
-                'barangay.bhc:id,rhu_id',
-                'barangay.bhc.rhu:id',
-            ])
-            ->latest();
+        $query = BarangayPopulation::query();
+
+        if ($user && $user->rhu) {
+            $rhuId = $user->rhu->id;
+
+            $query->whereHas('barangay.bhc.rhu', function ($rhuQuery) use ($rhuId): void {
+                $rhuQuery->whereKey($rhuId);
+            });
+        } elseif ($user && $user->bhc && ($user->user_type ?? '') === 'barangay') {
+            // Barangay users only see their own barangay's populations
+            $barangayId = $user->bhc->barangays()->value('id');
+
+            $query->where('barangay_id', $barangayId ?: 0);
+        } else {
+            $query->whereRaw('1 = 0');
+        }
+
+        $query->with([
+            'barangay:id,bhc_id,barangay_name',
+            'barangay.bhc:id,rhu_id',
+            'barangay.bhc.rhu:id',
+        ])->latest();
 
         if ($selectedBarangayId) {
             $query->where('barangay_id', $selectedBarangayId);
@@ -49,15 +56,11 @@ class BarangayDetails_Controller extends Controller
 
     public function updatePopulation(Request $request, BarangayPopulation $population)
     {
-        $rhuId = $request->user()?->rhu?->id;
+        $user = $request->user();
 
-        abort_unless(
-            Barangay::query()
-                ->visibleToRhu($rhuId)
-                ->whereKey($population->barangay_id)
-                ->exists(),
-            403
-        );
+        if (! $user || ! $user->canAccessBarangay($population->barangay_id)) {
+            abort(403);
+        }
 
         $validated = $request->validate([
             'male' => ['required', 'integer', 'min:0'],
@@ -75,15 +78,11 @@ class BarangayDetails_Controller extends Controller
 
     public function destroyPopulation(BarangayPopulation $population)
         {
-            $rhuId = request()->user()?->rhu?->id;
+            $user = request()->user();
 
-            abort_unless(
-                Barangay::query()
-                    ->visibleToRhu($rhuId)
-                    ->whereKey($population->barangay_id)
-                    ->exists(),
-                403
-            );
+            if (! $user || ! $user->canAccessBarangay($population->barangay_id)) {
+                abort(403);
+            }
 
             if (!$population->id) {
                 return back()->with('error', 'Invalid population');

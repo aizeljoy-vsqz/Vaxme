@@ -20,17 +20,27 @@ class Registration_Controller extends Controller
 {
     public function index(Request $request)
     {
-        $rhuId = $request->user()?->rhu?->id;
+        $user = $request->user();
 
-        return Inertia::render('RHU_registration/Registration', [
-            'barangays' => Barangay::query()
+        // Barangay users should only see barangays owned by their BHC
+        if ($user && $user->bhc && ($user->user_type ?? '') === 'barangay') {
+            $query = $user->bhc->barangays()->latest()->with(['bhc:id,rhu_id']);
+            $items = $query->get(['id', 'bhc_id', 'barangay_name', 'nurse_id', 'nurse_assigned', 'contact_number']);
+        } else {
+            $rhuId = $user?->rhu?->id;
+
+            $items = Barangay::query()
                 ->visibleToRhu($rhuId)
                 ->with([
                     'bhc:id,rhu_id',
                     'bhc.rhu:id',
                 ])
                 ->latest()
-                ->get(['id', 'bhc_id', 'barangay_name', 'nurse_id', 'nurse_assigned', 'contact_number']),
+                ->get(['id', 'bhc_id', 'barangay_name', 'nurse_id', 'nurse_assigned', 'contact_number']);
+        }
+
+        return Inertia::render('RHU_registration/Registration', [
+            'barangays' => $items,
         ]);
     }
     public function store(Request $request)
@@ -166,15 +176,11 @@ class Registration_Controller extends Controller
             'populations.*.female' => ['required', 'numeric', 'min:0'],
         ]);
 
-        $rhuId = $request->user()?->rhu?->id;
+        $user = $request->user();
 
-        abort_unless(
-            Barangay::query()
-                ->visibleToRhu($rhuId)
-                ->whereKey($validated['barangay_id'])
-                ->exists(),
-            403
-        );
+        if (! $user || ! $user->canAccessBarangay((int) $validated['barangay_id'])) {
+            abort(403);
+        }
 
         \Log::info('storePopulation validated:', $validated);
 
@@ -216,15 +222,11 @@ class Registration_Controller extends Controller
 
     public function update(Request $request, Barangay $barangay)
     {
-        $rhuId = $request->user()?->rhu?->id;
+        $user = $request->user();
 
-        abort_unless(
-            Barangay::query()
-                ->visibleToRhu($rhuId)
-                ->whereKey($barangay->id)
-                ->exists(),
-            403
-        );
+        if (! $user || ! $user->canAccessBarangay($barangay->id)) {
+            abort(403);
+        }
 
         
         $validated = $request->validate([
@@ -246,15 +248,11 @@ class Registration_Controller extends Controller
 
     public function destroy(Barangay $barangay)
     {
-        $rhuId = request()->user()?->rhu?->id;
+        $user = request()->user();
 
-        abort_unless(
-            Barangay::query()
-                ->visibleToRhu($rhuId)
-                ->whereKey($barangay->id)
-                ->exists(),
-            403
-        );
+        if (! $user || ! $user->canAccessBarangay($barangay->id)) {
+            abort(403);
+        }
 
         if (! $barangay->id) {
             return back()->with('error', 'Invalid barangay');
@@ -310,16 +308,20 @@ class Registration_Controller extends Controller
         }
 
         $barangayId = $request->query('barangay_id');
+        $user = $request->user();
 
         if ($barangayId) {
-            abort_unless(
-                Barangay::query()
-                    ->visibleToRhu($rhuId)
-                    ->whereKey($barangayId)
-                    ->exists(),
-                403
-            );
+            if (! $user || ! $user->canAccessBarangay((int) $barangayId)) {
+                abort(403);
+            }
+        } else {
+            // If barangay user and no specific barangay requested, default to their own
+            if ($user && $user->bhc && ($user->user_type ?? '') === 'barangay') {
+                $barangayId = $user->bhc->barangays()->value('id');
+            }
         }
+
+        $rhuId = $user?->rhu?->id;
 
         return Excel::download(new BarangayExport($barangayId, $rhuId), $fileName);
     }
