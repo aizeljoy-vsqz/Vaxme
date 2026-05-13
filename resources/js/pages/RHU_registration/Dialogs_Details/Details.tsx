@@ -27,6 +27,7 @@ export function DetailsPage(props?: { barangays?: unknown[] }) {
     const { barangays } = props ?? {};
     const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
     const [detailsFormData, setDetailsFormData] = useState<DetailsFormData | null>(null);
+    const [serverErrors, setServerErrors] = useState<Record<string, string[]> | null>(null);
     
     const {data, setData, errors} = useForm({
         barangay_name: '',
@@ -70,13 +71,18 @@ export function DetailsPage(props?: { barangays?: unknown[] }) {
                     <Input 
                         placeholder="e.g Alawihao" 
                         value={data.barangay_name}
-                        onChange={(e) => setData('barangay_name', e.target.value)}
+                        onChange={(e) => {
+                            setData('barangay_name', e.target.value);
+                            setServerErrors(null);
+                        }}
                     />
-                    {errors.barangay_name && (
-                    <span className="text-red-500 text-sm">
-                        {errors.barangay_name}
-                    </span>
-                )}
+                    {serverErrors?.barangay_name ? (
+                        <span className="text-red-500 text-sm">{serverErrors.barangay_name[0]}</span>
+                    ) : errors.barangay_name && (
+                        <span className="text-red-500 text-sm">
+                            {errors.barangay_name}
+                        </span>
+                    )}
                     </div>
                 </Field>
                 <Field className="grid grid-cols-2 gap-4">
@@ -85,9 +91,14 @@ export function DetailsPage(props?: { barangays?: unknown[] }) {
                     <Input 
                         placeholder="e.g Aizel Joy Vasquez" 
                         value={data.nurse_assigned}
-                        onChange={(e) => setData('nurse_assigned', e.target.value)}
+                        onChange={(e) => {
+                            setData('nurse_assigned', e.target.value);
+                            setServerErrors(null);
+                        }}
                     />
-                    {errors.nurse_assigned && (
+                    {serverErrors?.nurse_assigned ? (
+                        <span className="text-red-500 text-sm">{serverErrors.nurse_assigned[0]}</span>
+                    ) : errors.nurse_assigned && (
                         <span className="text-red-500 text-sm">
                             {errors.nurse_assigned}
                         </span>
@@ -99,9 +110,14 @@ export function DetailsPage(props?: { barangays?: unknown[] }) {
                     <Input 
                         placeholder="e.g 0912345678" 
                         value={data.contact_number}
-                        onChange={(e) => setData('contact_number', e.target.value)}
+                        onChange={(e) => {
+                            setData('contact_number', e.target.value);
+                            setServerErrors(null);
+                        }}
                     />
-                    {errors.contact_number && (
+                    {serverErrors?.contact_number ? (
+                        <span className="text-red-500 text-sm">{serverErrors.contact_number[0]}</span>
+                    ) : errors.contact_number && (
                         <span className="text-red-500 text-sm">
                             {errors.contact_number}
                         </span>
@@ -117,6 +133,7 @@ export function DetailsPage(props?: { barangays?: unknown[] }) {
                         open={populationDialogOpen}
                         onOpenChange={setPopulationDialogOpen}
                         onNext={handleNext}
+                        onServerErrors={(errs: Record<string, string[]>) => setServerErrors(errs)}
                         disabled={!isFormValid}/>
             </DialogFooter>
                 </DialogContent>

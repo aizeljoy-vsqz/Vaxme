@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Rhu extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'facility_name',
+        'address',
+        'nurse_assigned',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

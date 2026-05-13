@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Registrations;
 use App\Http\Controllers\Controller;
 use App\Exports\BarangayExport;
 use App\Models\Barangay;
-use Illuminate\Support\Facades\Schema;
 use App\Models\BarangayPopulation;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
+use Throwable;
 
 class Registration_Controller extends Controller
 {
@@ -27,7 +31,7 @@ class Registration_Controller extends Controller
         $validated = $request->validate([
             'barangay_name' => ['required', 'string', 'max:255', 'unique:barangays,barangay_name'],
             'nurse_id' => ['nullable', 'integer'],
-            'contact_number' => ['nullable', 'string'],
+            'contact_number' => ['nullable', 'string', 'max:50'],
             'nurse_assigned' => ['required', 'string', 'max:255'],
         ], [
             'barangay_name.required' => 'Barangay name is required.',
@@ -35,35 +39,101 @@ class Registration_Controller extends Controller
             'nurse_assigned.required' => 'Nurse assigned is required.',
         ]);
 
-        $barangayName = $validated['barangay_name'] ?? $request->input('barangay_name');
+        try {
+            $created = DB::transaction(function () use ($request, $validated): array {
+                $user = $request->user();
+                
+                if (! $user) {
+                    throw ValidationException::withMessages([
+                        'auth' => 'You must be authenticated to register a barangay.',
+                    ]);
+                }
 
-        if (! $barangayName) {
-            return back()->withErrors(['barangay_name' => 'Barangay name is required.'])->withInput();
-        }
+                // Auto-create RHU if user doesn't have one
+                $rhu = $user->rhu;
+                if (! $rhu) {
+                    $rhu = $user->rhu()->create([
+                        'facility_name' => $user->name . ' RHU',
+                        'address' => 'To be updated',
+                        'nurse_assigned' => $user->name,
+                    ]);
+                }
 
-        $barangay = new Barangay();
-        $barangay->nurse_id = $validated['nurse_id'] ?? 0;
-        $barangay->barangay_name = (string) $barangayName;
-        if (Schema::hasColumn('barangays', 'contact_number')) {
-            $barangay->contact_number = $validated['contact_number'] ?? 'N/A';
+                $temporaryPassword = Str::random(16);
+                $emailPrefix = Str::slug($validated['barangay_name']) ?: 'barangay';
+                $generatedEmail = sprintf(
+                    'bhc-%s-%s@generated.local',
+                    $emailPrefix,
+                    Str::lower((string) Str::ulid())
+                );
+
+                $user = User::create([
+                    'name' => $validated['nurse_assigned'],
+                    'email' => $generatedEmail,
+                    'password' => Hash::make($temporaryPassword),
+                ]);
+
+                $bhc = $rhu->bhcs()->create([
+                    'user_id' => $user->id,
+                ]);
+
+                $barangay = $bhc->barangays()->create([
+                    'barangay_name' => $validated['barangay_name'],
+                    'nurse_id' => $validated['nurse_id'] ?? 0,
+                    'nurse_assigned' => $validated['nurse_assigned'],
+                    'contact_number' => filled($validated['contact_number'] ?? null)
+                        ? $validated['contact_number']
+                        : 'N/A',
+                ]);
+
+                return [
+                    'user' => $user,
+                    'bhc' => $bhc,
+                    'barangay' => $barangay,
+                    'temporary_password' => $temporaryPassword,
+                ];
+            });
+        } catch (Throwable $throwable) {
+            if ($throwable instanceof ValidationException) {
+                throw $throwable;
+            }
+
+            report($throwable);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unable to register barangay at this time.',
+                ], 500);
+            }
+
+            return back()
+                ->withErrors(['registration' => 'Unable to register barangay at this time.'])
+                ->withInput();
         }
-        $barangay->nurse_assigned = $validated['nurse_assigned'];
-        $barangay->save();
 
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Barangay created successfully',
-                'barangay_id' => $barangay->id,
+                'message' => 'Barangay created successfully.',
+                'barangay_id' => $created['barangay']->id,
+                'bhc_id' => $created['bhc']->id,
+                'user_id' => $created['user']->id,
+                'generated_user' => [
+                    'email' => $created['user']->email,
+                    'temporary_password' => $created['temporary_password'],
+                ],
             ], 201);
         }
 
         return redirect()
-        ->route('registration')
-        ->with([
-            'success' => 'Barangay created successfully',
-            'barangay_id' => $barangay->id,
-        ]);
+            ->route('registration')
+            ->with([
+                'success' => 'Barangay created successfully.',
+                'barangay_id' => $created['barangay']->id,
+                'bhc_id' => $created['bhc']->id,
+                'user_id' => $created['user']->id,
+            ]);
     }
 
     public function storePopulation(Request $request)

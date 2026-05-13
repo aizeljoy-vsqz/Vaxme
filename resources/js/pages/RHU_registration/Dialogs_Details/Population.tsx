@@ -11,6 +11,8 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
+import { store as registrationStore } from '@/routes/registration';
+import { store as populationStore } from '@/routes/registration/population';
 import { useState } from 'react';
 import { useForm } from '@inertiajs/react';
 
@@ -32,6 +34,7 @@ export function InputPopulationPage({
   open,
   onOpenChange,
   onNext,
+  onServerErrors,
   disabled,
 }: {
   detailsData: DetailsFormData | null;
@@ -39,6 +42,7 @@ export function InputPopulationPage({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onNext: () => void;
+  onServerErrors?: (errors: Record<string, string[]>) => void;
   disabled?: boolean;
 }) {
 
@@ -82,16 +86,39 @@ export function InputPopulationPage({
 
     try {
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-
-      const detailsResponse = await fetch('/registration', {
+      const detailsResponse = await fetch(registrationStore.url(), {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRF-Token': csrfToken,
-        },
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': csrfToken,
+      },
+        credentials: 'same-origin',
         body: JSON.stringify(detailsData),
       });
+
+      console.log('STATUS:', detailsResponse.status);
+
+      if (detailsResponse.status === 422) {
+        // validation errors from server
+        try {
+          const err = await detailsResponse.json();
+          if (onServerErrors && err?.errors) {
+            onServerErrors(err.errors);
+          } else {
+            const firstField = err?.errors && Object.keys(err.errors)[0];
+            const firstMsg = firstField ? err.errors[firstField][0] : err.message || 'Validation error';
+            alert(firstMsg);
+          }
+        } catch {
+          // fallback
+          alert('Validation error saving barangay details');
+        }
+
+        setIsSaving(false);
+        return;
+      }
 
       if (!detailsResponse.ok) {
         setIsSaving(false);
@@ -100,7 +127,11 @@ export function InputPopulationPage({
 
       const detailsResult = await detailsResponse.json();
 
+      console.log('DETAILS RESULT:', detailsResult);
+
       const barangayId = detailsResult.barangay_id || detailsResult.id;
+
+      console.log('BARANGAY ID:', barangayId);
 
       if (!barangayId || barangayId <= 0) {
         setIsSaving(false);
@@ -112,22 +143,36 @@ export function InputPopulationPage({
         populations: data.populations,
       };
 
-      const populationResponse = await fetch('/registration/population', {
+      console.log('POPULATION PAYLOAD:', populationPayload);
+
+      const populationResponse = await fetch(populationStore.url(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRF-Token': csrfToken,
+          'X-CSRF-TOKEN': csrfToken,
         },
+        credentials: 'include',
         body: JSON.stringify(populationPayload),
       });
+      
+      if (populationResponse.status === 422) {
+        const err = await populationResponse.json();
+
+        console.log('422 ERROR', err);
+
+        alert(JSON.stringify(err.errors));
+
+        setIsSaving(false);
+        return;
+      }
 
       if (!populationResponse.ok) {
         setIsSaving(false);
         return;
       }
 
-      const populationResult = await populationResponse.json();
+      await populationResponse.json();
 
       setData('populations', [
         { age_range: 'All Ages', male: 0, female: 0 },
@@ -142,7 +187,7 @@ export function InputPopulationPage({
       setIsSaving(false);
 
       window.location.reload();
-    } catch (error) {
+    } catch {
       setIsSaving(false);
     }
   };
