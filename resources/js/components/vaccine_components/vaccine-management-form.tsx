@@ -14,17 +14,19 @@ import { Button } from "../ui/button"
 import { useForm } from "@inertiajs/react"
 import { VaccineType } from "@/pages/vaccine-management/column"
 import { toast } from "sonner"
-import { CircleCheckBigIcon } from "lucide-react"
+import { CircleCheckBigIcon, PencilIcon } from "lucide-react"
 interface VaccineFormType {
     update_vaccine_id: VaccineType
+    onOpenDropdown: () => void
 }
-export default function VaccineForm({ update_vaccine_id }: VaccineFormType) {
+export default function VaccineForm({ update_vaccine_id, onOpenDropdown }: VaccineFormType) {
     const {
         data,
         setData,
         put,
         processing,
-        errors
+        errors,
+        clearErrors,
     } = useForm({
         name: update_vaccine_id.name,
         description: update_vaccine_id.description
@@ -40,17 +42,18 @@ export default function VaccineForm({ update_vaccine_id }: VaccineFormType) {
                         <CircleCheckBigIcon className="p-1 text-green-500" />
                         <Label>Vaccine updated successfully!</Label>
                     </div>, { position: 'top-right' })
-            }
+
+                onOpenDropdown();
+            },
         });
-        console.log(update_vaccine_id);
+        console.log(errors);
 
     }
     return (
         <Dialog>
-            <DialogTrigger asChild>
-                <Button variant="outline">
-                    Edit
-                </Button>
+            <DialogTrigger className='flex items-center hover:bg-muted rounded-md p-1 text-sm w-full text-left'>
+                <PencilIcon className="p-1" />
+                Edit
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-lg">
@@ -88,7 +91,7 @@ export default function VaccineForm({ update_vaccine_id }: VaccineFormType) {
 
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button type="button" variant="outline">
+                            <Button type="button" variant="outline" onClick={() => {clearErrors(); onOpenDropdown()}}>
                                 Cancel
                             </Button>
                         </DialogClose>

@@ -15,13 +15,14 @@ import { Input } from "../ui/input"
 import { DailyVaccine } from "@/pages/inventory/inventory-vaccine-daily/columns"
 import { SyntheticEvent } from "react"
 import { toast } from "sonner"
-import { CircleCheck, CircleCheckBigIcon } from "lucide-react"
+import { CircleCheckBigIcon } from "lucide-react"
 
 interface DailyInventoryType {
     update_daily_inventory: DailyVaccine
+    onOpenDropdown: () => void
 }
-export default function DailyBatchesForm({ update_daily_inventory }: DailyInventoryType) {
-    const { data, setData, put, errors, processing } = useForm({
+export default function DailyBatchesForm({ update_daily_inventory, onOpenDropdown }: DailyInventoryType) {
+    const { data, setData, put, errors, processing, clearErrors } = useForm({
         daily_dispense: String(update_daily_inventory.daily_dispense),
         number_of_receipients: String(update_daily_inventory.number_of_receipients),
         stock_transferred: String(update_daily_inventory.stock_transferred),
@@ -38,6 +39,7 @@ export default function DailyBatchesForm({ update_daily_inventory }: DailyInvent
                         <CircleCheckBigIcon className="p-1 text-green-500"/>
                         <Label>Daily batch updated successfully!</Label>
                     </div>,{ position: 'top-right' })
+                onOpenDropdown()  
             }
         });
     }
@@ -80,7 +82,7 @@ export default function DailyBatchesForm({ update_daily_inventory }: DailyInvent
                         </div>
                         <DialogFooter>
                             <DialogClose asChild>
-                                <Button type="button" variant="outline">
+                                <Button type="button" variant="outline" onClick={() => { clearErrors(); onOpenDropdown() }}>
                                     Cancel
                                 </Button>
                             </DialogClose>

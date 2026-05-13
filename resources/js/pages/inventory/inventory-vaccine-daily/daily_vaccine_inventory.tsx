@@ -25,14 +25,16 @@ export default function DailyInventory() {
         [key: string]: unknown
         batch_id: number
         daily_inventory: DailyInventoryType
+        vaccine_name: string
     }
 
     interface DailyInventoryType {
         daily_vaccine: DailyVaccine[]
+        vaccine_id: number
     }
 
-    const { batch_id, daily_inventory } = usePage<PageProps>().props
-
+    const { batch_id, daily_inventory, vaccine_name } = usePage<PageProps>().props
+    
     // For Form Submission
     const { data, setData, post, errors, reset, clearErrors } = useForm({
         vaccine_batch_id: batch_id,
@@ -71,6 +73,7 @@ export default function DailyInventory() {
         });
     }
     console.log(errors);
+    console.log(vaccine_name);
 
     return (
         <>
@@ -78,7 +81,7 @@ export default function DailyInventory() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className='px-2 h-full'>
                     <div className='flex justify-between'>
-                        <Label className='text-md flex items-center'>Penta</Label>
+                        <Label className='text-md flex items-center'>{vaccine_name}</Label>
                         <div className='flex gap-2'>
                             <Button variant={'outline'} className='text-blue-600 border border-blue-600 hover:text-blue-700'><Download />Export</Button>
                             <AlertDialog>
@@ -88,7 +91,7 @@ export default function DailyInventory() {
                                 <AlertDialogContent>
                                     <form onSubmit={handleSubmit}>
                                         <AlertDialogHeader>
-                                            <AlertDialogTitle>Vaccinne (Penta)</AlertDialogTitle>
+                                            <AlertDialogTitle>Vaccinne ({vaccine_name})</AlertDialogTitle>
                                             <AlertDialogDescription>
                                                 Enter vaccine details.
                                             </AlertDialogDescription>

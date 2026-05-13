@@ -13,6 +13,7 @@ import {
 
 import DeleteConfirmation from "@/components/vaccine_components/alert-dialog"
 import DailyBatchesForm from "@/components/vaccine_components/daily-batches-form"
+import { useState } from "react"
 
 export type DailyVaccine = {
     id: number
@@ -72,9 +73,11 @@ export const columns = (handleDelete: (daily_inventory_id: number) => void): Col
         id: "actions",
         cell: ({ row }) => {
             const daily_inventory_id = (row.original.id);
+            // For dropdown edit open state
+            const [openDropdown, setOpenDropdown] = useState(false)
             return (
 
-                <DropdownMenu>
+                <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
                     <DropdownMenuTrigger asChild>
                         <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
                             <Ellipsis />
@@ -82,7 +85,7 @@ export const columns = (handleDelete: (daily_inventory_id: number) => void): Col
                     </DropdownMenuTrigger>
                     <DropdownMenuContent >
                         {/* Edit */}
-                        <DailyBatchesForm update_daily_inventory = {row.original}></DailyBatchesForm>
+                        <DailyBatchesForm onOpenDropdown={() => setOpenDropdown(false)} update_daily_inventory = {row.original}></DailyBatchesForm>
                         <DropdownMenuSeparator></DropdownMenuSeparator>
                         {/* Delete */}
                         <DeleteConfirmation handleDelete={() => handleDelete(daily_inventory_id)} delete_vaccine_id={daily_inventory_id} />

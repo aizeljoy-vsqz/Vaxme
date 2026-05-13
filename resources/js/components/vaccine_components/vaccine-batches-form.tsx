@@ -15,7 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { ChevronDownIcon, CircleCheckBigIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
-import { format, setDate } from "date-fns";
+import { format } from "date-fns";
 import { useForm, usePage } from "@inertiajs/react";
 import { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns";
 import React, { useState } from "react";
@@ -24,10 +24,11 @@ import { toast } from "sonner";
 
 interface VaccineBatchesFormProps {
     update_batch_id: VaccineBatch
+    onOpenDropdown: () => void
 }
 
-export default function VaccineBatchesForm({ update_batch_id}: VaccineBatchesFormProps) {
-    const { data, setData, put, errors, processing } = useForm({
+export default function VaccineBatchesForm({ update_batch_id, onOpenDropdown }: VaccineBatchesFormProps) {
+    const { data, setData, put, errors, clearErrors, processing } = useForm({
         // rhu_id: 'ss',
         batch_number: update_batch_id.batch_number,
         vaccine_id: update_batch_id.vaccine_id,
@@ -51,7 +52,6 @@ export default function VaccineBatchesForm({ update_batch_id}: VaccineBatchesFor
 
     const handleEdit = (e: React.SyntheticEvent) => {
         e.preventDefault()
-
         put(`/vaccine/inventory/update/${update_batch_id.id}`, {
             onSuccess: () => {
                 toast(
@@ -60,6 +60,7 @@ export default function VaccineBatchesForm({ update_batch_id}: VaccineBatchesFor
                         <Label>Vaccine batch updated successfully!</Label>
                     </div>, { position: 'top-right' })
                 setOpenDialog(false)
+                onOpenDropdown()
             }
         });
         console.log(update_batch_id);
@@ -137,7 +138,7 @@ export default function VaccineBatchesForm({ update_batch_id}: VaccineBatchesFor
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button type="button" variant="outline">
+                            <Button type="button" variant="outline" onClick ={()=>{clearErrors(); onOpenDropdown()}}>
                                 Cancel
                             </Button>
                         </DialogClose>

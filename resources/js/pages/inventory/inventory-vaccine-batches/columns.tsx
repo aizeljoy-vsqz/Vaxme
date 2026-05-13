@@ -2,22 +2,11 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { dailyVaccineInventory } from "@/routes"
-import { Link, useForm } from "@inertiajs/react"
+import { Link } from "@inertiajs/react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { Ellipsis, Trash2Icon } from "lucide-react"
+import { Ellipsis } from "lucide-react"
 import { VaccineType } from "@/pages/vaccine-management/column"
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Separator } from "@/components/ui/separator"
 import DeleteConfirmation from "@/components/vaccine_components/alert-dialog"
 import VaccineBatchesForm from "@/components/vaccine_components/vaccine-batches-form"
 import { useState } from "react"
@@ -88,8 +77,10 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
         id: "actions",
         cell: ({ row }) => {
             const delete_vaccine = row.original.id
+            // For dropdown edit open state
+            const [openDropdown, setOpenDropdown] = useState(false)
             return (
-                <DropdownMenu>
+                <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
                     <DropdownMenuTrigger asChild >
                         <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
                             <Ellipsis />
@@ -97,7 +88,7 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
                     </DropdownMenuTrigger>
                     <DropdownMenuContent >
                         {/* Edit */}
-                        <VaccineBatchesForm update_batch_id={row.original} />
+                        <VaccineBatchesForm onOpenDropdown={() => setOpenDropdown(false)} update_batch_id={row.original} />
                         <DropdownMenuSeparator></DropdownMenuSeparator>
                         {/* Delete */}
                         <DeleteConfirmation handleDelete={() => handleDelete(delete_vaccine)} delete_vaccine_id={delete_vaccine} />
