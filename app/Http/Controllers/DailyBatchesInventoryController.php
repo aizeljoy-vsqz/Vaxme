@@ -13,6 +13,7 @@ class DailyBatchesInventoryController extends Controller
     {
         $batch_id = $id;
         $daily_inventory = VaccineBatch::with(['dailyVaccine'])->findOrFail($id);
+        $daily_inventory = $daily_inventory->dailyVaccine()->lazyByIdDesc();
         $vaccine_name = VaccineBatch::with(['vaccine'])->findOrFail($id)->vaccine->name;
 
         return Inertia::render('inventory/inventory-vaccine-daily/daily_vaccine_inventory', compact(['batch_id', 'daily_inventory','vaccine_name']));

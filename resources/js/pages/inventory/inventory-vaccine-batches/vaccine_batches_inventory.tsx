@@ -185,7 +185,7 @@ export default function InventoryByBatch() {
                     </div>
                     <div className='px-2 py-4 h-8/10'>
                         {
-                            vaccine_batches.length > 0 ? (<DataTable columns={columns(handleDelete)} data={vaccine_batches} />) : (<EmptyPage title={'Empty vaccine batch inventory'} description={`You haven't created any vaccines batches yet. Start creating your inventory.`}></EmptyPage>)
+                            vaccine_batches.length > 0 ? (<DataTable columns={columns(handleDelete)} data={vaccine_batches ?? []} />) : (<EmptyPage title={'Empty vaccine batch inventory'} description={`You haven't created any vaccines batches yet. Start creating your inventory.`}></EmptyPage>)
                         }
                     </div>
                 </div>

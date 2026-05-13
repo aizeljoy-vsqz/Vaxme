@@ -14,7 +14,7 @@ class VaccineBatchesController extends Controller
     public function Index()
     {
         $vaccines_data = Vaccine::all();
-        $vaccine_batches = VaccineBatch::with(['vaccine'])->get();
+        $vaccine_batches = VaccineBatch::with(['vaccine'])->lazyByIdDesc();
         return Inertia::render('inventory/inventory-vaccine-batches/vaccine_batches_inventory', compact('vaccine_batches', 'vaccines_data'));
     }
 

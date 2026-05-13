@@ -24,13 +24,8 @@ export default function DailyInventory() {
     interface PageProps {
         [key: string]: unknown
         batch_id: number
-        daily_inventory: DailyInventoryType
+        daily_inventory: DailyVaccine[]
         vaccine_name: string
-    }
-
-    interface DailyInventoryType {
-        daily_vaccine: DailyVaccine[]
-        vaccine_id: number
     }
 
     const { batch_id, daily_inventory, vaccine_name } = usePage<PageProps>().props
@@ -132,7 +127,7 @@ export default function DailyInventory() {
                         </div>
                     </div>
                     <div className='px-4'>
-                        <DataTable columns={columns(handleDelete)} data={daily_inventory.daily_vaccine} />
+                        <DataTable columns={columns(handleDelete)} data={daily_inventory ?? []} />
                     </div>
                 </div>
             </div>

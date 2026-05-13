@@ -12,7 +12,8 @@ class VaccineManagementController extends Controller
 {
     public function Index()
     {
-        $vaccines_data = Vaccine::all();
+        $vaccines_data = Vaccine::lazyByIdDesc();
+        // $vaccines_data = Vaccine::where('name', );
         return Inertia::render('vaccine-management/vaccine_management', compact('vaccines_data'));
     }
 

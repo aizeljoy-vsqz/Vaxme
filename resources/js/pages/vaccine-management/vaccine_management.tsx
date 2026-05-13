@@ -99,7 +99,7 @@ export default function VaccineManagement() {
                     </div>
                     <div className='px-2 py-4  h-8/10'>
                         {
-                            vaccines_data.length > 0 ? (<DataTable columns={columns(handleDelete)} data={vaccines_data} />) : (<EmptyPage title={'Vaccines Empty'} description={`You haven't created any vaccines yet. Start creating your vaccines.`}></EmptyPage>)
+                            vaccines_data.length > 0 ? (<DataTable columns={columns(handleDelete)} data={vaccines_data ?? []} />) : (<EmptyPage title={'Vaccines Empty'} description={`You haven't created any vaccines yet. Start creating your vaccines.`}></EmptyPage>)
                         }
                     </div>
                 </div>
