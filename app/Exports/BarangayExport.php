@@ -9,10 +9,12 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 class BarangayExport implements FromCollection, WithHeadings
 {
     protected $barangayId;
+    protected $rhuId;
 
-    public function __construct($barangayId = null)
+    public function __construct($barangayId = null, $rhuId = null)
     {
         $this->barangayId = $barangayId;
+        $this->rhuId = $rhuId;
     }
 
     /**
@@ -21,6 +23,13 @@ class BarangayExport implements FromCollection, WithHeadings
     public function collection()
     {
         $query = BarangayPopulation::query()
+            ->when($this->rhuId, function ($query): void {
+                $query->whereHas('barangay.bhc.rhu', function ($rhuQuery): void {
+                    $rhuQuery->whereKey($this->rhuId);
+                });
+            }, function ($query): void {
+                $query->whereRaw('1 = 0');
+            })
             ->join('barangays', 'barangay_populations.barangay_id', '=', 'barangays.id')
             ->select(
                 'barangays.barangay_name',

@@ -149,10 +149,11 @@ export function InputPopulationPage({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
           'X-CSRF-TOKEN': csrfToken,
         },
-        credentials: 'include',
+        credentials: 'same-origin',
         body: JSON.stringify(populationPayload),
       });
       

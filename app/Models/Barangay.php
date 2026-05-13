@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +37,17 @@ class Barangay extends Model
     public function populations(): HasMany
     {
         return $this->hasMany(BarangayPopulation::class);
+    }
+
+    public function scopeVisibleToRhu(Builder $query, ?int $rhuId): Builder
+    {
+        if (! $rhuId) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->whereHas('bhc.rhu', function (Builder $rhuQuery) use ($rhuId): void {
+            $rhuQuery->whereKey($rhuId);
+        });
     }
 
 }

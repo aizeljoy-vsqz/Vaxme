@@ -20,10 +20,17 @@ class Registration_Controller extends Controller
 {
     public function index(Request $request)
     {
+        $rhuId = $request->user()?->rhu?->id;
+
         return Inertia::render('RHU_registration/Registration', [
             'barangays' => Barangay::query()
+                ->visibleToRhu($rhuId)
+                ->with([
+                    'bhc:id,rhu_id',
+                    'bhc.rhu:id',
+                ])
                 ->latest()
-                ->get(['id', 'barangay_name', 'nurse_id', 'nurse_assigned', 'contact_number']),
+                ->get(['id', 'bhc_id', 'barangay_name', 'nurse_id', 'nurse_assigned', 'contact_number']),
         ]);
     }
     public function store(Request $request)
@@ -59,18 +66,20 @@ class Registration_Controller extends Controller
                     ]);
                 }
 
-                $temporaryPassword = Str::random(16);
-                $emailPrefix = Str::slug($validated['barangay_name']) ?: 'barangay';
-                $generatedEmail = sprintf(
-                    'bhc-%s-%s@generated.local',
-                    $emailPrefix,
-                    Str::lower((string) Str::ulid())
+                $temporaryPassword = 'password';
+
+                $emailPrefix = Str::lower(
+                    Str::slug($validated['nurse_assigned'], '')
                 );
+
+                $generatedEmail = $emailPrefix . '@barangay.bhc.ph';
 
                 $user = User::create([
                     'name' => $validated['nurse_assigned'],
                     'email' => $generatedEmail,
                     'password' => Hash::make($temporaryPassword),
+                    'user_type' => 'barangay',
+                    'is_first_login' => true,
                 ]);
 
                 $bhc = $rhu->bhcs()->create([
@@ -149,7 +158,6 @@ class Registration_Controller extends Controller
             'current_connection' => DB::getDefaultConnection(),
             'sqlite_database' => config('database.connections.sqlite.database'),
         ]);
-
         $validated = $request->validate([
             'barangay_id' => ['required', 'integer', 'exists:barangays,id'],
             'populations' => ['required', 'array', 'min:1'],
@@ -157,6 +165,16 @@ class Registration_Controller extends Controller
             'populations.*.male' => ['required', 'numeric', 'min:0'],
             'populations.*.female' => ['required', 'numeric', 'min:0'],
         ]);
+
+        $rhuId = $request->user()?->rhu?->id;
+
+        abort_unless(
+            Barangay::query()
+                ->visibleToRhu($rhuId)
+                ->whereKey($validated['barangay_id'])
+                ->exists(),
+            403
+        );
 
         \Log::info('storePopulation validated:', $validated);
 
@@ -198,6 +216,16 @@ class Registration_Controller extends Controller
 
     public function update(Request $request, Barangay $barangay)
     {
+        $rhuId = $request->user()?->rhu?->id;
+
+        abort_unless(
+            Barangay::query()
+                ->visibleToRhu($rhuId)
+                ->whereKey($barangay->id)
+                ->exists(),
+            403
+        );
+
         
         $validated = $request->validate([
             'barangay_name' => ['required', 'string', 'max:255', 'unique:barangays,barangay_name,' . $barangay->id],
@@ -218,15 +246,43 @@ class Registration_Controller extends Controller
 
     public function destroy(Barangay $barangay)
     {
-        if (!$barangay->id) {
+        $rhuId = request()->user()?->rhu?->id;
+
+        abort_unless(
+            Barangay::query()
+                ->visibleToRhu($rhuId)
+                ->whereKey($barangay->id)
+                ->exists(),
+            403
+        );
+
+        if (! $barangay->id) {
             return back()->with('error', 'Invalid barangay');
         }
 
-        BarangayPopulation::where('barangay_id', $barangay->id)->delete();
+        DB::transaction(function () use ($barangay) {
 
-        $barangay->delete();
+            // 1. Delete populations first
+            BarangayPopulation::where('barangay_id', $barangay->id)->delete();
 
-        return back()->with('success', 'Barangay deleted successfully');    
+            // 2. Load BHC + User safely
+            $barangay->loadMissing('bhc.user');
+
+            // 3. Delete barangay record
+            $barangay->delete();
+
+            // 4. Delete BHC if exists
+            if ($barangay->bhc) {
+                $barangay->bhc->delete();
+            }
+
+            // 5. Delete linked user account (barangay login)
+            if ($barangay->bhc?->user) {
+                $barangay->bhc->user->delete();
+            }
+        });
+
+        return back()->with('success', 'Barangay, related account, and population deleted successfully');
     }
 
     public function destroyPopulation(BarangayPopulation $population)
@@ -242,6 +298,8 @@ class Registration_Controller extends Controller
 
     public function export(Request $request)
     {
+        $rhuId = $request->user()?->rhu?->id;
+
         $fileName = trim((string) $request->query('file_name', 'barangay_registration_' . now()->format('Y-m-d')));
         $fileName = preg_replace('/[^A-Za-z0-9_\-]+/', '_', $fileName) ?: 'barangay_registration_' . now()->format('Y-m-d');
         $fileName = trim($fileName, '_');
@@ -253,6 +311,16 @@ class Registration_Controller extends Controller
 
         $barangayId = $request->query('barangay_id');
 
-        return Excel::download(new BarangayExport($barangayId), $fileName);
+        if ($barangayId) {
+            abort_unless(
+                Barangay::query()
+                    ->visibleToRhu($rhuId)
+                    ->whereKey($barangayId)
+                    ->exists(),
+                403
+            );
+        }
+
+        return Excel::download(new BarangayExport($barangayId, $rhuId), $fileName);
     }
 }
