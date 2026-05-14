@@ -57,9 +57,6 @@ export function FirstLoginPasswordDialog({
         <DialogOverlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-40 bg-black/80" />
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
-          onPointerDownOutside={(e) => {
-            e.preventDefault()
-          }}
         >
           <div
             className="pointer-events-auto w-full max-w-sm mx-auto px-4"

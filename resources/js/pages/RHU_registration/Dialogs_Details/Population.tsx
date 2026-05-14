@@ -98,8 +98,6 @@ export function InputPopulationPage({
         body: JSON.stringify(detailsData),
       });
 
-      console.log('STATUS:', detailsResponse.status);
-
       if (detailsResponse.status === 422) {
         // validation errors from server
         try {
@@ -130,11 +128,7 @@ export function InputPopulationPage({
 
       const detailsResult = await detailsResponse.json();
 
-      console.log('DETAILS RESULT:', detailsResult);
-
       const barangayId = detailsResult.barangay_id || detailsResult.id;
-
-      console.log('BARANGAY ID:', barangayId);
 
       if (!barangayId || barangayId <= 0) {
         setIsSaving(false);
@@ -146,8 +140,6 @@ export function InputPopulationPage({
         barangay_id: barangayId,
         populations: data.populations,
       };
-
-      console.log('POPULATION PAYLOAD:', populationPayload);
 
       const populationResponse = await fetch(populationStore.url(), {
         method: 'POST',
@@ -163,8 +155,6 @@ export function InputPopulationPage({
       
       if (populationResponse.status === 422) {
         const err = await populationResponse.json();
-
-        console.log('422 ERROR', err);
 
         alert(JSON.stringify(err.errors));
 

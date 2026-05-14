@@ -1,18 +1,18 @@
 import { Head, useForm } from '@inertiajs/react';
 import { Eye, EyeOff } from 'lucide-react';
-import { type FormEvent, useState } from 'react';
+import {  useState } from 'react';
+import type {FormEvent} from 'react';
+import { update } from '@/actions/App/Http/Controllers/Auth/FirstLoginPasswordController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
 import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { update } from '@/actions/App/Http/Controllers/Auth/FirstLoginPasswordController';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 
 type ChangePasswordForm = {
     password: string;
@@ -151,3 +151,5 @@ function ChangePasswordPage() {
 }
 
 export default ChangePasswordPage;
+
+

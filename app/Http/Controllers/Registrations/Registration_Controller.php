@@ -157,17 +157,6 @@ class Registration_Controller extends Controller
 
     public function storePopulation(Request $request)
     {
-        \Log::info('storePopulation request:', [
-            'all' => $request->all(),
-            'barangay_id' => $request->input('barangay_id'),
-            'populations' => $request->input('populations'),
-        ]);
-
-        \Log::info('storePopulation db-info', [
-            'default_connection' => config('database.default'),
-            'current_connection' => DB::getDefaultConnection(),
-            'sqlite_database' => config('database.connections.sqlite.database'),
-        ]);
         $validated = $request->validate([
             'barangay_id' => ['required', 'integer', 'exists:barangays,id'],
             'populations' => ['required', 'array', 'min:1'],
@@ -181,8 +170,6 @@ class Registration_Controller extends Controller
         if (! $user || ! $user->canAccessBarangay((int) $validated['barangay_id'])) {
             abort(403);
         }
-
-        \Log::info('storePopulation validated:', $validated);
 
         DB::transaction(function () use ($validated): void {
 
@@ -203,8 +190,6 @@ class Registration_Controller extends Controller
                 ]);
             }
         });
-
-        \Log::info('storePopulation success');
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -285,6 +270,12 @@ class Registration_Controller extends Controller
 
     public function destroyPopulation(BarangayPopulation $population)
     {
+        $user = request()->user();
+
+        if (! $user || ! $user->canAccessBarangay((int) $population->barangay_id)) {
+            abort(403);
+        }
+
         if (! $population->id) {
             return back()->with('error', 'Invalid population record');
         }

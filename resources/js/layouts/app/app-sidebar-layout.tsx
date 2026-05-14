@@ -10,12 +10,19 @@ export default function AppSidebarLayout({
     children,
     breadcrumbs = [],
 }: AppLayoutProps) {
-    const { auth } = usePage().props;
-    const user = (auth as any)?.user;
+    const { auth } = usePage<{
+        auth?: {
+            user?: {
+                user_type?: string | null;
+                is_first_login?: boolean;
+            };
+        };
+    }>().props;
+    const user = auth?.user;
 
     // Show first login dialog only for barangay users on first login
     const showFirstLoginDialog =
-        user &&
+        !!user &&
         (user.user_type ?? '') === 'barangay' &&
         user.is_first_login === true;
 

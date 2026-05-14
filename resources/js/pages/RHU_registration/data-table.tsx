@@ -79,7 +79,11 @@ return [parseInt(single[1], 10), parseInt(single[1], 10)];
         return data.filter((row) => {
             // if query is a numeric range, try to match against `ageRange` field
             if (isRange) {
-                const ar = (row as any).ageRange as string | undefined;
+                const ar =
+                    typeof (row as { ageRange?: unknown }).ageRange ===
+                    'string'
+                        ? (row as { ageRange?: string }).ageRange
+                        : undefined;
                 const parsed = parseAgeRange(ar);
 
                 if (!parsed) {
