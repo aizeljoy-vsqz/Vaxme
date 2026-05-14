@@ -3,12 +3,20 @@
     use App\Http\Controllers\Registrations\Registration_Controller;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
+use App\Http\Middleware\ForcePasswordChange;
+use App\Http\Controllers\Auth\FirstLoginPasswordController;
 
 Route::inertia('/', 'welcome', [
     'canRegister' => Features::enabled(Features::registration()),
 ])->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+// First-login change password routes (authenticated only)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/first-login/change-password', [FirstLoginPasswordController::class, 'show']);
+    Route::post('/first-login/change-password', [FirstLoginPasswordController::class, 'update']);
+});
+
+Route::middleware(['auth', ForcePasswordChange::class, 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 
     Route::get('/registration',[Registration_Controller::class, 'index'])

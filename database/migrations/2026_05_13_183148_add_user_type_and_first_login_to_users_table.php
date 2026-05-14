@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('user_type')->default('barangay');
-            $table->boolean('is_first_login')->default(true);
+            $table->string('user_type')->default('rhu');
+            $table->boolean('is_first_login')->default(false);
         });
     }
 

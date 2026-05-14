@@ -20,9 +20,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('throttle:6,1')
         ->name('user-password.update');
 
-    Route::post('first-login/change-password', [SecurityController::class, 'updateFirstLoginPassword'])
-        ->middleware('throttle:6,1')
-        ->name('first-login-password.update');
 
     Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');
 });
