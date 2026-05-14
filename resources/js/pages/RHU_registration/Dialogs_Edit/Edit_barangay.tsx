@@ -1,11 +1,6 @@
-import {Input} from '@/components/ui/input';
-import {Label} from '@/components/ui/label';
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import {FieldGroup, Field} from '@/components/ui/field';
-import {Button} from '@/components/ui/button';
-import {Separator} from '@/components/ui/separator';
-import { router, useForm } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import { useState, useEffect } from "react";
+import {Button} from '@/components/ui/button';
 import {
     Dialog, 
     DialogContent, 
@@ -14,6 +9,11 @@ import {
     DialogHeader, 
     DialogTitle, 
 } from '@/components/ui/dialog';
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {FieldGroup, Field} from '@/components/ui/field';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {Separator} from '@/components/ui/separator';
 
 interface EditBarangay {
     id: number;
@@ -42,7 +42,7 @@ export function EditBarangayDialog({ barangay }: Props) {
                 contact_number: barangay.contact_number,
             });
         }
-    }, [open, barangay]);
+    }, [open, barangay, setData]);
 
     const handleUpdate = (e: React.FormEvent) => { 
         e.preventDefault();

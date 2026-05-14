@@ -1,8 +1,6 @@
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { FieldGroup, Field } from '@/components/ui/field';
+import { useForm } from '@inertiajs/react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import {
   Dialog,
   DialogDescription,
@@ -11,10 +9,12 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
+import { FieldGroup, Field } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { store as registrationStore } from '@/routes/registration';
 import { store as populationStore } from '@/routes/registration/population';
-import { useState } from 'react';
-import { useForm } from '@inertiajs/react';
 
 type PopulationItem = {
   age_range: string;
@@ -104,6 +104,7 @@ export function InputPopulationPage({
         // validation errors from server
         try {
           const err = await detailsResponse.json();
+
           if (onServerErrors && err?.errors) {
             onServerErrors(err.errors);
           } else {
@@ -117,11 +118,13 @@ export function InputPopulationPage({
         }
 
         setIsSaving(false);
+
         return;
       }
 
       if (!detailsResponse.ok) {
         setIsSaving(false);
+
         return;
       }
 
@@ -135,6 +138,7 @@ export function InputPopulationPage({
 
       if (!barangayId || barangayId <= 0) {
         setIsSaving(false);
+
         return;
       }
 
@@ -165,11 +169,13 @@ export function InputPopulationPage({
         alert(JSON.stringify(err.errors));
 
         setIsSaving(false);
+
         return;
       }
 
       if (!populationResponse.ok) {
         setIsSaving(false);
+
         return;
       }
 

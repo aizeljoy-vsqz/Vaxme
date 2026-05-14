@@ -1,26 +1,26 @@
 import { Head } from '@inertiajs/react';
-import { User, ChevronRight, Mail} from "lucide-react";
-import {Label} from '@/components/ui/label';
 import { Link } from "@inertiajs/react";
-import {Input} from '@/components/ui/input';
+import { useForm } from "@inertiajs/react";
+import { User, ChevronRight, Mail} from "lucide-react";
+import { useState, useMemo } from 'react';
+import { Button } from "@/components/ui/button";
 import {
     Card, 
     CardHeader, 
     CardTitle, 
     CardContent
 } from '@/components/ui/card';
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
 import {Separator} from '@/components/ui/separator';
-import { useForm } from "@inertiajs/react";
 import { DetailsPage } from './Dialogs_Details/Details';
 import { EditBarangayDialog } from './Dialogs_Edit/Edit_barangay';
-import { useState, useMemo } from 'react';
 
 type Barangay = {
     id: number;
@@ -52,6 +52,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
         }
 
         const q = searchQuery.toLowerCase();
+
         return registrationBarangays.filter((barangay) =>
             barangay.barangay_name.toLowerCase().includes(q) ||
             barangay.nurse_assigned.toLowerCase().includes(q) ||

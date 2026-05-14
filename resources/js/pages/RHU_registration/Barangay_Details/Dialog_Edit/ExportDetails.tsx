@@ -1,6 +1,9 @@
+import {
+  FileSpreadsheet,
+  Upload,
+} from "lucide-react";
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -10,13 +13,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
-import {
-  FileSpreadsheet,
-  Upload,
-} from "lucide-react";
 
 interface ExportDialogProps {
   barangayId?: string;
@@ -28,6 +27,7 @@ export default function ExportDialog({ barangayId }: ExportDialogProps) {
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
+
     return `barangay_registration_${year}-${month}-${day}`;
   });
   const [isExporting, setIsExporting] = useState(false);

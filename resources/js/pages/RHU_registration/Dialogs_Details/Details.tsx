@@ -1,11 +1,7 @@
-import {Input} from '@/components/ui/input';
-import {Label} from '@/components/ui/label';
+import { useForm } from '@inertiajs/react';
 import {Plus} from 'lucide-react';
-import {FieldGroup, Field} from '@/components/ui/field';
-import {Button} from '@/components/ui/button';
-import {Separator} from '@/components/ui/separator';
 import { useState } from 'react';
-import InputPopulationPage from '@/pages/RHU_registration/Dialogs_Details/Population';
+import {Button} from '@/components/ui/button';
 import {
     Dialog, 
     DialogContent, 
@@ -14,7 +10,11 @@ import {
     DialogTitle, 
     DialogTrigger
 } from '@/components/ui/dialog';
-import { useForm } from '@inertiajs/react';
+import {FieldGroup, Field} from '@/components/ui/field';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {Separator} from '@/components/ui/separator';
+import InputPopulationPage from '@/pages/RHU_registration/Dialogs_Details/Population';
 
 type DetailsFormData = {
     barangay_name: string;
@@ -22,9 +22,7 @@ type DetailsFormData = {
     contact_number: string;
 };
 
-export function DetailsPage(props?: { barangays?: unknown[] }) {
-
-    const { barangays } = props ?? {};
+export function DetailsPage() {
     const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
     const [detailsFormData, setDetailsFormData] = useState<DetailsFormData | null>(null);
     const [serverErrors, setServerErrors] = useState<Record<string, string[]> | null>(null);

@@ -1,15 +1,66 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
 import { useForm } from "@inertiajs/react";
+import type { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+/**
+ * Action cell component for population table
+ * Separated into its own component to properly use React hooks
+ */
+function ActionCell({
+  population,
+  setSelectedRow,
+}: {
+  population: PopulationData;
+  setSelectedRow: (row: PopulationData) => void;
+}) {
+  const { delete: destroy } = useForm();
+
+  const handleDelete = (id: string) => {
+    if (confirm("Are you sure you want to delete this population record?")) {
+      destroy(`/registration/population/${id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+          window.location.reload();
+        },
+        onError: () => {},
+      });
+    }
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
+          ...
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem
+          onClick={() => setSelectedRow(population)}
+          className="cursor-pointer"
+        >
+          Edit
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onClick={() => handleDelete(population.id)}>
+          <span className="text-red-600 hover:text-red-700 cursor-pointer transition-colors">
+            Delete
+          </span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export type PopulationData = {
   id: string;
@@ -70,54 +121,12 @@ export const populationColumns = (setSelectedRow: (row: PopulationData) => void)
   },
 
   {
-  id: "actions",
-  header: "Actions",
-  cell: ({ row }) => {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const population = row.original;
 
-    const population = row.original;
-    const {delete: destroy} = useForm();
-
-    const handleDelete = (id: string) => {
-      if (confirm('Are you sure you want to delete this population record?')) {
-        destroy(`/registration/population/${id}`, {
-          preserveScroll: true,
-          onSuccess: () => {
-            window.location.reload();
-          },
-          onError: () => {}
-        });
-      }
-    };
-
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
-            ...
-          </Button>
-        </DropdownMenuTrigger>
-
-        <DropdownMenuContent align="end">
-
-          <DropdownMenuItem
-            onClick={() => setSelectedRow(population)}
-            className='cursor-pointer'
-          >
-            Edit
-          </DropdownMenuItem>
-
-          <DropdownMenuItem 
-            onClick={() => handleDelete(population.id)}
-          >
-            <span className="text-red-600 hover:text-red-700 cursor-pointer transition-colors">
-              Delete
-            </span>
-            
-          </DropdownMenuItem>
-
-        </DropdownMenuContent>
-      </DropdownMenu>
-    );
-  },
-}
+      return <ActionCell population={population} setSelectedRow={setSelectedRow} />;
+    },
+  }
 ];

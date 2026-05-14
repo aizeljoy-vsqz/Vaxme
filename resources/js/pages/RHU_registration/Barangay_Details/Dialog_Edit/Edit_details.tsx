@@ -1,11 +1,8 @@
 "use client";
 
+  import { router } from '@inertiajs/react';
 import { useState } from "react";
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { FieldGroup, Field } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import {
     Dialog,
     DialogDescription,
@@ -14,9 +11,12 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-  import { router } from '@inertiajs/react';
+import { FieldGroup, Field } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 
-import { PopulationData } from "../Details/column";
+import type { PopulationData } from "../Details/column";
 
 type Props = {
   data: PopulationData;

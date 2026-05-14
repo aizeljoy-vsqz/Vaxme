@@ -1,4 +1,6 @@
-import { cn } from "@/lib/utils"
+import { useForm } from "@inertiajs/react"
+import { Eye, EyeOff } from "lucide-react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -8,20 +10,17 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+} from "@/components/ui/dialog"
+import {
   Field,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import {
-  Dialog,
-  DialogContent,
-  DialogPortal,
-  DialogOverlay,
-} from "@/components/ui/dialog"
-import { Eye, EyeOff } from "lucide-react"
-import { useState } from "react"
-import { useForm } from "@inertiajs/react"
+import { cn } from "@/lib/utils"
 
 interface FirstLoginPasswordDialogProps {
   open: boolean

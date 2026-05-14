@@ -1,5 +1,18 @@
 'use client';
 
+import type {
+    ColumnDef,
+    ColumnFiltersState,
+    SortingState} from '@tanstack/react-table';
+import {
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    useReactTable,
+} from '@tanstack/react-table';
+import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -10,18 +23,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import {
-    ColumnDef,
-    ColumnFiltersState,
-    SortingState,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useReactTable,
-} from '@tanstack/react-table';
-import * as React from 'react';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -37,7 +38,10 @@ export function DataTable<TData extends Record<string, unknown>, TValue>({
         React.useState<ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = React.useState<string>("");
     const filteredData = React.useMemo(() => {
-        if (!globalFilter) return data;
+        if (!globalFilter) {
+return data;
+}
+
         const q = globalFilter.trim().toLowerCase();
         const rangeMatch = q.match(/^(\d{1,3})\s*[-–]\s*(\d{1,3})$/);
         const isRange = !!rangeMatch;
@@ -45,15 +49,30 @@ export function DataTable<TData extends Record<string, unknown>, TValue>({
         const qHigh = isRange ? parseInt(rangeMatch![2], 10) : null;
 
         const parseAgeRange = (ageRange: string | undefined) => {
-            if (!ageRange) return null;
+            if (!ageRange) {
+return null;
+}
+
             const s = ageRange.replace(/\s+/g, "");
             // formats: "20-24", "65+", "18-59"
             const m = s.match(/^(\d{1,3})-(\d{1,3})$/);
-            if (m) return [parseInt(m[1], 10), parseInt(m[2], 10)];
+
+            if (m) {
+return [parseInt(m[1], 10), parseInt(m[2], 10)];
+}
+
             const plus = s.match(/^(\d{1,3})\+$/);
-            if (plus) return [parseInt(plus[1], 10), Infinity];
+
+            if (plus) {
+return [parseInt(plus[1], 10), Infinity];
+}
+
             const single = s.match(/^(\d{1,3})$/);
-            if (single) return [parseInt(single[1], 10), parseInt(single[1], 10)];
+
+            if (single) {
+return [parseInt(single[1], 10), parseInt(single[1], 10)];
+}
+
             return null;
         };
 
@@ -62,8 +81,13 @@ export function DataTable<TData extends Record<string, unknown>, TValue>({
             if (isRange) {
                 const ar = (row as any).ageRange as string | undefined;
                 const parsed = parseAgeRange(ar);
-                if (!parsed) return false;
+
+                if (!parsed) {
+return false;
+}
+
                 const [aLow, aHigh] = parsed;
+
                 return !(aHigh < (qLow as number) || aLow > (qHigh as number));
             }
 
@@ -73,6 +97,7 @@ export function DataTable<TData extends Record<string, unknown>, TValue>({
             );
         });
     }, [data, globalFilter]);
+    // eslint-disable-next-line react-hooks/incompatible-library
     const table = useReactTable({
         data: filteredData,
         columns,
