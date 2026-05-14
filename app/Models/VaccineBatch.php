@@ -26,4 +26,9 @@ class VaccineBatch extends Model
     {
         return $this->belongsTo(Vaccine::class);
     }
+
+    public function rhus():BelongsTo
+    {
+        return $this->belongsTo(Rhu::class);
+    }
 }
