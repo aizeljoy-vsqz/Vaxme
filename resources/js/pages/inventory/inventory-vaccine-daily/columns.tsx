@@ -14,6 +14,8 @@ import {
 import DeleteConfirmation from "@/components/vaccine_components/alert-dialog"
 import DailyBatchesForm from "@/components/vaccine_components/daily-batches-form"
 import { useState } from "react"
+import { usePage } from "@inertiajs/react"
+import { VaccineBatch } from "../inventory-vaccine-batches/columns"
 
 export type DailyVaccine = {
     id: number
@@ -24,6 +26,8 @@ export type DailyVaccine = {
     number_of_receipients: number,
     current_balance: number,
     vaccine_lose: number
+
+    selected_vaccine_batch: VaccineBatch,
 }
 
 export const columns = (handleDelete: (daily_inventory_id: number) => void): ColumnDef<DailyVaccine>[] => [
@@ -75,17 +79,35 @@ export const columns = (handleDelete: (daily_inventory_id: number) => void): Col
             const daily_inventory_id = (row.original.id);
             // For dropdown edit open state
             const [openDropdown, setOpenDropdown] = useState(false)
+
+            // For disabling button when vaccine expired
+            const { selected_vaccine_batch } = usePage<DailyVaccine>().props
+            const expired = selected_vaccine_batch.status
+
             return (
 
                 <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
-                            <Ellipsis />
-                        </Button>
-                    </DropdownMenuTrigger>
+
+                    {/* start diable button if expired vaccine ----------*/}
+                    {
+                        expired ?
+                            <DropdownMenuTrigger asChild>
+                                <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
+                                    <Ellipsis />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            :
+                            <DropdownMenuTrigger asChild>
+                                <Button disabled variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
+                                    <Ellipsis />
+                                </Button>
+                            </DropdownMenuTrigger>
+                    }
+                    {/* ---------- end diable button if expired vaccine */}
+
                     <DropdownMenuContent >
                         {/* Edit */}
-                        <DailyBatchesForm onOpenDropdown={() => setOpenDropdown(false)} update_daily_inventory = {row.original}></DailyBatchesForm>
+                        <DailyBatchesForm onOpenDropdown={() => setOpenDropdown(false)} update_daily_inventory={row.original}></DailyBatchesForm>
                         <DropdownMenuSeparator></DropdownMenuSeparator>
                         {/* Delete */}
                         <DeleteConfirmation handleDelete={() => handleDelete(daily_inventory_id)} delete_vaccine_id={daily_inventory_id} />

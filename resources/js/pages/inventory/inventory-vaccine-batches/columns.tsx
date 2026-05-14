@@ -79,13 +79,28 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
             const delete_vaccine = row.original.id
             // For dropdown edit open state
             const [openDropdown, setOpenDropdown] = useState(false)
+            // For disabling button when vaccine expiired
+            const expired_vaccine = row.original.status
+
             return (
                 <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
-                    <DropdownMenuTrigger asChild >
-                        <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
-                            <Ellipsis />
-                        </Button>
-                    </DropdownMenuTrigger>
+
+                    {/* start diable button if expired vaccine ----------*/}
+                    {
+                        expired_vaccine
+                            ?
+                            <DropdownMenuTrigger asChild >
+                                <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
+                                    <Ellipsis />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            :
+                            <Button disabled variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
+                                <Ellipsis />
+                            </Button>
+                    }
+                    {/* ---------- end diable button if expired vaccine */}
+
                     <DropdownMenuContent >
                         {/* Edit */}
                         <VaccineBatchesForm onOpenDropdown={() => setOpenDropdown(false)} update_batch_id={row.original} />

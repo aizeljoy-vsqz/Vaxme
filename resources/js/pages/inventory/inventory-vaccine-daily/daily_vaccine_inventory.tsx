@@ -6,7 +6,6 @@ import { DataTable } from '../data-table';
 import { columns, DailyVaccine } from './columns';
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -17,8 +16,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Input } from '@/components/ui/input';
 import { SyntheticEvent } from 'react';
-import { reset } from '@/routes/password';
 import { toast } from 'sonner';
+import { VaccineBatch } from '../inventory-vaccine-batches/columns';
 export default function DailyInventory() {
 
     interface PageProps {
@@ -26,10 +25,15 @@ export default function DailyInventory() {
         batch_id: number
         daily_inventory: DailyVaccine[]
         vaccine_name: string
+
+        selected_vaccine_batch:VaccineBatch
     }
 
-    const { batch_id, daily_inventory, vaccine_name } = usePage<PageProps>().props
+    const { batch_id, daily_inventory, vaccine_name, selected_vaccine_batch } = usePage<PageProps>().props
     
+    const expired = selected_vaccine_batch.status
+    
+
     // For Form Submission
     const { data, setData, post, errors, reset, clearErrors } = useForm({
         vaccine_batch_id: batch_id,
@@ -80,9 +84,16 @@ export default function DailyInventory() {
                         <div className='flex gap-2'>
                             <Button variant={'outline'} className='text-blue-600 border border-blue-600 hover:text-blue-700'><Download />Export</Button>
                             <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button onClick={() => clearErrors()} className='bg-blue-600 hover:bg-blue-700'><Plus /> Add Inventory</Button>
-                                </AlertDialogTrigger>
+                                {expired ?
+                                    <AlertDialogTrigger asChild>
+                                        <Button onClick={() => clearErrors()} className='bg-blue-600 hover:bg-blue-700'><Plus /> Add Inventory</Button>
+                                    </AlertDialogTrigger>
+                                    :
+                                    <AlertDialogTrigger asChild>
+                                        <Button disabled onClick={() => clearErrors()} className='bg-blue-600 hover:bg-blue-700'><Plus /> Add Inventory</Button>
+                                    </AlertDialogTrigger>
+                                }
+
                                 <AlertDialogContent>
                                     <form onSubmit={handleSubmit}>
                                         <AlertDialogHeader>

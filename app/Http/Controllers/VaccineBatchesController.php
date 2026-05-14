@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DailyBatchesInventory;
 use App\Models\VaccineBatch;
 use App\Models\Vaccine;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -15,6 +16,18 @@ class VaccineBatchesController extends Controller
     {
         $vaccines_data = Vaccine::all();
         $vaccine_batches = VaccineBatch::with(['vaccine'])->lazyByIdDesc();
+        $date_today = Carbon::now();
+
+        foreach ($vaccine_batches as $vaccine_status) {
+            $expired = Carbon::parse($vaccine_status->expiration_date);
+
+            if ($date_today->greaterThan($expired)) {
+                $vaccine_batch = VaccineBatch::find($vaccine_status->id);
+                $vaccine_batch->status = false;
+                $vaccine_batch->save();
+            }
+        }
+
         return Inertia::render('inventory/inventory-vaccine-batches/vaccine_batches_inventory', compact('vaccine_batches', 'vaccines_data'));
     }
 

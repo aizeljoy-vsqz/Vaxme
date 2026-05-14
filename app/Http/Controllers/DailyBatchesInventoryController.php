@@ -9,14 +9,15 @@ use Inertia\Inertia;
 
 class DailyBatchesInventoryController extends Controller
 {
-    public function Index($id)
+    public function Index(int $id)
     {
         $batch_id = $id;
         $daily_inventory = VaccineBatch::with(['dailyVaccine'])->findOrFail($id);
         $daily_inventory = $daily_inventory->dailyVaccine()->lazyByIdDesc();
+        $selected_vaccine_batch = VaccineBatch::with(['dailyVaccine'])->findOrFail($id);
         $vaccine_name = VaccineBatch::with(['vaccine'])->findOrFail($id)->vaccine->name;
 
-        return Inertia::render('inventory/inventory-vaccine-daily/daily_vaccine_inventory', compact(['batch_id', 'daily_inventory','vaccine_name']));
+        return Inertia::render('inventory/inventory-vaccine-daily/daily_vaccine_inventory', compact(['batch_id', 'daily_inventory','vaccine_name', 'selected_vaccine_batch']));
     }
 
     public function Store(Request $request)
