@@ -73,7 +73,11 @@ export default function ExportDialog({ bhcId }: ExportDialogProps) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent 
+        className="sm:max-w-xl"
+        onInteractOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
             Export Barangay Data

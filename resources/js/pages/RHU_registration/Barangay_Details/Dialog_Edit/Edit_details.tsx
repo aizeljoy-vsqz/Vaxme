@@ -33,7 +33,11 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
         <form>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent 
+        className="sm:max-w-xl"
+        onInteractOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        >
         <DialogHeader>
           <DialogTitle className="text pb-2">Barangay Details</DialogTitle>
           <Separator />
@@ -42,9 +46,9 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
 
         <FieldGroup>
 
-          <Label className='pt-2 font-semibold'>All Ages</Label>
+          <Label className='font-semibold'>All Ages</Label>
           <Field className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label>Total of Male:</Label>
               <Input
                 placeholder='e.g 100'
@@ -53,7 +57,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label>Total of Female:</Label>
               <Input
                 placeholder='e.g 100'
@@ -66,7 +70,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
 
           <Label className="font-semibold">Under 1 (0-11 months)</Label>
           <Field className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label>Total of Male:</Label>
               <Input
                 placeholder='e.g 100'
@@ -75,7 +79,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label>Total of Female:</Label>
               <Input
                 placeholder='e.g 100'
@@ -88,7 +92,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
 
           <Label className="font-semibold">Under 0-12 months</Label>
           <Field className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label>Total of Male:</Label>
               <Input
                 placeholder='e.g 100'
@@ -97,7 +101,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label>Total of Female:</Label>
               <Input
                 placeholder='e.g 100'
@@ -110,7 +114,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
 
           <Label className="font-semibold">Under 0-53 months</Label>
           <Field className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label>Total of Male:</Label>
               <Input
                 placeholder='e.g 100'
@@ -119,7 +123,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label>Total of Female:</Label>
               <Input
                 placeholder='e.g 100'
@@ -132,7 +136,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
 
           <Label className="font-semibold">10 years and above</Label>
           <Field className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label>Total of Male:</Label>
               <Input
                 placeholder='e.g 100'
@@ -141,7 +145,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
               />
             </div>
 
-            <div className="space-y-2 pb-4">
+            <div className="flex flex-col gap-2 pb-4">
               <Label>Total of Female:</Label>
               <Input
                 placeholder='e.g 100'

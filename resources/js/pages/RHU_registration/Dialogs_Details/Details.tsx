@@ -23,6 +23,7 @@ type DetailsFormData = {
 };
 
 export function DetailsPage() {
+    const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
     const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
     const [detailsFormData, setDetailsFormData] = useState<DetailsFormData | null>(null);
     const [serverErrors, setServerErrors] = useState<Record<string, string[]> | null>(null);
@@ -42,21 +43,33 @@ export function DetailsPage() {
             return;
         }
 
-        // Store details form data to pass to Population
         setDetailsFormData(data);
-        // Open population modal - no submission yet
+        setDetailsDialogOpen(false);
         setPopulationDialogOpen(true);
     };
 
     return (
-            <Dialog>
+            <>
+            <Dialog
+                open={detailsDialogOpen}
+                onOpenChange={(open) => {
+                    setDetailsDialogOpen(open);
+                    if (!open) {
+                        setPopulationDialogOpen(false);
+                    }
+                }}
+            >
                 <DialogTrigger asChild>
                    <Button className="bg-blue-600  hover:bg-blue-700 cursor-pointer">
                         <Plus/>
                         Register New Barangay
                    </Button> 
                 </DialogTrigger>
-            <DialogContent className="sm:max-w-xl cursor-pointer">
+            <DialogContent 
+                className="sm:max-w-xl cursor-pointer"
+                onInteractOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={(e) => e.preventDefault()}
+            >
              <div>
                 <DialogHeader>
                     <DialogTitle className="text pb-2">Barangay Details</DialogTitle>
@@ -105,12 +118,33 @@ export function DetailsPage() {
 
                     <div className="flex flex-col gap-2">
                     <Label>Contact:</Label>
-                    <Input 
-                        placeholder="e.g 0912345678" 
-                        value={data.contact_number}
+                    {/* Auto-prefixed +63; user enters up to 10 local digits. */}
+                    <Input
+                        placeholder="e.g 9123456789"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        maxLength={13}
+                        value={(() => {
+                            const raw = data.contact_number ?? '';
+                            if (!raw) return '+63';
+                            if (raw === 'N/A') return '+63';
+                            if (raw.startsWith('+63')) return '+63' + raw.slice(3);
+                            if (raw.startsWith('0')) return '+63' + raw.slice(1);
+                            return raw.startsWith('+') ? raw : '+63' + raw;
+                        })()}
                         onChange={(e) => {
-                            setData('contact_number', e.target.value);
                             setServerErrors(null);
+                            let v = e.target.value || '';
+
+                            v = v.replace(/[^+0-9]/g, '');
+
+                            if (v.startsWith('+63')) v = v.slice(3);
+                            if (v.startsWith('0')) v = v.slice(1);
+
+                            v = v.replace(/\D/g, '').slice(0, 10);
+
+                            const stored = v.length > 0 ? '+63' + v : '';
+                            setData('contact_number', stored);
                         }}
                     />
                     {serverErrors?.contact_number ? (
@@ -125,17 +159,29 @@ export function DetailsPage() {
                 </FieldGroup>
             </div>
             <DialogFooter>
-                    <InputPopulationPage
-                        detailsData={detailsFormData}
-                        isDetailsValid={isFormValid}
-                        open={populationDialogOpen}
-                        onOpenChange={setPopulationDialogOpen}
-                        onNext={handleNext}
-                        onServerErrors={(errs: Record<string, string[]>) => setServerErrors(errs)}
-                        disabled={!isFormValid}/>
+                    <Button
+                        type="button"
+                        disabled={!isFormValid}
+                        onClick={handleNext}
+                        className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                    >
+                        Next
+                    </Button>
             </DialogFooter>
                 </DialogContent>
             </Dialog>
+            <InputPopulationPage
+                detailsData={detailsFormData}
+                isDetailsValid={isFormValid}
+                open={populationDialogOpen}
+                onOpenChange={setPopulationDialogOpen}
+                onDetailsError={() => {
+                    setPopulationDialogOpen(false);
+                    setDetailsDialogOpen(true);
+                }}
+                onServerErrors={(errs: Record<string, string[]>) => setServerErrors(errs)}
+            />
+            </>
     );
 }
 export default DetailsPage;

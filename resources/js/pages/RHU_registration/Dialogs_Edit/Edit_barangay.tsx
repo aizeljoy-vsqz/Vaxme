@@ -68,7 +68,11 @@ export function EditBarangayDialog({ barangay }: Props) {
           Edit
         </span>
         </DropdownMenuItem>
-            <DialogContent className="sm:max-w-xl">
+            <DialogContent 
+                className="sm:max-w-xl"
+                onInteractOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={(e) => e.preventDefault()}
+                >
                          <form onSubmit={handleUpdate}>
                 <DialogHeader>
                     <DialogTitle className="text pb-2">Barangay Details</DialogTitle>

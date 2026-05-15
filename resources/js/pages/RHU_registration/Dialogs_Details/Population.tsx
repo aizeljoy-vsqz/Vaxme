@@ -13,6 +13,7 @@ import { FieldGroup, Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import SuccessDialog from '@/components/feedback/SuccessDialog';
 import { store as registrationStore } from '@/routes/registration';
 import { store as populationStore } from '@/routes/registration/population';
 
@@ -28,22 +29,26 @@ type DetailsFormData = {
   contact_number: string;
 };
 
+type SuccessState = {
+  title: string;
+  description: string;
+  details?: Array<{ label: string; value: string }>;
+};
+
 export function InputPopulationPage({
   detailsData,
   isDetailsValid,
   open,
   onOpenChange,
-  onNext,
+  onDetailsError,
   onServerErrors,
-  disabled,
 }: {
   detailsData: DetailsFormData | null;
   isDetailsValid: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onNext: () => void;
+  onDetailsError?: () => void;
   onServerErrors?: (errors: Record<string, string[]>) => void;
-  disabled?: boolean;
 }) {
 
   const { data, setData, processing } = useForm<{
@@ -59,6 +64,12 @@ export function InputPopulationPage({
     });
 
   const [isSaving, setIsSaving] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [successState, setSuccessState] = useState<SuccessState>({
+    title: 'Successfully Saved',
+    description: 'Barangay and population data were saved successfully.',
+    details: [],
+  });
 
   const handleChange = (
       index: number,
@@ -123,6 +134,8 @@ export function InputPopulationPage({
           alert('Validation error saving barangay details');
         }
 
+        onOpenChange(false);
+        onDetailsError?.();
         setIsSaving(false);
         return;
       }
@@ -130,6 +143,8 @@ export function InputPopulationPage({
       if (detailsResponse.status === 419) {
         console.error('CSRF token expired or invalid');
         alert('Security session expired. Please refresh the page and try again.');
+        onOpenChange(false);
+        onDetailsError?.();
         setIsSaving(false);
         window.location.reload();
         return;
@@ -145,6 +160,8 @@ export function InputPopulationPage({
           console.error(`HTTP ${detailsResponse.status}: Failed to save barangay details`);
           alert(`Error: Failed to save barangay details (HTTP ${detailsResponse.status})`);
         }
+        onOpenChange(false);
+        onDetailsError?.();
         setIsSaving(false);
         return;
       }
@@ -158,6 +175,8 @@ export function InputPopulationPage({
       if (!bhcId || bhcId <= 0) {
         console.error('Invalid BHC ID received:', bhcId);
         alert('Error: Invalid barangay ID received from server');
+        onOpenChange(false);
+        onDetailsError?.();
         setIsSaving(false);
         return;
       }
@@ -232,12 +251,27 @@ export function InputPopulationPage({
         { age_range: '10 years and above', male: 0, female: 0 },
       ]);
 
-      // Close dialog
+      const generated = detailsResult?.generated_user;
+      const details: Array<{ label: string; value: string }> = [];
+
+      if (generated?.email) {
+        details.push({ label: 'Generated Email', value: generated.email });
+      }
+
+      if (generated?.temporary_password) {
+        details.push({ label: 'Temporary Password', value: generated.temporary_password });
+      }
+
+      setSuccessState({
+        title: 'Registration Complete',
+        description: 'Barangay and population data were saved successfully.',
+        details,
+      });
+
+      // Close population dialog and open success dialog.
       onOpenChange(false);
       setIsSaving(false);
-
-      // Reload page to show updated data
-      window.location.reload();
+      setSuccessOpen(true);
     } catch (error) {
       console.error('Unexpected error during save:', error);
       alert(`Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -247,29 +281,24 @@ export function InputPopulationPage({
 
   return (
     <>
-      <Button
-        type="button"
-        disabled={disabled || !isDetailsValid || processing}
-        onClick={onNext}
-        className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
-      >
-        Next
-      </Button>
-
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-xl">
+        <DialogContent 
+          className="sm:max-w-xl"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          >
           <form onSubmit={handleSaveUnified}>
             <DialogHeader>
               <DialogTitle className="pb-2">Barangay Details</DialogTitle>
               <Separator />
-              <DialogDescription className="pb-2">Barangay Populations</DialogDescription>
+              <DialogDescription className="pb-4">Barangay Populations</DialogDescription>
             </DialogHeader>
 
             <FieldGroup>
 
               {data.populations.map((pop, index) => (
                 <div key={index}>
-                  <Label className="pb-10 font-semibold">{pop.age_range}</Label>
+                  <Label className="pb-4 font-semibold">{pop.age_range}</Label>
 
                   <Field className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-2">
@@ -308,12 +337,26 @@ export function InputPopulationPage({
                 className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
                 disabled={isSaving || processing}
               >
-                {isSaving ? 'Saving...' : 'Save Barangay & Population'}
+                {isSaving ? 'Saving...' : 'Save'}
               </Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
+
+      <SuccessDialog
+        open={successOpen}
+        onOpenChange={setSuccessOpen}
+        title={successState.title}
+        description={successState.description}
+        details={successState.details}
+        onClose={() => window.location.reload()}
+        onViewDetails={() => window.location.reload()}
+        onContinue={() => {
+          setSuccessOpen(false);
+          window.location.reload();
+        }}
+      />
     </>
   );
 }
