@@ -35,8 +35,6 @@ export default function SuccessDialog({
   details = [],
   onClose,
   onContinue,
-  onViewDetails,
-  continueLabel = 'Continue',
 }: SuccessDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -92,7 +90,7 @@ export default function SuccessDialog({
             className="w-full bg-blue-600 hover:bg-blue-700 sm:w-auto cursor-pointer text-white"
             onClick={onContinue}
           >
-            {continueLabel}
+            Continue
           </Button>
         </DialogFooter>
       </DialogContent>

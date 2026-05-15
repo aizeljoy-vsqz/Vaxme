@@ -1,5 +1,6 @@
 import { useForm } from "@inertiajs/react";
 import { useState, useEffect } from "react";
+import { toast } from 'sonner';
 import {Button} from '@/components/ui/button';
 import {
     Dialog, 
@@ -33,7 +34,6 @@ export function EditBarangayDialog({ barangay }: Props) {
         contact_number: barangay.contact_number,
     });
 
-    // Reset form data when dialog opens or barangay changes
     useEffect(() => {
         if (open) {
             setData({
@@ -47,12 +47,29 @@ export function EditBarangayDialog({ barangay }: Props) {
     const handleUpdate = (e: React.FormEvent) => { 
         e.preventDefault();
 
+        if (
+            data.barangay_name.trim() === '' ||
+            data.nurse_assigned.trim() === '' ||
+            data.contact_number.trim() === ''
+        ) {
+            toast.error('Please fill in all required fields.');
+            return;
+        }
+
+        if (!confirm('Are you sure you want to save these changes?')) {
+            return;
+        }
+
         put(`/registration/${barangay.id}`, {
             preserveScroll: true,
             onSuccess: () => {
+                toast.success('Successfully saved.');
                 setOpen(false);
             },
-            onError: () => {}
+            onError: (errs) => {
+                toast.error('Failed to save. Please check your input and try again.');
+                console.log('Edit error:', errs);
+            }
         });
     };
 

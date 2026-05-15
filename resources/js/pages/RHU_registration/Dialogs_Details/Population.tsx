@@ -71,6 +71,20 @@ export function InputPopulationPage({
     details: [],
   });
 
+  const handleSuccessDismiss = () => {
+    setSuccessOpen(false);
+    onOpenChange(false);
+    setIsSaving(false);
+    setData('populations', [
+      { age_range: 'All Ages', male: 0, female: 0 },
+      { age_range: 'Under 1 (0-11 months)', male: 0, female: 0 },
+      { age_range: 'Under 0-12 months', male: 0, female: 0 },
+      { age_range: 'Under 0-53 months', male: 0, female: 0 },
+      { age_range: '10 years and above', male: 0, female: 0 },
+    ]);
+    window.location.reload();
+  };
+
   const handleChange = (
       index: number,
       field: 'male' | 'female',
@@ -304,7 +318,6 @@ export function InputPopulationPage({
                     <div className="flex flex-col gap-2">
                       <Label>Total of Male:</Label>
                       <Input
-                        type="number"
                         min="0"
                         placeholder="e.g 100"
                         value={pop.male}
@@ -317,7 +330,6 @@ export function InputPopulationPage({
                     <div className="flex flex-col gap-2">
                       <Label>Total of Female:</Label>
                       <Input
-                        type="number"
                         min="0"
                         placeholder="e.g 100"
                         value={pop.female}
@@ -350,12 +362,10 @@ export function InputPopulationPage({
         title={successState.title}
         description={successState.description}
         details={successState.details}
-        onClose={() => window.location.reload()}
-        onViewDetails={() => window.location.reload()}
-        onContinue={() => {
-          setSuccessOpen(false);
-          window.location.reload();
-        }}
+        onClose={handleSuccessDismiss}
+        onViewDetails={handleSuccessDismiss}
+        onContinue={handleSuccessDismiss}
+        continueLabel="Exit"
       />
     </>
   );

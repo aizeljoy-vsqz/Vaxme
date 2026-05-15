@@ -22,21 +22,47 @@ type DetailsFormData = {
     contact_number: string;
 };
 
-export function DetailsPage() {
+type BarangayOption = {
+    barangay_name: string;
+};
+
+export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: BarangayOption[] }) {
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
     const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
     const [detailsFormData, setDetailsFormData] = useState<DetailsFormData | null>(null);
     const [serverErrors, setServerErrors] = useState<Record<string, string[]> | null>(null);
     
-    const {data, setData, errors} = useForm({
+    const {data, setData, errors, reset} = useForm({
         barangay_name: '',
         nurse_assigned: '',
         contact_number: '',
         });
 
+    const handleDialogClose = () => {
+        reset();
+        setServerErrors(null);
+    };
+
+    // Contact number must be exactly +63 + 10 local digits = 13 chars total
+    const isContactNumberValid = data.contact_number.length === 13 && data.contact_number.startsWith('+63');
+
+    const normalizedBarangayName = data.barangay_name.trim().toLowerCase();
+    const isBarangayNameDuplicate =
+        normalizedBarangayName.length > 0 &&
+        existingBarangays.some((barangay) =>
+            barangay.barangay_name.trim().toLowerCase() === normalizedBarangayName
+        );
+
     const isFormValid =
         data.barangay_name.trim() !== '' &&
-        data.nurse_assigned.trim() !== '';
+        data.nurse_assigned.trim() !== '' &&
+        isContactNumberValid &&
+        !isBarangayNameDuplicate;
+
+    const toTitleCase = (value: string) =>
+        value
+            .toLowerCase()
+            .replace(/\b\w/g, (character) => character.toUpperCase());
 
     const handleNext = () => {
         if (!isFormValid) {
@@ -55,6 +81,7 @@ export function DetailsPage() {
                 onOpenChange={(open) => {
                     setDetailsDialogOpen(open);
                     if (!open) {
+                        handleDialogClose();
                         setPopulationDialogOpen(false);
                     }
                 }}
@@ -89,6 +116,10 @@ export function DetailsPage() {
                     />
                     {serverErrors?.barangay_name ? (
                         <span className="text-red-500 text-sm">{serverErrors.barangay_name[0]}</span>
+                    ) : isBarangayNameDuplicate ? (
+                        <span className="text-red-500 text-sm">
+                            Barangay name already exists. Please use a different name.
+                        </span>
                     ) : errors.barangay_name && (
                         <span className="text-red-500 text-sm">
                             {errors.barangay_name}
@@ -101,9 +132,10 @@ export function DetailsPage() {
                     <Label>Nurse Assign:</Label>
                     <Input 
                         placeholder="e.g Aizel Joy Vasquez" 
+                        autoCapitalize="words"
                         value={data.nurse_assigned}
                         onChange={(e) => {
-                            setData('nurse_assigned', e.target.value);
+                            setData('nurse_assigned', toTitleCase(e.target.value));
                             setServerErrors(null);
                         }}
                     />
@@ -118,7 +150,6 @@ export function DetailsPage() {
 
                     <div className="flex flex-col gap-2">
                     <Label>Contact:</Label>
-                    {/* Auto-prefixed +63; user enters up to 10 local digits. */}
                     <Input
                         placeholder="e.g 9123456789"
                         inputMode="numeric"
@@ -147,6 +178,11 @@ export function DetailsPage() {
                             setData('contact_number', stored);
                         }}
                     />
+                    {!isContactNumberValid && data.contact_number.length > 0 && (
+                        <span className="text-red-500 text-sm">
+                            Contact must be exactly 10 digits
+                        </span>
+                    )}
                     {serverErrors?.contact_number ? (
                         <span className="text-red-500 text-sm">{serverErrors.contact_number[0]}</span>
                     ) : errors.contact_number && (

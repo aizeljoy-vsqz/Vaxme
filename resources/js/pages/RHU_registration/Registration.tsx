@@ -81,7 +81,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
            <div className="flex flex-col">
             <div className="flex items-center justify-between mb-6">
                 <Label className="text-lg font semibold">Barangay Registration</Label>
-                <DetailsPage />
+                <DetailsPage existingBarangays={registrationBarangays} />
             </div>
             <div className='px-2'>
                 <Input 
