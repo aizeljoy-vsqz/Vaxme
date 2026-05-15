@@ -21,10 +21,13 @@ import EmptyPage from "@/components/vaccine_components/empty-page"
 export default function VaccineManagement() {
     interface PageProps {
         [key: string]: unknown
-        vaccines_data: VaccineType[]
+        rhu_associated_vaccines: VaccineType[]
+        rhu_id:number
     }
+    const { rhu_id, rhu_associated_vaccines } = usePage<PageProps>().props
 
     const { data, setData, post, delete: destroy, errors, reset, clearErrors } = useForm({
+        rhu_id: rhu_id,
         name: "",
         description: "",
     })
@@ -44,8 +47,6 @@ export default function VaccineManagement() {
         });
     }
 
-    const { vaccines_data } = usePage<PageProps>().props
-    console.log(vaccines_data);
 
     const handleDelete = (delete_vaccine_id: number) => {
 
@@ -99,7 +100,7 @@ export default function VaccineManagement() {
                     </div>
                     <div className='px-2 py-4  h-8/10'>
                         {
-                            vaccines_data.length > 0 ? (<DataTable columns={columns(handleDelete)} data={vaccines_data ?? []} />) : (<EmptyPage title={'Vaccines Empty'} description={`You haven't created any vaccines yet. Start creating your vaccines.`}></EmptyPage>)
+                            rhu_associated_vaccines.length > 0 ? (<DataTable columns={columns(handleDelete)} data={rhu_associated_vaccines ?? []} />) : (<EmptyPage title={'Vaccines Empty'} description={`You haven't created any vaccines yet. Start creating your vaccines.`}></EmptyPage>)
                         }
                     </div>
                 </div>

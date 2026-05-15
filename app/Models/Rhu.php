@@ -17,4 +17,9 @@ class Rhu extends Model
     {
         return $this->hasMany(VaccineBatch::class);
     }
+
+    public function vaccines():HasMany
+    {
+        return $this->hasMany(Vaccine::class);
+    }
 }

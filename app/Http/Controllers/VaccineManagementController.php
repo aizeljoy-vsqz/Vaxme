@@ -2,32 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Vaccine;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
-use function Pest\Laravel\put;
 
 class VaccineManagementController extends Controller
 {
-    public function Index()
+    public function Index(Request $request)
     {
-        $vaccines_data = Vaccine::lazyByIdDesc();
-        return Inertia::render('vaccine-management/vaccine_management', compact('vaccines_data'));
+        $current_user_id = $request->user()->id;
+        $rhu_id = User::with('rhu')->findOrFail($current_user_id)->id;
+        $rhu_associated_vaccines = User::with('rhu.vaccines')->findOrFail($current_user_id);
+        $rhu_associated_vaccines = $rhu_associated_vaccines->rhu->vaccines;
+        return Inertia::render('vaccine-management/vaccine_management', compact(['rhu_associated_vaccines', 'rhu_id']));
     }
 
     public function Store(Request $request)
     {
+        $current_user_id = $request->user()->id;
+        $user = User::with('rhu.vaccines')
+            ->findOrFail($current_user_id);
+        $vaccines = $user->rhu->vaccines;
+
         $request->validate([
             'name' => [
                 'required',
                 'string',
-                function ($attribute, $value, $fail) {
-                    $exists = Vaccine::whereRaw(
-                        'LOWER(name) = ?',
-                        [strtolower($value)]
-                    )->exists();
+                function ($attribute, $value, $fail) use ($vaccines) {
+
+                    $exists = $vaccines->contains(function ($vaccine) use ($value) {
+                        return strtolower($vaccine->name) === strtolower($value);
+                    });
 
                     if ($exists) {
                         $fail("The {$attribute} already exists.");
@@ -41,6 +48,7 @@ class VaccineManagementController extends Controller
             ],
         ]);
         Vaccine::create($request->all());
+        return back();
     }
 
     public function Delete(Vaccine $delete_vaccine_id)
