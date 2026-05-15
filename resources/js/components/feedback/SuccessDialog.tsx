@@ -1,4 +1,6 @@
 import { CircleCheckBig } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -36,6 +38,17 @@ export default function SuccessDialog({
   onClose,
   onContinue,
 }: SuccessDialogProps) {
+  const toastShownRef = useRef(false);
+
+  useEffect(() => {
+    if (open && !toastShownRef.current) {
+      toast.success('Successfully saved.');
+      toastShownRef.current = true;
+    } else if (!open) {
+      toastShownRef.current = false;
+    }
+  }, [open]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent

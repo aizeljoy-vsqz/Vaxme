@@ -2,6 +2,7 @@
 
   import { router } from '@inertiajs/react';
 import { useState } from "react";
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -162,6 +163,17 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
             type="button"
             className='bg-blue-500 hover:bg-blue-700'
             onClick={() => {
+                // 1. Required field validation
+                if (male === "" || female === "") {
+                    toast.error('Please fill in all required fields.');
+                    return;
+                }
+
+                // 2. Confirmation before saving
+                if (!confirm('Are you sure you want to save these changes?')) {
+                    return;
+                }
+
                 const nextMale = Number(male) || 0;
                 const nextFemale = Number(female) || 0;
                 setProcessing(true);
@@ -174,6 +186,8 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
                   {
                   preserveScroll: true,
                   onSuccess: () => {
+                    // 3. Success toast
+                    toast.success('Successfully saved.');
                     onSave({
                       ...data,
                       male: nextMale,
@@ -181,6 +195,11 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
                       total: nextMale + nextFemale,
                     });
                     onClose();
+                  },
+                  onError: (errs) => {
+                    // 4. Error toast
+                    toast.error('Failed to save. Please check your input and try again.');
+                    console.log('Edit population error:', errs);
                   },
                   onFinish: () => setProcessing(false),
                 });

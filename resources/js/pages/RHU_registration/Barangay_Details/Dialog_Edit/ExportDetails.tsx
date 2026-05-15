@@ -2,7 +2,8 @@ import {
   FileSpreadsheet,
   Upload,
 } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,52 +20,74 @@ import { Separator } from "@/components/ui/separator";
 
 interface ExportDialogProps {
   bhcId?: string;
+  barangayName?: string;
 }
 
-export default function ExportDialog({ bhcId }: ExportDialogProps) {
+export default function ExportDialog({ bhcId, barangayName }: ExportDialogProps) {
   const [fileName, setFileName] = useState(() => {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
 
-    return `barangay_registration_${year}-${month}-${day}`;
+    const baseFileName = barangayName 
+      ? `Barangay_${barangayName}_registration_${year}-${month}-${day}`
+      : `barangay_registration_${year}-${month}-${day}`;
+    
+    return baseFileName;
   });
   const [isExporting, setIsExporting] = useState(false);
-  const dialogCloseRef = useRef<HTMLButtonElement>(null);
 
   const handleExport = () => {
+    const trimmedFileName = fileName.trim();
+
+    if (!trimmedFileName) {
+      toast.error("Please enter a valid file name.");
+      return;
+    }
+
     try {
       setIsExporting(true);
-      let url = `/registration/export?file_name=${encodeURIComponent(fileName)}`;
-      
-      // Add bhc_id if available; backend still accepts barangay_id for compatibility.
+
+      const sanitizedFileName = trimmedFileName.replace(/\.xlsx$/i, '');
+
+      let url = `/registration/export?file_name=${encodeURIComponent(sanitizedFileName)}`;
+
       if (bhcId) {
         url += `&bhc_id=${encodeURIComponent(bhcId)}`;
       }
-      
-      // Create a temporary anchor element to trigger download
+
       const link = document.createElement('a');
+
       link.href = url;
-      link.download = `${fileName}.xlsx`;
+      link.download = `${sanitizedFileName}.xlsx`;
+
       document.body.appendChild(link);
+
       link.click();
+
       document.body.removeChild(link);
 
-      // Close dialog after a short delay to ensure download is triggered
+      toast.success("Barangay data exported successfully.");
+
       setTimeout(() => {
         setIsExporting(false);
-        dialogCloseRef.current?.click();
+        setOpen(false);
       }, 500);
+
     } catch (error) {
       console.error('Export error:', error);
-      alert(`Error exporting file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+
+      toast.error("Failed to export file. Please try again.");
+
       setIsExporting(false);
     }
   };
 
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline"
         className="text-blue-600 border-blue-600 hover:bg-blue-700 cursor-pointer hover:text-white">
@@ -86,12 +109,10 @@ export default function ExportDialog({ bhcId }: ExportDialogProps) {
           <DialogDescription>
             Export barangay registration data to an Excel file.
           </DialogDescription>
-          <button ref={dialogCloseRef} className="hidden" />
         </DialogHeader>
 
         <Separator />
 
-        {/* EXPORT TYPE */}
         <div className="flex flex-col gap-2">
           <h2 className="text-sm font-semibold text-gray-700">
             Export Type
@@ -139,13 +160,17 @@ export default function ExportDialog({ bhcId }: ExportDialogProps) {
 
         {/* BUTTONS */}
         <div className="flex justify-end gap-3 pt-4">
-          <Button variant="outline" disabled={isExporting}>
+          <Button
+            variant="outline"
+            disabled={isExporting}
+            onClick={() => setOpen(false)}
+          >
             Cancel
           </Button>
 
           <Button
             onClick={handleExport}
-            disabled={isExporting}
+            disabled={isExporting || !fileName.trim()}
             className="bg-black hover:bg-gray-900"
           >
             <Upload className="h-4 w-4" />

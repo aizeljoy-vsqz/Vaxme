@@ -25,7 +25,7 @@ export function BarangayDetails({ populations = [], selectedBarangayId }: { popu
             <div className="flex flex-col">
             <div className="flex items-center justify-between mb-2">
                <Label className="text-lg font semibold">{`Barangay ${barangayName} Registration (${year})`}</Label>
-                <ExportDialog bhcId={selectedBarangayId} />
+                     <ExportDialog bhcId={selectedBarangayId} barangayName={barangayName} />
             </div >
             <div className='px-2'>
              <PopulationTable populations={populations}/>
