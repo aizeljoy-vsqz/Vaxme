@@ -28,10 +28,10 @@ Route::middleware(['auth', ForcePasswordChange::class, 'verified'])->group(funct
     Route::post('/registration', [Registration_Controller::class, 'store'])
     ->name('registration.store');
 
-    Route::delete('/registration/{barangay}', [Registration_Controller::class, 'destroy'])
+    Route::delete('/registration/{bhc}', [Registration_Controller::class, 'destroy'])
         ->name('registration.destroy');
 
-    Route::put('/registration/{barangay}', [Registration_Controller::class, 'update'])
+    Route::put('/registration/{bhc}', [Registration_Controller::class, 'update'])
         ->name('registration.update');
         
     Route::get('/registration/export', [Registration_Controller::class, 'export'])

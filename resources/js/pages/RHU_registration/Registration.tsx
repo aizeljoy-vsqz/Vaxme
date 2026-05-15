@@ -118,7 +118,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                                 <CardTitle className="text-xl font-bold">{barangay.barangay_name}</CardTitle>
                                 <p className="text-muted-foreground text-sm">Barangay</p>
                                 <div className="pt-2 text-sm font-medium text-center">
-                                <Link href={`/registration/brgy-details?barangay_id=${barangay.id}`}>
+                                <Link href={`/registration/brgy-details?bhc_id=${barangay.id}`}>
                                     <Button
                                     variant="ghost"
                                     className="absolute right-2 cursor-pointer text-muted-foreground text-sm flex items-center"

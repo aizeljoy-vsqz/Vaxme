@@ -18,10 +18,10 @@ import { Separator } from "@/components/ui/separator";
 
 
 interface ExportDialogProps {
-  barangayId?: string;
+  bhcId?: string;
 }
 
-export default function ExportDialog({ barangayId }: ExportDialogProps) {
+export default function ExportDialog({ bhcId }: ExportDialogProps) {
   const [fileName, setFileName] = useState(() => {
     const today = new Date();
     const year = today.getFullYear();
@@ -38,9 +38,9 @@ export default function ExportDialog({ barangayId }: ExportDialogProps) {
       setIsExporting(true);
       let url = `/registration/export?file_name=${encodeURIComponent(fileName)}`;
       
-      // Add barangay_id if available
-      if (barangayId) {
-        url += `&barangay_id=${encodeURIComponent(barangayId)}`;
+      // Add bhc_id if available; backend still accepts barangay_id for compatibility.
+      if (bhcId) {
+        url += `&bhc_id=${encodeURIComponent(bhcId)}`;
       }
       
       // Create a temporary anchor element to trigger download

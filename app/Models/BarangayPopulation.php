@@ -13,7 +13,7 @@ class BarangayPopulation extends Model
     protected $table = 'barangay_populations';
 
     protected $fillable = [
-        'barangay_id',
+        'bhc_id',
         'age_range',
         'male',
         'female',
@@ -21,14 +21,14 @@ class BarangayPopulation extends Model
     ];
 
     protected $casts = [
-        'barangay_id' => 'integer',
+        'bhc_id' => 'integer',
         'male' => 'integer',
         'female' => 'integer',
         'total' => 'integer',
     ];
 
-    public function barangay(): BelongsTo
+    public function bhc(): BelongsTo
     {
-        return $this->belongsTo(Barangay::class);
+        return $this->belongsTo(Bhc::class);
     }
 }

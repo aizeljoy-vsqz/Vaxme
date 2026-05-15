@@ -23,31 +23,31 @@ class BarangayExport implements FromCollection, WithHeadings
     public function collection()
     {
         $query = BarangayPopulation::query()
+            ->with('bhc:id,barangay_name,nurse_assigned,contact_number')
             ->when($this->rhuId, function ($query): void {
-                $query->whereHas('barangay.bhc.rhu', function ($rhuQuery): void {
+                $query->whereHas('bhc.rhu', function ($rhuQuery): void {
                     $rhuQuery->whereKey($this->rhuId);
                 });
             }, function ($query): void {
                 $query->whereRaw('1 = 0');
-            })
-            ->join('barangays', 'barangay_populations.barangay_id', '=', 'barangays.id')
-            ->select(
-                'barangays.barangay_name',
-                'barangays.nurse_assigned',
-                'barangays.contact_number',
-                'barangay_populations.age_range',
-                'barangay_populations.male',
-                'barangay_populations.female',
-                'barangay_populations.total'
-            );
+            });
 
-        // Filter by barangay_id if provided
+        // Filter by BHC id (previously barangay_id) if provided
         if ($this->barangayId) {
-            $query->where('barangay_populations.barangay_id', $this->barangayId);
+            $query->where('bhc_id', $this->barangayId);
         }
 
-        return $query->get();    
+        return $query->get()->map(fn ($population) => [
+            'barangay_name' => $population->bhc?->barangay_name,
+            'nurse_assigned' => $population->bhc?->nurse_assigned,
+            'contact_number' => $population->bhc?->contact_number,
+            'age_range' => $population->age_range,
+            'male' => $population->male,
+            'female' => $population->female,
+            'total' => $population->total,
+        ]);
     }
+
     public function headings(): array
     {
         return [

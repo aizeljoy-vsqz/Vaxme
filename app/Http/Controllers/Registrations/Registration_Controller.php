@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Registrations;
 
 use App\Http\Controllers\Controller;
 use App\Exports\BarangayExport;
-use App\Models\Barangay;
+use App\Models\Bhc;
 use App\Models\BarangayPopulation;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -22,21 +22,29 @@ class Registration_Controller extends Controller
     {
         $user = $request->user();
 
-        // Barangay users should only see barangays owned by their BHC
         if ($user && $user->bhc && ($user->user_type ?? '') === 'barangay') {
-            $query = $user->bhc->barangays()->latest()->with(['bhc:id,rhu_id']);
-            $items = $query->get(['id', 'bhc_id', 'barangay_name', 'nurse_id', 'nurse_assigned', 'contact_number']);
+            $items = Bhc::query()
+                ->where('id', $user->bhc->id)
+                ->with(['rhu:id'])
+                ->latest()
+                ->get(['id', 'rhu_id', 'barangay_name', 'nurse_assigned', 'contact_number']);
         } else {
             $rhuId = $user?->rhu?->id;
 
-            $items = Barangay::query()
-                ->visibleToRhu($rhuId)
+            $query = Bhc::query();
+
+            if ($rhuId) {
+                $query->where('rhu_id', $rhuId);
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+
+            $items = $query
                 ->with([
-                    'bhc:id,rhu_id',
-                    'bhc.rhu:id',
+                    'rhu:id',
                 ])
                 ->latest()
-                ->get(['id', 'bhc_id', 'barangay_name', 'nurse_id', 'nurse_assigned', 'contact_number']);
+                ->get(['id', 'rhu_id', 'barangay_name', 'nurse_assigned', 'contact_number']);
         }
 
         return Inertia::render('RHU_registration/Registration', [
@@ -46,7 +54,7 @@ class Registration_Controller extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'barangay_name' => ['required', 'string', 'max:255', 'unique:barangays,barangay_name'],
+            'barangay_name' => ['required', 'string', 'max:255', 'unique:bhcs,barangay_name'],
             'nurse_id' => ['nullable', 'integer'],
             'contact_number' => ['nullable', 'string', 'max:50'],
             'nurse_assigned' => ['required', 'string', 'max:255'],
@@ -66,7 +74,6 @@ class Registration_Controller extends Controller
                     ]);
                 }
 
-                // Auto-create RHU if user doesn't have one
                 $rhu = $user->rhu;
                 if (! $rhu) {
                     $rhu = $user->rhu()->create([
@@ -92,13 +99,10 @@ class Registration_Controller extends Controller
                     'is_first_login' => true,
                 ]);
 
-                $bhc = $rhu->bhcs()->create([
+                $bhc = Bhc::create([
+                    'rhu_id' => $rhu->id,
                     'user_id' => $user->id,
-                ]);
-
-                $barangay = $bhc->barangays()->create([
                     'barangay_name' => $validated['barangay_name'],
-                    'nurse_id' => $validated['nurse_id'] ?? 0,
                     'nurse_assigned' => $validated['nurse_assigned'],
                     'contact_number' => filled($validated['contact_number'] ?? null)
                         ? $validated['contact_number']
@@ -108,7 +112,6 @@ class Registration_Controller extends Controller
                 return [
                     'user' => $user,
                     'bhc' => $bhc,
-                    'barangay' => $barangay,
                     'temporary_password' => $temporaryPassword,
                 ];
             });
@@ -117,12 +120,20 @@ class Registration_Controller extends Controller
                 throw $throwable;
             }
 
+            // Log the actual error for debugging
             report($throwable);
+            \Log::error('Barangay registration failed:', [
+                'error' => $throwable->getMessage(),
+                'exception' => get_class($throwable),
+                'file' => $throwable->getFile(),
+                'line' => $throwable->getLine(),
+            ]);
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Unable to register barangay at this time.',
+                    'debug_error' => config('app.debug') ? $throwable->getMessage() : null,
                 ], 500);
             }
 
@@ -135,7 +146,7 @@ class Registration_Controller extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Barangay created successfully.',
-                'barangay_id' => $created['barangay']->id,
+                'barangay_id' => $created['bhc']->id,
                 'bhc_id' => $created['bhc']->id,
                 'user_id' => $created['user']->id,
                 'generated_user' => [
@@ -149,7 +160,7 @@ class Registration_Controller extends Controller
             ->route('registration')
             ->with([
                 'success' => 'Barangay created successfully.',
-                'barangay_id' => $created['barangay']->id,
+                'barangay_id' => $created['bhc']->id,
                 'bhc_id' => $created['bhc']->id,
                 'user_id' => $created['user']->id,
             ]);
@@ -158,7 +169,8 @@ class Registration_Controller extends Controller
     public function storePopulation(Request $request)
     {
         $validated = $request->validate([
-            'barangay_id' => ['required', 'integer', 'exists:barangays,id'],
+            'bhc_id' => ['nullable', 'integer', 'exists:bhcs,id'],
+            'barangay_id' => ['nullable', 'integer', 'exists:bhcs,id'],
             'populations' => ['required', 'array', 'min:1'],
             'populations.*.age_range' => ['required', 'string'],
             'populations.*.male' => ['required', 'numeric', 'min:0'],
@@ -166,15 +178,16 @@ class Registration_Controller extends Controller
         ]);
 
         $user = $request->user();
+        $bhcId = (int) ($validated['bhc_id'] ?? $validated['barangay_id'] ?? 0);
 
-        if (! $user || ! $user->canAccessBarangay((int) $validated['barangay_id'])) {
+        if (! $user || ! $user->canAccessBhc($bhcId)) {
             abort(403);
         }
 
-        DB::transaction(function () use ($validated): void {
+        DB::transaction(function () use ($bhcId, $validated): void {
 
             BarangayPopulation::query()
-                ->where('barangay_id', $validated['barangay_id'])
+                ->where('bhc_id', $bhcId)
                 ->delete();
 
             foreach ($validated['populations'] as $pop) {
@@ -182,7 +195,7 @@ class Registration_Controller extends Controller
                 $female = (int) ($pop['female'] ?? 0);
 
                 BarangayPopulation::create([
-                    'barangay_id' => $validated['barangay_id'],
+                    'bhc_id' => $bhcId,
                     'age_range' => (string) ($pop['age_range'] ?? ''),
                     'male' => $male,
                     'female' => $female,
@@ -195,74 +208,90 @@ class Registration_Controller extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Population saved successfully',
-                'barangay_id' => $validated['barangay_id'],
+                'barangay_id' => $bhcId,
             ], 201);
         }
 
         return redirect()
-            ->route('registration.brgy-details', ['barangay_id' => $validated['barangay_id']])
+            ->route('registration.brgy-details', ['barangay_id' => $bhcId])
             ->with('success', 'Saved')
-            ->with('barangay_id', $validated['barangay_id']);
+            ->with('barangay_id', $bhcId);
         }
 
-    public function update(Request $request, Barangay $barangay)
+    public function update(Request $request, Bhc $bhc)
     {
         $user = $request->user();
 
-        if (! $user || ! $user->canAccessBarangay($barangay->id)) {
+        if (! $user || ! $user->canAccessBhc($bhc->id)) {
             abort(403);
         }
 
         
         $validated = $request->validate([
-            'barangay_name' => ['required', 'string', 'max:255', 'unique:barangays,barangay_name,' . $barangay->id],
-            'nurse_id' => ['nullable', 'integer'],
+            'barangay_name' => ['required', 'string', 'max:255', 'unique:bhcs,barangay_name,' . $bhc->id],
             'contact_number' => ['nullable', 'string'],
             'nurse_assigned' => ['required', 'string', 'max:255'],
             
         ]);
 
-        $barangay->barangay_name = $validated['barangay_name'];
-        $barangay->nurse_assigned = $validated['nurse_assigned'];
-        $barangay->contact_number = $validated['contact_number'] ?? 'N/A';
+        $bhc->barangay_name = $validated['barangay_name'];
+        $bhc->nurse_assigned = $validated['nurse_assigned'];
+        $bhc->contact_number = $validated['contact_number'] ?? 'N/A';
 
-        $barangay->save();
+        $bhc->save();
+
+        // Keep linked user (nurse) in sync with the BHC record.
+        $bhc->loadMissing('user');
+
+        if ($bhc->user) {
+            $user = $bhc->user;
+
+            if (isset($validated['nurse_assigned']) && $user->name !== $validated['nurse_assigned']) {
+                // Update name
+                $user->name = $validated['nurse_assigned'];
+
+                // Regenerate email based on nurse name and ensure uniqueness
+                $emailPrefix = Str::lower(Str::slug($validated['nurse_assigned'], ''));
+                $base = $emailPrefix ?: 'user';
+                $candidate = $base . '@barangay.bhc.ph';
+                $i = 1;
+
+                while (User::where('email', $candidate)->where('id', '!=', $user->id)->exists()) {
+                    $candidate = $base . '-' . $i . '@barangay.bhc.ph';
+                    $i++;
+                }
+
+                $user->email = $candidate;
+                $user->save();
+            }
+        }
 
         return redirect()->route('registration')->with('success', 'Barangay updated successfully');
     }
 
-    public function destroy(Barangay $barangay)
+    public function destroy(Bhc $bhc)
     {
         $user = request()->user();
 
-        if (! $user || ! $user->canAccessBarangay($barangay->id)) {
+        if (! $user || ! $user->canAccessBhc($bhc->id)) {
             abort(403);
         }
 
-        if (! $barangay->id) {
+        if (! $bhc->id) {
             return back()->with('error', 'Invalid barangay');
         }
 
-        DB::transaction(function () use ($barangay) {
+        DB::transaction(function () use ($bhc) {
 
-            // 1. Delete populations first
-            BarangayPopulation::where('barangay_id', $barangay->id)->delete();
+            BarangayPopulation::where('bhc_id', $bhc->id)->delete();
 
-            // 2. Load BHC + User safely
-            $barangay->loadMissing('bhc.user');
+            $bhc->loadMissing('user');
 
-            // 3. Delete barangay record
-            $barangay->delete();
-
-            // 4. Delete BHC if exists
-            if ($barangay->bhc) {
-                $barangay->bhc->delete();
+            if ($bhc->user) {
+                $bhc->user->delete();
             }
 
-            // 5. Delete linked user account (barangay login)
-            if ($barangay->bhc?->user) {
-                $barangay->bhc->user->delete();
-            }
+            $bhc->delete();
         });
 
         return back()->with('success', 'Barangay, related account, and population deleted successfully');
@@ -272,7 +301,7 @@ class Registration_Controller extends Controller
     {
         $user = request()->user();
 
-        if (! $user || ! $user->canAccessBarangay((int) $population->barangay_id)) {
+        if (! $user || ! $user->canAccessBhc((int) $population->bhc_id)) {
             abort(403);
         }
 
@@ -298,17 +327,16 @@ class Registration_Controller extends Controller
             $fileName .= '.xlsx';
         }
 
-        $barangayId = $request->query('barangay_id');
+        $barangayId = $request->query('bhc_id', $request->query('barangay_id'));
         $user = $request->user();
 
         if ($barangayId) {
-            if (! $user || ! $user->canAccessBarangay((int) $barangayId)) {
+            if (! $user || ! $user->canAccessBhc((int) $barangayId)) {
                 abort(403);
             }
         } else {
-            // If barangay user and no specific barangay requested, default to their own
             if ($user && $user->bhc && ($user->user_type ?? '') === 'barangay') {
-                $barangayId = $user->bhc->barangays()->value('id');
+                $barangayId = $user->bhc->id;
             }
         }
 

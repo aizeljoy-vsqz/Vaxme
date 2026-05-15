@@ -86,60 +86,89 @@ export function InputPopulationPage({
 
     try {
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+      
+      // Try to proceed with available token; server will return 419 if CSRF is truly required but missing
+      if (!csrfToken) {
+        console.warn('CSRF token not found in meta tag');
+      }
+
+      // Step 1: Save Barangay Details
       const detailsResponse = await fetch(registrationStore.url(), {
         method: 'POST',
         headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRF-TOKEN': csrfToken,
-      },
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-TOKEN': csrfToken,
+        },
         credentials: 'same-origin',
         body: JSON.stringify(detailsData),
       });
 
       if (detailsResponse.status === 422) {
-        // validation errors from server
+        // Validation errors from server
         try {
           const err = await detailsResponse.json();
+          console.error('Validation errors (Details):', err.errors);
 
           if (onServerErrors && err?.errors) {
             onServerErrors(err.errors);
           } else {
             const firstField = err?.errors && Object.keys(err.errors)[0];
             const firstMsg = firstField ? err.errors[firstField][0] : err.message || 'Validation error';
-            alert(firstMsg);
+            alert(`Error: ${firstMsg}`);
           }
-        } catch {
-          // fallback
+        } catch (parseError) {
+          console.error('Failed to parse validation errors:', parseError);
           alert('Validation error saving barangay details');
         }
 
         setIsSaving(false);
+        return;
+      }
 
+      if (detailsResponse.status === 419) {
+        console.error('CSRF token expired or invalid');
+        alert('Security session expired. Please refresh the page and try again.');
+        setIsSaving(false);
+        window.location.reload();
         return;
       }
 
       if (!detailsResponse.ok) {
+        try {
+          const err = await detailsResponse.json();
+          console.error('Server error (Details):', err);
+          const errorMsg = err.debug_error || err.message || 'Failed to save barangay details';
+          alert(`Error: ${errorMsg}`);
+        } catch {
+          console.error(`HTTP ${detailsResponse.status}: Failed to save barangay details`);
+          alert(`Error: Failed to save barangay details (HTTP ${detailsResponse.status})`);
+        }
         setIsSaving(false);
-
         return;
       }
 
+      // Step 2: Extract BHC ID from response
       const detailsResult = await detailsResponse.json();
+      console.log('Barangay details saved:', detailsResult);
 
-      const barangayId = detailsResult.barangay_id || detailsResult.id;
+      const bhcId = detailsResult.bhc_id || detailsResult.barangay_id || detailsResult.id;
 
-      if (!barangayId || barangayId <= 0) {
+      if (!bhcId || bhcId <= 0) {
+        console.error('Invalid BHC ID received:', bhcId);
+        alert('Error: Invalid barangay ID received from server');
         setIsSaving(false);
-
         return;
       }
 
+      // Step 3: Save Population Data
       const populationPayload = {
-        barangay_id: barangayId,
+        bhc_id: bhcId,
         populations: data.populations,
       };
+
+      console.log('Saving population data:', populationPayload);
 
       const populationResponse = await fetch(populationStore.url(), {
         method: 'POST',
@@ -152,24 +181,48 @@ export function InputPopulationPage({
         credentials: 'same-origin',
         body: JSON.stringify(populationPayload),
       });
-      
+
       if (populationResponse.status === 422) {
-        const err = await populationResponse.json();
-
-        alert(JSON.stringify(err.errors));
-
+        try {
+          const err = await populationResponse.json();
+          console.error('Validation errors (Population):', err.errors);
+          
+          const errorMessages = Object.entries(err.errors || {})
+            .map(([field, msgs]) => `${field}: ${(msgs as string[]).join(', ')}`)
+            .join('\n');
+          
+          alert(`Validation Error:\n${errorMessages}`);
+        } catch {
+          alert('Validation error saving population data');
+        }
         setIsSaving(false);
+        return;
+      }
 
+      if (populationResponse.status === 419) {
+        console.error('CSRF token expired or invalid');
+        alert('Security session expired. Please refresh the page and try again.');
+        setIsSaving(false);
+        window.location.reload();
         return;
       }
 
       if (!populationResponse.ok) {
+        try {
+          const err = await populationResponse.json();
+          console.error('Server error (Population):', err);
+          alert(`Error: ${err.message || 'Failed to save population data'}`);
+        } catch {
+          console.error(`HTTP ${populationResponse.status}: Failed to save population data`);
+          alert(`Error: Failed to save population data (HTTP ${populationResponse.status})`);
+        }
         setIsSaving(false);
-
         return;
       }
 
-      await populationResponse.json();
+      // Step 4: Confirm successful save
+      const populationResult = await populationResponse.json();
+      console.log('Population data saved:', populationResult);
 
       setData('populations', [
         { age_range: 'All Ages', male: 0, female: 0 },
@@ -183,8 +236,11 @@ export function InputPopulationPage({
       onOpenChange(false);
       setIsSaving(false);
 
+      // Reload page to show updated data
       window.location.reload();
-    } catch {
+    } catch (error) {
+      console.error('Unexpected error during save:', error);
+      alert(`Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setIsSaving(false);
     }
   };

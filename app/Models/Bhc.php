@@ -14,6 +14,9 @@ class Bhc extends Model
     protected $fillable = [
         'user_id',
         'rhu_id',
+        'barangay_name',
+        'nurse_assigned',
+        'contact_number',
     ];
 
     protected $casts = [
@@ -26,13 +29,13 @@ class Bhc extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function barangays(): HasMany
-    {
-        return $this->hasMany(Barangay::class);
-    }
-
     public function rhu(): BelongsTo
     {
         return $this->belongsTo(Rhu::class);
+    }
+
+    public function populations(): HasMany
+    {
+        return $this->hasMany(BarangayPopulation::class);
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
 
         Schema::create('barangay_populations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('barangay_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('bhc_id')->constrained()->cascadeOnDelete();
             $table->string('age_range');
             $table->integer('male')->default(0);
             $table->integer('female')->default(0);

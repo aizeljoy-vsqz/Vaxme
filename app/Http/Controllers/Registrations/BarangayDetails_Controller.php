@@ -11,7 +11,8 @@ class BarangayDetails_Controller extends Controller
 {
     public function index(Request $request)
     {
-        $selectedBarangayId = $request->query('barangay_id');
+        // Frontend now sends bhc_id; barangay_id remains accepted for backward compatibility.
+        $selectedBhcId = $request->query('bhc_id', $request->query('barangay_id'));
         $user = $request->user();
 
         $query = BarangayPopulation::query();
@@ -19,38 +20,35 @@ class BarangayDetails_Controller extends Controller
         if ($user && $user->rhu) {
             $rhuId = $user->rhu->id;
 
-            $query->whereHas('barangay.bhc.rhu', function ($rhuQuery) use ($rhuId): void {
-                $rhuQuery->whereKey($rhuId);
+            $query->whereHas('bhc.rhu', function ($bhcQuery) use ($rhuId): void {
+                $bhcQuery->whereKey($rhuId);
             });
         } elseif ($user && $user->bhc && ($user->user_type ?? '') === 'barangay') {
-            // Barangay users only see their own barangay's populations
-            $barangayId = $user->bhc->barangays()->value('id');
-
-            $query->where('barangay_id', $barangayId ?: 0);
+            // Barangay users only see their own BHC's populations
+            $query->where('bhc_id', $user->bhc->id);
         } else {
             $query->whereRaw('1 = 0');
         }
 
         $query->with([
-            'barangay:id,bhc_id,barangay_name',
-            'barangay.bhc:id,rhu_id',
-            'barangay.bhc.rhu:id',
+            'bhc:id,rhu_id,barangay_name',
+            'bhc.rhu:id',
         ])->latest();
 
-        if ($selectedBarangayId) {
-            $query->where('barangay_id', $selectedBarangayId);
+        if ($selectedBhcId) {
+            $query->where('bhc_id', $selectedBhcId);
         }
 
         return Inertia::render('RHU_registration/Barangay_Details/Barangay-Detail', [
             'populations' => $query->get()->map(fn ($population) => [
                 'id' => (string) $population->id,
-                'barangayName' => $population->barangay?->barangay_name,
+                'barangayName' => $population->bhc?->barangay_name,
                 'ageRange' => $population->age_range,
                 'male' => $population->male,
                 'female' => $population->female,
                 'total' => $population->total,
             ]),
-            'selectedBarangayId' => $selectedBarangayId,
+            'selectedBarangayId' => $selectedBhcId,
         ]);
     }
 
@@ -58,7 +56,7 @@ class BarangayDetails_Controller extends Controller
     {
         $user = $request->user();
 
-        if (! $user || ! $user->canAccessBarangay($population->barangay_id)) {
+        if (! $user || ! $user->canAccessBhc($population->bhc_id)) {
             abort(403);
         }
 
@@ -77,20 +75,20 @@ class BarangayDetails_Controller extends Controller
     }
 
     public function destroyPopulation(BarangayPopulation $population)
-        {
-            $user = request()->user();
+    {
+        $user = request()->user();
 
-            if (! $user || ! $user->canAccessBarangay($population->barangay_id)) {
-                abort(403);
-            }
-
-            if (!$population->id) {
-                return back()->with('error', 'Invalid population');
-            }
-
-            $population->delete();
-
-            return back()->with('success', 'Population deleted successfully');
+        if (! $user || ! $user->canAccessBhc($population->bhc_id)) {
+            abort(403);
         }
+
+        if (!$population->id) {
+            return back()->with('error', 'Invalid population');
+        }
+
+        $population->delete();
+
+        return back()->with('success', 'Population deleted successfully');
+    }
 
 }
