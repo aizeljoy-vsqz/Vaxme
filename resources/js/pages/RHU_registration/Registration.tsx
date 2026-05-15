@@ -21,6 +21,7 @@ import {Label} from '@/components/ui/label';
 import {Separator} from '@/components/ui/separator';
 import { DetailsPage } from './Dialogs_Details/Details';
 import { EditBarangayDialog } from './Dialogs_Edit/Edit_barangay';
+import EmptySearchState from '@/components/feedback/EmptySearchState';
 
 type Barangay = {
     id: number;
@@ -151,9 +152,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                         </Card>
                     ))
                 ) : (
-                    <div className="col-span-full text-center py-8 text-gray-500">
-                        {searchQuery ? 'No barangays found matching your search.' : 'No barangays available.'}
-                    </div>
+                    <EmptySearchState query={searchQuery} entityName="barangays" />
                 )}
                 </div>
             </div>
