@@ -5,7 +5,7 @@ import { dailyVaccineInventory } from "@/routes"
 import { Link } from "@inertiajs/react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { Ellipsis } from "lucide-react"
+import { ArrowUpDown, Ellipsis } from "lucide-react"
 import { VaccineType } from "@/pages/vaccine-management/column"
 import DeleteConfirmation from "@/components/vaccine_components/alert-dialog"
 import VaccineBatchesForm from "@/components/vaccine_components/vaccine-batches-form"
@@ -28,14 +28,10 @@ export type VaccineBatch = {
 export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnDef<VaccineBatch>[] => [
     {
         accessorKey: "batch_number",
-        header: "Name of Health Facility",
-        cell: ({ row }) => {
-            return <Link href={dailyVaccineInventory(row.original.id).url}>RHU</Link>
-        }
-    },
-    {
-        accessorKey: "batch_number",
         header: "Batch Lot Number",
+        cell: ({ row }) => {
+            return <Link href={dailyVaccineInventory(row.original.id).url}>{row.original.batch_number}</Link>
+        }
     },
     {
         accessorKey: "vaccine_id",
@@ -46,7 +42,17 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
     },
     {
         accessorKey: "expiration_date",
-        header: "Expiration Date",
+        // header: "Expiration Date",
+        header: ({ column }) => {
+            return (
+                <Button variant={"ghost"}
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                >
+                    Expiration Date
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
         cell: ({ row }) => {
             const date = row.getValue("expiration_date") as string
             return new Date(date).toLocaleDateString("en-US", {

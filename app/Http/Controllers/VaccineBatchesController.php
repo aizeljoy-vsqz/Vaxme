@@ -69,14 +69,15 @@ class VaccineBatchesController extends Controller
     {
         $validatedData = $request->validate([
             // 'rhu_id' => 'required',
-            'vaccine_id' => ['required',],
-            'batch_number' => ['required', Rule::string(), Rule::unique('vaccine_batches')->ignore($update_batch_id->id)],
+            'vaccine_id' => ['required'],
+            'batch_number' => ['required', 'string'],
             'stock_receive' => ['required', 'integer'],
             'current_balance' => ['required', 'integer'],
-            'expiration_date' => ['required', Rule::date()]
+            'expiration_date' => ['required', 'date']
         ]);
+        
         // Update vaccine batch
-        $update_batch_id->update($validatedData);
+        $update_batch_id->update($request->all());
 
         // Update related daily inventory
         DailyBatchesInventory::where('vaccine_batch_id', $update_batch_id->id)->update([

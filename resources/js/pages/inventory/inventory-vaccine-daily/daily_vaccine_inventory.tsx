@@ -79,10 +79,10 @@ export default function DailyInventory() {
             <Head title="Daily Inventory" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className='px-2 h-full'>
-                    <div className='flex justify-between'>
+                    <div className='flex justify-between mb-2'>
                         <Label className='text-md flex items-center'>{vaccine_name}</Label>
                         <div className='flex gap-2'>
-                            <Button variant={'outline'} className='text-blue-600 border border-blue-600 hover:text-blue-700'><Download />Export</Button>
+                            {/* <Button variant={'outline'} className='text-blue-600 border border-blue-600 hover:text-blue-700'><Download />Export</Button> */}
                             <AlertDialog>
                                 {expired ?
                                     <AlertDialogTrigger asChild>
@@ -137,6 +137,7 @@ export default function DailyInventory() {
                             </AlertDialog>
                         </div>
                     </div>
+                    <span className="text-sm text-muted-foreground">Track your daily vaccine inventory.</span>
                     <div className='px-4'>
                         <DataTable columns={columns(handleDelete)} data={daily_inventory ?? []} />
                     </div>

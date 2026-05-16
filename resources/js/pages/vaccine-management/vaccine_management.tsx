@@ -64,7 +64,7 @@ export default function VaccineManagement() {
         <>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="px-2 h-full">
-                    <div className='flex justify-between '>
+                    <div className='flex justify-between mb-2'>
                         <Label className='text-md flex items-center'>Vaccine Management</Label>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
@@ -98,6 +98,7 @@ export default function VaccineManagement() {
                             </AlertDialogContent>
                         </AlertDialog>
                     </div>
+                    <span className="text-sm text-muted-foreground">Manage your vaccines.</span>
                     <div className='px-2 py-4  h-8/10'>
                         {
                             rhu_associated_vaccines.length > 0 ? (<DataTable columns={columns(handleDelete)} data={rhu_associated_vaccines ?? []} />) : (<EmptyPage title={'Vaccines Empty'} description={`You haven't created any vaccines yet. Start creating your vaccines.`}></EmptyPage>)

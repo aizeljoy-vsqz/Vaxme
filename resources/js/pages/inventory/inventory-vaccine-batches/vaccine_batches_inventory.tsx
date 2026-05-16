@@ -38,6 +38,7 @@ import {
 import { VaccineType } from '@/pages/vaccine-management/column';
 import { toast } from 'sonner';
 import EmptyPage from '@/components/vaccine_components/empty-page';
+import { Badge } from '@/components/ui/badge';
 
 export default function InventoryByBatch() {
 
@@ -51,7 +52,7 @@ export default function InventoryByBatch() {
     const { vaccines_data, rhu_id, rhu_vaccines_batches } = usePage<PageProps>().props
     console.log('dss', rhu_vaccines_batches);
 
-    const { data, setData, post, delete: destroy, errors, reset } = useForm({
+    const { data, setData, post, delete: destroy, errors, clearErrors, reset } = useForm({
         rhu_id: rhu_id,
         batch_number: '',
         vaccine_id: '',
@@ -76,8 +77,8 @@ export default function InventoryByBatch() {
 
     }
 
-
     const [date, setDate] = React.useState<Date>()
+    const [statusFilter, setStatusFilter] = React.useState("all");
 
     const handleDelete = (delete_vaccine: number) => {
         destroy(`/vaccine/inventory/delete/${delete_vaccine}`, {
@@ -90,16 +91,47 @@ export default function InventoryByBatch() {
             }
         });
     }
+
+    const today = new Date();
+
+    const activeBatches = rhu_vaccines_batches.filter((batch) => {
+        return new Date(batch.expiration_date) >= today;
+    }).length;
+
+    const inactiveBatches = rhu_vaccines_batches.filter((batch) => {
+        return new Date(batch.expiration_date) < today;
+    }).length;
+
+    const filteredBatches = rhu_vaccines_batches.filter((batch) => {
+
+        if (statusFilter === "all") return true;
+
+        const today = new Date();
+        const expirationDate = new Date(batch.expiration_date);
+
+        const isActive = expirationDate >= today;
+
+        if (statusFilter === "active") {
+            return isActive;
+        }
+
+        if (statusFilter === "inactive") {
+            return !isActive;
+        }
+
+        return true;
+    });
+
     return (
         <>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className='px-2 h-full'>
-                    <div className='flex justify-between'>
+                    <div className='flex justify-between mb-2'>
                         <Label className='text-md flex items-center'>Vaccine Inventory</Label>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button className='bg-blue-600 hover:bg-blue-700'> <Plus /> Add Inventory</Button>
+                                <Button className='bg-blue-600 hover:bg-blue-700' onClick={() => clearErrors()}> <Plus /> Add Inventory</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <form onSubmit={handleSubmit}>
@@ -177,9 +209,40 @@ export default function InventoryByBatch() {
                             </AlertDialogContent>
                         </AlertDialog>
                     </div>
+                    <span className="text-sm text-muted-foreground">Track your vaccine inventory.</span>
+
+                    {/* filter with badge of active and inactive panis */}
+                    <div className='flex flex-row justify-between gap-3 mt-2'>
+                        <div className="mt-3 flex flex-wrap gap-2 items-center">
+
+                            <Badge variant="outline">Total Batches {rhu_vaccines_batches.length}</Badge>
+                            <Badge variant="outline">Active Batches {activeBatches}</Badge>
+                            <Badge variant="outline">Inactive Batches {inactiveBatches}</Badge>
+
+                        </div>
+
+                        <div className="flex gap-2">
+
+                            <Button variant={statusFilter === "all" ? "default" : "outline"} onClick={() => setStatusFilter("all")}>
+                                All
+                            </Button>
+
+                            <Button variant={statusFilter === "active" ? "default" : "outline"} onClick={() => setStatusFilter("active")}>
+                                Active
+                            </Button>
+
+                            <Button variant={statusFilter === "inactive" ? "default" : "outline"} onClick={() => setStatusFilter("inactive")} >
+                                Inactive
+                            </Button>
+
+                        </div>
+                    </div>
+
                     <div className='px-2 py-4 h-8/10'>
                         {
-                            rhu_vaccines_batches.length > 0 ? (<DataTable columns={columns(handleDelete)} data={rhu_vaccines_batches ?? []} />) : (<EmptyPage title={'Empty vaccine batch inventory'} description={`You haven't created any vaccines batches yet. Start creating your inventory.`}></EmptyPage>)
+                            rhu_vaccines_batches.length > 0
+                                ? (<DataTable columns={columns(handleDelete)} data={filteredBatches}/>)
+                                : (<EmptyPage title={'Empty vaccine batch inventory'} description={`You haven't created any vaccines batches yet. Start creating your inventory.`}></EmptyPage>)
                         }
                     </div>
                 </div>
