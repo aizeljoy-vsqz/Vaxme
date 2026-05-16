@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -80,7 +80,7 @@ export function InputPopulationPage({
       { age_range: 'Under 0-53 months', male: 0, female: 0 },
       { age_range: '10 years and above', male: 0, female: 0 },
     ]);
-    window.location.reload();
+    	router.reload();
   };
 
   const handleChange = (
@@ -180,7 +180,6 @@ export function InputPopulationPage({
 
       // Step 2: Extract BHC ID from response
       const detailsResult = await detailsResponse.json();
-      console.log('Barangay details saved:', detailsResult);
 
       const bhcId = detailsResult.bhc_id || detailsResult.barangay_id || detailsResult.id;
 
@@ -199,7 +198,7 @@ export function InputPopulationPage({
         populations: data.populations,
       };
 
-      console.log('Saving population data:', populationPayload);
+      // proceed with saving population data
 
       const populationResponse = await fetch('/registration/population', {
         method: 'POST',
@@ -253,7 +252,6 @@ export function InputPopulationPage({
 
       // Step 4: Confirm successful save
       const populationResult = await populationResponse.json();
-      console.log('Population data saved:', populationResult);
 
       setData('populations', [
         { age_range: 'All Ages', male: 0, female: 0 },

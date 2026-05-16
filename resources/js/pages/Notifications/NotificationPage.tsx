@@ -9,10 +9,10 @@ interface Notification {
   bhc_id: number | null
   is_read: boolean
   created_at: string
-  bhc?: {
-    barangay_name: string
-        nurse_assigned?: string | null
-  }
+    bhc?: {
+        barangay_name: string;
+        nurse_assigned?: string | null;
+    } | null;
   meta?: Record<string, any>
 }
 
@@ -149,7 +149,6 @@ export default function NotificationPage() {
                                     }
                                 }}
                             >
-                                {/* Icon */}
                                 <div className="shrink-0 mt-1">
                                     {notification.type === 'request' ? (
                                         <Package className="h-6 w-6 text-blue-600" />
@@ -159,12 +158,11 @@ export default function NotificationPage() {
                                         <Clock3 className="h-6 w-6 text-yellow-400" />
                                     ) : notification.type === 'near_expired' ? (
                                         <Clock3 className="h-6 w-6 text-orange-400" />
-                                    ) : (
+                                    ) : notification.type === 'expired' ? (
                                         <AlertTriangle className="h-6 w-6 text-red-600" />
-                                    )}
+                                    ): null}
                                 </div>
 
-                                {/* Content */}
                                 <div className="flex-1 min-w-0">
                                     <p className="font-semibold text-gray-900">
                                         {notification.type === 'request' ? (

@@ -203,7 +203,6 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
                   onError: (errs) => {
                     // 4. Error toast
                     toast.error('Failed to save. Please check your input and try again.');
-                    console.log('Edit population error:', errs);
                   },
                   onFinish: () => setProcessing(false),
                 });

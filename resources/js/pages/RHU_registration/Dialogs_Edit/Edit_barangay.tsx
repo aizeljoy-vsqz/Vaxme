@@ -75,7 +75,6 @@ export function EditBarangayDialog({ barangay }: Props) {
             },
             onError: (errs) => {
                 toast.error('Failed to save. Please check your input and try again.');
-                console.log('Edit error:', errs);
             }
         });
     };

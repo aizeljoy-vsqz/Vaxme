@@ -12,6 +12,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import DeleteConfirmDialog from '@/components/feedback/DeleteConfirmDialog';
+import { useState } from 'react';
 
 /**
  * Action cell component for population table
@@ -25,24 +27,36 @@ function ActionCell({
   setSelectedRow: (row: PopulationData) => void;
 }) {
   const { delete: destroy } = useForm();
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this population record?")) {
-      destroy(`/registration/population/${id}`, {
-        preserveScroll: true,
-        onSuccess: () => {
-          toast(
-            <div className="flex items-center gap-2">
-              <CircleCheckBig className="h-4 w-4 text-emerald-600" />
-              Successfully deleted.
-            </div>,
-            { position: 'top-right' }
-          );
-          window.location.reload();
-        },
-        onError: () => {},
-      });
-    }
+  const handleDelete = () => {
+    setDeleteOpen(true);
+  };
+
+  const confirmDelete = () => {
+    setIsDeleting(true);
+
+    destroy(`/registration/population/${population.id}`, {
+      preserveScroll: true,
+      onSuccess: () => {
+        setDeleteOpen(false);
+        toast(
+          <div className="flex items-center gap-2">
+            <CircleCheckBig className="h-4 w-4 text-emerald-600" />
+            Successfully deleted.
+          </div>,
+          { position: 'top-right' }
+        );
+        window.location.reload();
+      },
+      onError: () => {
+        setDeleteOpen(false);
+      },
+      onFinish: () => {
+        setIsDeleting(false);
+      },
+    });
   };
 
   return (
@@ -61,12 +75,21 @@ function ActionCell({
           Edit
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={() => handleDelete(population.id)}>
+        <DropdownMenuItem onClick={handleDelete}>
           <span className="text-red-600 hover:text-red-700 cursor-pointer transition-colors">
             Delete
           </span>
         </DropdownMenuItem>
       </DropdownMenuContent>
+
+      <DeleteConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="Delete population record?"
+        description={`This will permanently delete the population data for ${population.ageRange}.`}
+        onConfirm={confirmDelete}
+        isProcessing={isDeleting}
+      />
     </DropdownMenu>
   );
 }
