@@ -30,16 +30,17 @@ export function NotificationDropdown() {
       .catch((err) => console.error(err))
   }, [])
 
-  const csrfToken =
-    document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ""
-
   const markAllAsRead = async () => {
     try {
+      const token = typeof document !== 'undefined'
+        ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        : ''
+
       const response = await fetch("/notifications/mark-all-read", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrfToken,
+          "X-CSRF-TOKEN": token,
           Accept: "application/json",
         },
       })
@@ -58,11 +59,15 @@ export function NotificationDropdown() {
 
   const markOneAsRead = async (notificationId: number) => {
     try {
+      const token = typeof document !== 'undefined'
+        ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        : ''
+
       const response = await fetch(`/notifications/${notificationId}/read`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrfToken,
+          "X-CSRF-TOKEN": token,
           Accept: "application/json",
         },
       })

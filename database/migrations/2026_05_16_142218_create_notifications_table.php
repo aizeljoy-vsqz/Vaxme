@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->index();
             $table->foreignId('rhu_id')->nullable()->index();
-            $table->enum('type', ['request', 'return']);
+            $table->string('type')->index();
             $table->boolean('is_read')->default(false);
             $table->integer('current_balance')->nullable();
             $table->date('expiration_date')->nullable();

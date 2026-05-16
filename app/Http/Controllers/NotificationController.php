@@ -11,12 +11,25 @@ class NotificationController extends Controller
     public function index(Request $request): JsonResponse
     {
         $notifications = Notification::query()
-            ->with(['bhc:id,barangay_name'])
+            ->with(['rhu:id,barangay_name'])
             ->where('user_id', $request->user()->id)
             ->latest()
-            ->get();
+            ->get()
+            ->map(function (Notification $n) {
+                // Normalize payload to what the frontend expects
+                return [
+                    'id' => $n->id,
+                    'type' => $n->type,
+                    // frontend expects `bhc_id` — map from `rhu_id` if present
+                    'bhc_id' => $n->rhu_id ?? null,
+                    'is_read' => (bool) $n->is_read,
+                    'created_at' => $n->created_at?->toDateTimeString(),
+                    'bhc' => $n->rhu ? ['barangay_name' => $n->rhu->barangay_name] : null,
+                    'meta' => $n->meta ?? null,
+                ];
+            });
 
-        return response()->json($notifications);
+        return response()->json($notifications->values());
     }
 
     public function markAllAsRead(Request $request): JsonResponse
