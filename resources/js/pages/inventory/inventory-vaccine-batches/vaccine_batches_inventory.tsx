@@ -49,6 +49,7 @@ export default function InventoryByBatch() {
     }
 
     const { vaccines_data, rhu_id, rhu_vaccines_batches } = usePage<PageProps>().props
+    console.log('dss', rhu_vaccines_batches);
 
     const { data, setData, post, delete: destroy, errors, reset } = useForm({
         rhu_id: rhu_id,

@@ -40,16 +40,8 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
     {
         accessorKey: "vaccine_id",
         header: "Name of Drug",
-        // cell: ({ row }) => {
-        //     return row.original.vaccine.name
-        // }
-        //  cell: ({ row }) => {
-        //     const drug_name = row.getValue("vaccine_id") as string
-        //     return drug_name
-        // }
-         cell: ({ row }) => {
-            const drug_name = row.getValue('vaccine_id') as string
-            return drug_name
+        cell: ({ row }) => {
+            return row.original.vaccine.name
         }
     },
     {

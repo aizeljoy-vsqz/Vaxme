@@ -17,15 +17,14 @@ class VaccineBatchesController extends Controller
     {
         $current_user_id = $request->user()->id;
         $rhu_id = User::with('rhu')->findorFail($current_user_id)->id;
-        $rhu_vaccines_batches = User::with('rhu.vaccineBatches')->findOrFail($current_user_id);
+        $rhu_vaccines_batches = User::with(['rhu.vaccineBatches.vaccine'])->findOrFail($current_user_id);
         $rhu_vaccines_batches = $rhu_vaccines_batches->rhu->vaccineBatches;
 
         $vaccines_data = User::with('rhu.vaccines')->findOrFail($current_user_id);
         $vaccines_data = $vaccines_data->rhu->vaccines;
 
-        $vaccine_batches = VaccineBatch::with(['vaccine'])->lazyByIdDesc();
         $date_today = Carbon::now();
-        foreach ($vaccine_batches as $vaccine_status) {
+        foreach ($rhu_vaccines_batches as $vaccine_status) {
             $expired = Carbon::parse($vaccine_status->expiration_date);
 
             if ($date_today->greaterThan($expired)) {
@@ -34,8 +33,9 @@ class VaccineBatchesController extends Controller
                 $vaccine_batch->save();
             }
         }
-
-        return Inertia::render('inventory/inventory-vaccine-batches/vaccine_batches_inventory', compact('rhu_id', 'rhu_vaccines_batches', 'vaccine_batches', 'vaccines_data'));
+        $rhu_vaccines_batches = User::with(['rhu.vaccineBatches.vaccine'])->findOrFail($current_user_id);
+        $rhu_vaccines_batches = $rhu_vaccines_batches->rhu->vaccineBatches;
+        return Inertia::render('inventory/inventory-vaccine-batches/vaccine_batches_inventory', compact('rhu_id', 'rhu_vaccines_batches', 'vaccines_data'));
     }
 
     public function Store(Request $request)
