@@ -21,9 +21,9 @@ export default function Request_Select({ value, onChange }: RequestSelectProps) 
             </SelectTrigger>
             <SelectContent position="item-aligned">
                 <SelectGroup>
-                    <SelectItem value="light">Penta</SelectItem>
-                    <SelectItem value="dark">Tetanus</SelectItem>
-                    <SelectItem value="system">Zietza</SelectItem>
+                    <SelectItem value="penta">Penta</SelectItem>
+                    <SelectItem value="tetanus">Tetanus</SelectItem>
+                    <SelectItem value="Zietza">Zietza</SelectItem>
                 </SelectGroup>
             </SelectContent>
         </Select>

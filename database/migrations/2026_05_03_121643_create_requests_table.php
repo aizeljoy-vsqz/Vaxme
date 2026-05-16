@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('bhc_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('rhu_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('batch_id')->nullable()->nullOnDelete()->cascadeOnUpdate();
             $table->enum('type', ['request', 'return']);
             $table->enum('status', ['submitted', 'reviewed', 'approved']);
             $table->timestamps();

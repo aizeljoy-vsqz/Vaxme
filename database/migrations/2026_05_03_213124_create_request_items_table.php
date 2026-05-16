@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('request_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('request_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('name');
-            $table->string('vaccine');
-            $table->unique(['name', 'vaccine']);
+            $table->string('name'); // recipient -> can be foreignId
+            $table->string('vaccine'); // to do: foreignId('vaccine_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->boolean('is_vaccinated')->default(false);
+            // $table->unique(['name', 'vaccine']);
             $table->timestamps();
         });
     }

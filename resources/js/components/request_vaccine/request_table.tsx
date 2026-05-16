@@ -1,52 +1,49 @@
 import {
   Table,
   TableBody,
-  TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "../ui/button";
+  TableCell,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
 type Props = {
-  items: { name: string; vaccine: string }[];
-  handleRemove: (ind:number) => void
+  items: { name: string }[];
+  handleRemove: (index: number) => void;
 };
 
-export default function RequestTable({ items,  handleRemove}: Props) {
-
+export default function RequestTable({ items, handleRemove }: Props) {
   return (
     <Table>
-      {/* <TableCaption>A list of your request items</TableCaption> */}
       <TableHeader>
         <TableRow>
-          <TableHead className="w-1/2">Name</TableHead>
-          <TableHead>Drug</TableHead>
+          <TableHead>Name</TableHead>
+          <TableHead className="text-right w-[80px]">
+            Action
+          </TableHead>
         </TableRow>
       </TableHeader>
+
       <TableBody>
         {items.map((item, index) => (
           <TableRow key={index}>
             <TableCell>{item.name}</TableCell>
-            <TableCell>{item.vaccine}</TableCell>
-            <TableCell>
+
+            <TableCell className="text-right">
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
-                // onClick={() => onDelete(item.id)}
-                onClick={()=>handleRemove(index)}
+                onClick={() => handleRemove(index)}
               >
-                <X className="h-4 w-4" />
+                <X className="h-4 w-4 text-red-500" />
               </Button>
             </TableCell>
           </TableRow>
         ))}
-
       </TableBody>
     </Table>
-  )
-
+  );
 }
-

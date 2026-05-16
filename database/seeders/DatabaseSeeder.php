@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Bhc;
+use App\Models\Rhu;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,11 +17,32 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test3@example.com',
-            'password' => 'Password',
-            'user_type' => 'rhu',
+        // RHU USER
+        $rhuUser = User::create([
+            'name' => 'RHU User',
+            'email' => 'rhu@test.com',
+            'password' => bcrypt('password'),
+        ]);
+
+
+        $rhu = Rhu::create([
+            'user_id' => $rhuUser->id,
+            'facility_name' => 'Daet RHU',
+            'address' => 'Daet Camarines Norte',
+            'nurse_assigned' => 'Nurse 1',
+        ]);
+
+
+        // BHC USER
+        $bhcUser = User::create([
+            'name' => 'BHC User',
+            'email' => 'bhc@test.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $bhc = Bhc::create([
+            'user_id' => $bhcUser->id,
+            'rhu_id' => $rhu->id,
         ]);
     }
 }

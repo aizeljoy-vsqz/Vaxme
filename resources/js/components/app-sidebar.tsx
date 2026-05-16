@@ -53,14 +53,14 @@ const BHCNavItems: NavItem[] = [
         icon: ArrowBigRightDashIcon,
     },
     {
+        title: 'Track & Manage',
+        href: track.vaccination(),
+        icon: PackageCheck,
+    },
+    {
         title: 'Return vaccines',
         href: returnMethod.vaccine(),
         icon: ArrowBigLeftDashIcon,
-    },
-    {
-        title: 'Track Vaccine Status',
-        href: track.vaccination(),
-        icon: PackageCheck ,
     },
     {
         title: 'Vaccination History',
