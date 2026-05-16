@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import ConfirmDialog from '@/components/feedback/ConfirmDialog';
 import {
     Dialog,
     DialogDescription,
@@ -31,6 +32,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
   const [male, setMale] = useState<number | "">(data.male ?? "");
   const [female, setFemale] = useState<number | "">(data.female ?? "");
   const [processing, setProcessing] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
@@ -169,10 +171,20 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
                     return;
                 }
 
-                if (!confirm('Are you sure you want to save these changes?')) {
-                    return;
-                }
-
+                // open confirmation dialog
+                setConfirmOpen(true);
+            }}
+            disabled={processing}
+            >
+            Save
+            </Button>
+        </DialogFooter>
+        <ConfirmDialog
+            open={confirmOpen}
+            onOpenChange={setConfirmOpen}
+            title="Save changes?"
+            description="This will save the updated population numbers."
+            onConfirm={() => {
                 const nextMale = Number(male) || 0;
                 const nextFemale = Number(female) || 0;
                 setProcessing(true);
@@ -207,11 +219,10 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
                   onFinish: () => setProcessing(false),
                 });
             }}
-            disabled={processing}
-            >
-            Save
-            </Button>
-        </DialogFooter>
+            confirmLabel="Save"
+            isProcessing={processing}
+            intent="primary"
+        />
 
       </DialogContent>
       </form>

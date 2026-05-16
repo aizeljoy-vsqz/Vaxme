@@ -2,6 +2,7 @@ import { useForm } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 import { toast } from 'sonner';
 import {Button} from '@/components/ui/button';
+import ConfirmDialog from '@/components/feedback/ConfirmDialog';
 import {
     Dialog, 
     DialogContent, 
@@ -57,9 +58,14 @@ export function EditBarangayDialog({ barangay }: Props) {
             return;
         }
 
-        if (!confirm('Are you sure you want to save these changes?')) {
-            return;
-        }
+        // open confirmation dialog before performing update
+        setConfirmOpen(true);
+    };
+
+    const [confirmOpen, setConfirmOpen] = useState(false);
+
+    const performUpdate = () => {
+        setConfirmOpen(false);
 
         put(`/registration/${barangay.id}`, {
             preserveScroll: true,
@@ -80,6 +86,7 @@ export function EditBarangayDialog({ barangay }: Props) {
     };
 
     return (
+        <>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DropdownMenuItem
           onClick={(e) => {
@@ -156,6 +163,17 @@ export function EditBarangayDialog({ barangay }: Props) {
              </form>
                 </DialogContent>
             </Dialog>
+            <ConfirmDialog
+                open={confirmOpen}
+                onOpenChange={setConfirmOpen}
+                title="Save changes?"
+                description="This will save the changes to this barangay."
+                onConfirm={performUpdate}
+                confirmLabel="Save"
+                isProcessing={processing}
+                intent="primary"
+            />
+        </>
     );
 }
 export default EditBarangayDialog;
