@@ -360,6 +360,7 @@ export function InputPopulationPage({
         title={successState.title}
         description={successState.description}
         details={successState.details}
+        entityName={detailsData?.barangay_name}
         onClose={handleSuccessDismiss}
         onViewDetails={handleSuccessDismiss}
         onContinue={handleSuccessDismiss}

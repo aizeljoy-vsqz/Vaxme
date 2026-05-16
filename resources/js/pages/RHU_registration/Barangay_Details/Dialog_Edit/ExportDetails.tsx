@@ -1,6 +1,7 @@
 import {
   FileSpreadsheet,
   Upload,
+  CircleCheckBig
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -13,7 +14,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
@@ -49,7 +49,7 @@ export default function ExportDialog({ bhcId, barangayName }: ExportDialogProps)
     try {
       setIsExporting(true);
 
-      const sanitizedFileName = trimmedFileName.replace(/\.xlsx$/i, '');
+      const sanitizedFileName = trimmedFileName.replace(/\.(xlsx|csv)$/i, '');
 
       let url = `/registration/export?file_name=${encodeURIComponent(sanitizedFileName)}`;
 
@@ -68,7 +68,13 @@ export default function ExportDialog({ bhcId, barangayName }: ExportDialogProps)
 
       document.body.removeChild(link);
 
-      toast.success("Barangay data exported successfully.");
+      toast(
+        <div className="flex items-center gap-2">
+          <CircleCheckBig className="h-4 w-4 text-emerald-600" />
+          Barangay data exported successfully.
+        </div>,
+        { position: 'top-right' }
+      );
 
       setTimeout(() => {
         setIsExporting(false);

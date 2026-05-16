@@ -15,6 +15,7 @@ import {FieldGroup, Field} from '@/components/ui/field';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Separator} from '@/components/ui/separator';
+import { CircleCheckBig } from 'lucide-react';
 
 interface EditBarangay {
     id: number;
@@ -63,7 +64,13 @@ export function EditBarangayDialog({ barangay }: Props) {
         put(`/registration/${barangay.id}`, {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Successfully saved.');
+                toast(
+                    <div className="flex items-center gap-2">
+                        <CircleCheckBig className="h-4 w-4 text-emerald-600" />
+                        Successfully saved.
+                    </div>,
+                    { position: 'top-right' }
+                );
                 setOpen(false);
             },
             onError: (errs) => {

@@ -1,7 +1,9 @@
 import { Head } from '@inertiajs/react';
 import { Link } from "@inertiajs/react";
+import registrationRoutes from '@/routes/registration';
 import { useForm } from "@inertiajs/react";
-import { User, ChevronRight, Mail} from "lucide-react";
+import { User, ChevronRight, Mail, CircleCheckBig} from "lucide-react";
+import { toast } from 'sonner';
 import { useState, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -66,6 +68,13 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
             destroy(`/registration/${id}`, {
                 preserveScroll: true,
                 onSuccess: () => {
+                    toast(
+                        <div className="flex items-center gap-2">
+                            <CircleCheckBig className="h-4 w-4 text-emerald-600" />
+                            Successfully deleted.
+                        </div>,
+                        { position: 'top-right' }
+                    );
                 },
                 onError: () => {}
             });
@@ -119,7 +128,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                                 <CardTitle className="text-xl font-bold">{barangay.barangay_name}</CardTitle>
                                 <p className="text-muted-foreground text-sm">Barangay</p>
                                 <div className="pt-2 text-sm font-medium text-center">
-                                <Link href={`/registration/brgy-details?bhc_id=${barangay.id}`}>
+                                <Link href={registrationRoutes.brgyDetails.url({ query: { bhc_id: barangay.id } })}>
                                     <Button
                                     variant="ghost"
                                     className="absolute right-2 cursor-pointer text-muted-foreground text-sm flex items-center"

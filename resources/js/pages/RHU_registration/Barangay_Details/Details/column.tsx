@@ -1,6 +1,8 @@
 "use client";
 
 import { useForm } from "@inertiajs/react";
+import { toast } from 'sonner';
+import { CircleCheckBig } from 'lucide-react';
 import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -29,6 +31,13 @@ function ActionCell({
       destroy(`/registration/population/${id}`, {
         preserveScroll: true,
         onSuccess: () => {
+          toast(
+            <div className="flex items-center gap-2">
+              <CircleCheckBig className="h-4 w-4 text-emerald-600" />
+              Successfully deleted.
+            </div>,
+            { position: 'top-right' }
+          );
           window.location.reload();
         },
         onError: () => {},

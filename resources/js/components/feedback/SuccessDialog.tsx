@@ -23,6 +23,7 @@ type SuccessDialogProps = {
   title?: string;
   description: string;
   details?: SuccessDetail[];
+  entityName?: string;
   onClose?: () => void;
   onContinue?: () => void;
   onViewDetails?: () => void;
@@ -35,14 +36,36 @@ export default function SuccessDialog({
   title = 'Successfully Saved',
   description,
   details = [],
+  entityName,
   onClose,
   onContinue,
 }: SuccessDialogProps) {
   const toastShownRef = useRef(false);
+  const continueClickedRef = useRef(false);
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    onOpenChange(nextOpen);
+
+    if (!nextOpen && !continueClickedRef.current) {
+      onClose?.();
+      window.location.reload();
+    }
+
+    if (!nextOpen) {
+      continueClickedRef.current = false;
+    }
+  };
 
   useEffect(() => {
     if (open && !toastShownRef.current) {
-      toast.success('Successfully saved.');
+      const message = (
+        <div className="flex items-center gap-2">
+          <CircleCheckBig className="h-4 w-4 text-emerald-600" />
+          {entityName ? `Barangay ${entityName} is Successfully saved.` : 'Successfully saved.'}
+        </div>
+      );
+
+      toast(message, { position: 'top-right' });
       toastShownRef.current = true;
     } else if (!open) {
       toastShownRef.current = false;
@@ -50,7 +73,7 @@ export default function SuccessDialog({
   }, [open]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className="sm:max-w-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95"
         onInteractOutside={(e) => e.preventDefault()}
@@ -91,8 +114,7 @@ export default function SuccessDialog({
             variant="outline"
             className="w-full sm:w-auto"
             onClick={() => {
-              onOpenChange(false);
-              onClose?.();
+              handleOpenChange(false);
             }}
           >
             Close
@@ -101,7 +123,10 @@ export default function SuccessDialog({
           <Button
             type="button"
             className="w-full bg-blue-600 hover:bg-blue-700 sm:w-auto cursor-pointer text-white"
-            onClick={onContinue}
+            onClick={() => {
+              continueClickedRef.current = true;
+              onContinue?.();
+            }}
           >
             Continue
           </Button>

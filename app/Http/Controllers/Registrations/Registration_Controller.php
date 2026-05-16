@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
-use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Throwable;
 
 class Registration_Controller extends Controller
@@ -342,6 +343,29 @@ class Registration_Controller extends Controller
 
         $rhuId = $user?->rhu?->id;
 
-        return Excel::download(new BarangayExport($barangayId, $rhuId), $fileName);
+        $export = new BarangayExport($barangayId ? (int) $barangayId : null, $rhuId ? (int) $rhuId : null);
+
+        return response()->streamDownload(function () use ($export): void {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            $sheet->fromArray($export->headings(), null, 'A1');
+
+            $rowNumber = 2;
+
+            foreach ($export->rows() as $row) {
+                $sheet->fromArray(array_values($row), null, 'A' . $rowNumber);
+                $rowNumber++;
+            }
+
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+
+            $spreadsheet->disconnectWorksheets();
+            unset($spreadsheet);
+        }, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
     }
 }

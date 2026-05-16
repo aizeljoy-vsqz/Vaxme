@@ -16,6 +16,7 @@ import { FieldGroup, Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { CircleCheckBig } from 'lucide-react';
 
 import type { PopulationData } from "../Details/column";
 
@@ -163,13 +164,11 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
             type="button"
             className='bg-blue-500 hover:bg-blue-700'
             onClick={() => {
-                // 1. Required field validation
                 if (male === "" || female === "") {
                     toast.error('Please fill in all required fields.');
                     return;
                 }
 
-                // 2. Confirmation before saving
                 if (!confirm('Are you sure you want to save these changes?')) {
                     return;
                 }
@@ -186,8 +185,13 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
                   {
                   preserveScroll: true,
                   onSuccess: () => {
-                    // 3. Success toast
-                    toast.success('Successfully saved.');
+                    toast(
+                    <div className="flex items-center gap-2">
+                      <CircleCheckBig className="h-4 w-4 text-emerald-600" />
+                      Successfully saved.
+                    </div>,
+                    { position: 'top-right' }
+                  );
                     onSave({
                       ...data,
                       male: nextMale,

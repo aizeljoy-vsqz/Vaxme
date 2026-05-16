@@ -1,6 +1,6 @@
 import { useForm } from '@inertiajs/react';
 import {Plus} from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {Button} from '@/components/ui/button';
 import {
     Dialog, 
@@ -40,7 +40,13 @@ export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: Ba
 
     const handleDialogClose = () => {
         reset();
+        setData({
+            barangay_name: '',
+            nurse_assigned: '',
+            contact_number: '',
+        });
         setServerErrors(null);
+        setDetailsFormData(null);
     };
 
     // Contact number must be exactly +63 + 10 local digits = 13 chars total
@@ -86,6 +92,7 @@ export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: Ba
                     }
                 }}
             >
+            {/* Ensure that when the population dialog is closed (via X), the details form is also cleared */}
                 <DialogTrigger asChild>
                    <Button className="bg-blue-600  hover:bg-blue-700 cursor-pointer">
                         <Plus/>
