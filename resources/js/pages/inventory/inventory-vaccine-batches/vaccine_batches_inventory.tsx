@@ -7,7 +7,6 @@ import { CircleAlert, CircleCheckBig, Plus } from 'lucide-react';
 import { batchesVaccineInventory } from '@/routes';
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -44,14 +43,15 @@ export default function InventoryByBatch() {
 
     interface PageProps {
         [key: string]: unknown
-        vaccine_batches: VaccineBatch[]
+        rhu_vaccines_batches: VaccineBatch[]
         vaccines_data: VaccineType[]
+        rhu_id:number
     }
 
-    const { vaccine_batches, vaccines_data } = usePage<PageProps>().props
+    const { vaccines_data, rhu_id, rhu_vaccines_batches } = usePage<PageProps>().props
 
     const { data, setData, post, delete: destroy, errors, reset } = useForm({
-        // rhu_id: 'ss',
+        rhu_id: rhu_id,
         batch_number: '',
         vaccine_id: '',
         expiration_date: '',
@@ -61,7 +61,6 @@ export default function InventoryByBatch() {
 
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        console.log(data);
         post('/vaccine/inventory/store', {
             onSuccess: () => {
                 reset()
@@ -90,8 +89,6 @@ export default function InventoryByBatch() {
             }
         });
     }
-    console.log(errors);
-
     return (
         <>
             <Head title="Dashboard" />
@@ -111,11 +108,7 @@ export default function InventoryByBatch() {
                                             Enter vaccine details.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
-                                    <div className='flex flex-col gap-2'>
-                                        <div className='w-full gap-2 flex flex-col'>
-                                            <Label>Name of Health Faculty:</Label>
-                                            <Input></Input>
-                                        </div>
+                                    <div className='flex flex-col gap-2 mt-2'>
                                         <div className='flex gap-4'>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Name of Drug:</Label>
@@ -185,7 +178,7 @@ export default function InventoryByBatch() {
                     </div>
                     <div className='px-2 py-4 h-8/10'>
                         {
-                            vaccine_batches.length > 0 ? (<DataTable columns={columns(handleDelete)} data={vaccine_batches ?? []} />) : (<EmptyPage title={'Empty vaccine batch inventory'} description={`You haven't created any vaccines batches yet. Start creating your inventory.`}></EmptyPage>)
+                            rhu_vaccines_batches.length > 0 ? (<DataTable columns={columns(handleDelete)} data={rhu_vaccines_batches ?? []} />) : (<EmptyPage title={'Empty vaccine batch inventory'} description={`You haven't created any vaccines batches yet. Start creating your inventory.`}></EmptyPage>)
                         }
                     </div>
                 </div>

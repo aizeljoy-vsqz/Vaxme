@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DailyBatchesInventory;
+use App\Models\User;
 use App\Models\VaccineBatch;
 use App\Models\Vaccine;
 use Carbon\Carbon;
@@ -12,12 +13,18 @@ use Inertia\Inertia;
 
 class VaccineBatchesController extends Controller
 {
-    public function Index()
+    public function Index(Request $request)
     {
-        $vaccines_data = Vaccine::all();
+        $current_user_id = $request->user()->id;
+        $rhu_id = User::with('rhu')->findorFail($current_user_id)->id;
+        $rhu_vaccines_batches = User::with('rhu.vaccineBatches')->findOrFail($current_user_id);
+        $rhu_vaccines_batches = $rhu_vaccines_batches->rhu->vaccineBatches;
+
+        $vaccines_data = User::with('rhu.vaccines')->findOrFail($current_user_id);
+        $vaccines_data = $vaccines_data->rhu->vaccines;
+
         $vaccine_batches = VaccineBatch::with(['vaccine'])->lazyByIdDesc();
         $date_today = Carbon::now();
-
         foreach ($vaccine_batches as $vaccine_status) {
             $expired = Carbon::parse($vaccine_status->expiration_date);
 
@@ -28,7 +35,7 @@ class VaccineBatchesController extends Controller
             }
         }
 
-        return Inertia::render('inventory/inventory-vaccine-batches/vaccine_batches_inventory', compact('vaccine_batches', 'vaccines_data'));
+        return Inertia::render('inventory/inventory-vaccine-batches/vaccine_batches_inventory', compact('rhu_id', 'rhu_vaccines_batches', 'vaccine_batches', 'vaccines_data'));
     }
 
     public function Store(Request $request)

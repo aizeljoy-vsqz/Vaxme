@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { dailyVaccineInventory } from "@/routes"
 import { Link } from "@inertiajs/react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Ellipsis } from "lucide-react"
 import { VaccineType } from "@/pages/vaccine-management/column"
@@ -40,8 +40,16 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
     {
         accessorKey: "vaccine_id",
         header: "Name of Drug",
-        cell: ({ row }) => {
-            return row.original.vaccine.name
+        // cell: ({ row }) => {
+        //     return row.original.vaccine.name
+        // }
+        //  cell: ({ row }) => {
+        //     const drug_name = row.getValue("vaccine_id") as string
+        //     return drug_name
+        // }
+         cell: ({ row }) => {
+            const drug_name = row.getValue('vaccine_id') as string
+            return drug_name
         }
     },
     {

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class VaccineBatch extends Model
 {
     protected $fillable = [
-        // 'rhu_id',
+        'rhu_id',
         'vaccine_id',
         'batch_number',
         'stock_receive',

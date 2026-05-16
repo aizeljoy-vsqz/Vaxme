@@ -13,7 +13,7 @@ class Rhu extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function vaccineBatches(): HasMany
+    public function vaccineBatches():HasMany
     {
         return $this->hasMany(VaccineBatch::class);
     }
