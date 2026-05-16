@@ -1,6 +1,6 @@
 <?php
-    	use App\Http\Controllers\Registrations\BarangayDetails_Controller;
-    use App\Http\Controllers\Registrations\Registration_Controller;
+use App\Http\Controllers\Registrations\BarangayDetails_Controller;
+use App\Http\Controllers\Registrations\Registration_Controller;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -11,7 +11,6 @@ Route::inertia('/', 'welcome', [
     'canRegister' => Features::enabled(Features::registration()),
 ])->name('home');
 
-// First-login change password routes (authenticated only)
 Route::middleware(['auth'])->group(function () {
     Route::get('/first-login/change-password', [FirstLoginPasswordController::class, 'show']);
     Route::post('/first-login/change-password', [FirstLoginPasswordController::class, 'update']);
@@ -50,13 +49,16 @@ Route::middleware(['auth', ForcePasswordChange::class, 'verified'])->group(funct
     Route::get('/registration/brgy-details',[BarangayDetails_Controller::class, 'index'])
         ->name('registration.brgy-details');
 
-    Route::get('/notifications', [NotificationController::class, 'index'])
+    Route::inertia('notifications', 'Notifications/NotificationPage')
+        ->name('notifications.page');
+
+    Route::get('/api/notifications', [NotificationController::class, 'index'])
         ->name('notifications.index');
 
-    Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])
+    Route::patch('/api/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])
         ->name('notifications.mark-all-read');
 
-    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
+    Route::patch('/api/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
         ->name('notifications.read');
 });
 

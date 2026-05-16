@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Bell, BellOff, CheckCircle, Package, Clock3, AlertTriangle, TriangleAlert } from "lucide-react"
+import { Bell, BellOff, CheckCircle, Package, Clock3, AlertTriangle } from "lucide-react"
 import { useEffect, useState } from "react"
 
 interface Notification {
@@ -23,11 +23,25 @@ interface Notification {
 export function NotificationDropdown() {
   const [notifications, setNotifications] = useState<Notification[]>([])
 
-  useEffect(() => {
-    fetch("/notifications", { method: "GET" })
+  const fetchNotifications = () => {
+    fetch("/api/notifications", { method: "GET" })
       .then((res) => res.json())
       .then((data) => setNotifications(data))
       .catch((err) => console.error(err))
+  }
+
+  useEffect(() => {
+    fetchNotifications()
+
+    const handleNotificationsUpdated = () => {
+      fetchNotifications()
+    }
+
+    window.addEventListener("notifications-updated", handleNotificationsUpdated)
+
+    return () => {
+      window.removeEventListener("notifications-updated", handleNotificationsUpdated)
+    }
   }, [])
 
   const markAllAsRead = async () => {
@@ -36,7 +50,7 @@ export function NotificationDropdown() {
         ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
         : ''
 
-      const response = await fetch("/notifications/mark-all-read", {
+      const response = await fetch("/api/notifications/mark-all-read", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -52,6 +66,8 @@ export function NotificationDropdown() {
       setNotifications((previous) =>
         previous.map((notification) => ({ ...notification, is_read: true })),
       )
+
+      window.dispatchEvent(new Event("notifications-updated"))
     } catch (error) {
       console.error(error)
     }
@@ -63,7 +79,7 @@ export function NotificationDropdown() {
         ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
         : ''
 
-      const response = await fetch(`/notifications/${notificationId}/read`, {
+      const response = await fetch(`/api/notifications/${notificationId}/read`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -83,12 +99,14 @@ export function NotificationDropdown() {
             : notification,
         ),
       )
+
+      window.dispatchEvent(new Event("notifications-updated"))
     } catch (error) {
       console.error(error)
     }
   }
 
-  const unreadCount = notifications.filter(n => (n.type === 'request' || n.type === 'return') && !n.is_read).length
+  const unreadCount = notifications.filter((notification) => !notification.is_read).length
   const hasNotifications = notifications.length > 0
   const canMarkAllAsRead = hasNotifications && unreadCount > 0
 
@@ -116,7 +134,7 @@ export function NotificationDropdown() {
               type="button"
               onClick={markAllAsRead}
               disabled={!canMarkAllAsRead}
-              className="text-sm font-medium transition-colors disabled:text-gray-400 enabled:text-blue-600 enabled:hover:text-blue-700"
+              className="text-sm font-medium transition-colors disabled:text-gray-400 enabled:text-blue-600 enabled:hover:text-blue-700 cursor-pointer disabled:cursor-not-allowed"
             >
               Mark all as read
             </button>
@@ -152,12 +170,12 @@ export function NotificationDropdown() {
                   ) : notification.type === "return" ? (
                     <CheckCircle className="h-6 w-6 text-green-600" />
                   ) : notification.type === "low_stock" ? (
-                    <TriangleAlert className="h-6 w-6 text-orange-600" />
+                    <Clock3 className="h-6 w-6 text-yellow-400" />
                   ) : notification.type === "near_expired" ? (
-                    <Clock3 className="h-6 w-6 text-yellow-600" />
-                  ) : (
+                    <AlertTriangle className="h-6 w-6 text-orange-400" />
+                  ) : notification.type === "expired" ? (
                     <AlertTriangle className="h-6 w-6 text-red-600" />
-                  )}
+                  ) : null}
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -166,25 +184,27 @@ export function NotificationDropdown() {
                       'New vaccine request'
                     ) : notification.type === 'return' ? (
                       'Vaccine return submitted'
-                    ) : notification.type === 'near_expired' ? (
-                      'Vaccine batch near expiration'
-                    ) : notification.type === 'expired' ? (
-                      'Vaccine batch expired'
-                    ) : (
+                    ) : notification.type === 'low_stock' ? (
                       'Low vaccine stock detected'
+                    ) : notification.type === 'near_expired' ? (
+                      'Vaccine batch near expiration (within 30 days)'
+                    ) : notification.type === 'expired' ? (
+                      'Vaccine batch expired (within 15 days)'
+                    ) : (
+                      'Notification'
                     )}
                   </p>
 
                   <p className="text-xs font-medium text-gray-700 mt-1">
-                    {notification.bhc?.barangay_name ?? 'Unknown barangay'}
+                    {notification.bhc?.barangay_name ?? notification.meta?.barangay_name ?? 'Unknown barangay'}
                   </p>
 
                   {notification.type === 'low_stock' && notification.meta ? (
-                    <p className="text-xs text-red-600 mt-1">
+                    <p className="text-xs text-yellow-400 mt-1">
                       Current stock: {notification.meta.current_balance ?? 'N/A'} (below threshold)
                     </p>
                   ) : notification.type === 'near_expired' && notification.meta ? (
-                    <p className="text-xs text-yellow-600 mt-1">
+                    <p className="text-xs text-orange-400 mt-1">
                       Batch {notification.meta.batch_no ?? 'N/A'} expires on {notification.meta.expiration_date ?? 'N/A'}
                     </p>
                   ) : notification.type === 'expired' && notification.meta ? (
@@ -204,19 +224,14 @@ export function NotificationDropdown() {
             </div>
           )}
 
-          <DropdownMenuItem
-            disabled={!hasNotifications}
-            className="mt-4 flex w-full justify-center border-t pt-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-transparent hover:text-blue-700 focus:bg-transparent disabled:cursor-not-allowed disabled:text-gray-400"
-            onSelect={() => {
-              if (!hasNotifications) {
-                return
-              }
-
-              window.location.href = "/notifications"
-            }}
-          >
-            View all notifications
-          </DropdownMenuItem>
+          <a href="/notifications" className="block mt-4 w-full border-t pt-4">
+            <DropdownMenuItem
+              disabled={!hasNotifications}
+              className="flex w-full justify-center py-2 text-sm font-medium text-blue-600 hover:bg-transparent hover:text-blue-700 focus:bg-transparent cursor-pointer disabled:cursor-not-allowed disabled:text-gray-400"
+            >
+              View all notifications
+            </DropdownMenuItem>
+          </a>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

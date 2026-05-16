@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Notification;
 use App\Models\User;
+use App\Models\Rhu;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 
@@ -19,29 +20,54 @@ class NotificationSeeder extends Seeder
             return;
         }
 
-        // Create a few sample notifications for the first user
-        Notification::create([
-            'user_id' => $user->id,
-            'rhu_id' => null,
-            'type' => 'request',
-            'is_read' => false,
-            'meta' => json_encode(['current_balance' => 12]),
-        ]);
+        Notification::where('user_id', $user->id)
+            ->where('meta', 'like', '%"seeded":true%')
+            ->delete();
 
-        Notification::create([
-            'user_id' => $user->id,
-            'rhu_id' => null,
-            'type' => 'return',
-            'is_read' => false,
-            'meta' => json_encode(['batch_no' => 'B-123', 'expiration_date' => Carbon::now()->addDays(10)->toDateString()]),
-        ]);
+        $rhus = Rhu::all();
 
-        Notification::create([
-            'user_id' => $user->id,
-            'rhu_id' => null,
-            'type' => 'near_expired',
-            'is_read' => false,
-            'meta' => json_encode(['batch_no' => 'B-999', 'expiration_date' => Carbon::now()->addDays(3)->toDateString()]),
-        ]);
+        foreach ($rhus as $rhu) {
+            $firstBhc = $rhu->bhcs()->first();
+
+            Notification::create([
+                'user_id' => $user->id,
+                'rhu_id' => $rhu->id,
+                'type' => 'request',
+                'is_read' => false,
+                'meta' => ['current_balance' => rand(5, 50), 'seeded' => true, 'barangay_name' => $firstBhc?->barangay_name ?? 'N/A'],
+            ]);
+
+            Notification::create([
+                'user_id' => $user->id,
+                'rhu_id' => $rhu->id,
+                'type' => 'return',
+                'is_read' => false,
+                'meta' => ['current_balance' => rand(1, 8), 'seeded' => true, 'barangay_name' => $firstBhc?->barangay_name ?? 'N/A'],
+            ]);
+
+            Notification::create([
+                'user_id' => $user->id,
+                'rhu_id' => $rhu->id,
+                'type' => 'low_stock',
+                'is_read' => false,
+                'meta' => ['current_balance' => rand(1, 8), 'seeded' => true, 'barangay_name' => $firstBhc?->barangay_name ?? 'N/A'],
+            ]);
+
+            Notification::create([
+                'user_id' => $user->id,
+                'rhu_id' => $rhu->id,
+                'type' => 'near_expired',
+                'is_read' => false,
+                'meta' => ['batch_no' => 'NE-' . rand(100,999), 'expiration_date' => Carbon::now()->addDays(rand(16,30))->toDateString(), 'seeded' => true, 'barangay_name' => $firstBhc?->barangay_name ?? 'N/A'],
+            ]);
+
+            Notification::create([
+                'user_id' => $user->id,
+                'rhu_id' => $rhu->id,
+                'type' => 'expired',
+                'is_read' => false,
+                'meta' => ['batch_no' => 'EX-' . rand(100,999), 'expiration_date' => Carbon::now()->subDays(rand(1,30))->toDateString(), 'seeded' => true, 'barangay_name' => $firstBhc?->barangay_name ?? 'N/A'],
+            ]);
+        }
     }
 }

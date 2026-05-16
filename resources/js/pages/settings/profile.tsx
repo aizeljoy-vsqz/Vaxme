@@ -118,7 +118,9 @@ export default function Profile({
                 </Form>
             </div>
 
-            <DeleteUser />
+                    {typeof window !== 'undefined' && (
+                        <DeleteUser />
+                    )}
         </>
     );
 }

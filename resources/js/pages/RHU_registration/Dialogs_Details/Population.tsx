@@ -14,8 +14,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import SuccessDialog from '@/components/feedback/SuccessDialog';
-import { store as registrationStore } from '@/routes/registration';
-import { store as populationStore } from '@/routes/registration/population';
 
 type PopulationItem = {
   age_range: string;
@@ -118,7 +116,7 @@ export function InputPopulationPage({
       }
 
       // Step 1: Save Barangay Details
-      const detailsResponse = await fetch(registrationStore.url(), {
+      const detailsResponse = await fetch('/registration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -203,7 +201,7 @@ export function InputPopulationPage({
 
       console.log('Saving population data:', populationPayload);
 
-      const populationResponse = await fetch(populationStore.url(), {
+      const populationResponse = await fetch('/registration/population', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
