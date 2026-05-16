@@ -11,10 +11,28 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 export default function VaccineRequestCard() {
     return (
-        <Card className="gap-2 rounded-2xl border-border/50 bg-background/80 backdrop-blur shadow-sm transition-all hover:shadow-md w-xs
-    ">
+        <Card className="gap-2 rounded-2xl border-border/50 bg-background/80 backdrop-blur shadow-sm transition-all hover:shadow-md w-xs md:w-full ">
             <CardHeader>
                 <div className="flex items-start justify-between mb-2">
                     <div>
@@ -23,7 +41,7 @@ export default function VaccineRequestCard() {
                         </CardTitle>
 
                         <CardDescription className="mt-1 text-xs">
-                            Barangay San Roque
+                            Barangay Cobeng-beng
                         </CardDescription>
                     </div>
 
@@ -48,9 +66,9 @@ export default function VaccineRequestCard() {
                     </div>
 
                     <div className="space-y-2 rounded-xl bg-muted/40 p-4">
-                        <p className="text-xs">BCG Vaccine</p>
-                        <p className="text-xs">Hepatitis B</p>
-                        <p className="text-xs">Oral Polio Vaccine</p>
+                        <p className="text-xs">John John</p>
+                        <p className="text-xs">Panget</p>
+                        <p className="text-xs">Di Magana</p>
                     </div>
                 </div>
 
@@ -68,8 +86,35 @@ export default function VaccineRequestCard() {
             </CardContent>
 
             <CardFooter className="flex justify-end gap-3">
-                <Button variant={"outline"} className="border border-red-400 hover:text-red-500 text-red-500">Reject</Button>
-                <Button variant={"ghost"} className="bg-blue-500 hover:bg-blue-600 hover:text-white text-white">Approve</Button>
+                <Button variant={"outline"} className="border border-red-400 hover:text-red-500 hover:bg-red-50 text-red-500">Reject</Button>
+                {/* <Button variant={"ghost"} className="bg-blue-500 hover:bg-blue-600 hover:text-white text-white">Approve</Button> */}
+                <Dialog>
+                    <DialogTrigger className="py-2 px-4 text-sm rounded-md bg-blue-500 hover:bg-blue-600 hover:text-white text-white">Approve</DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Select Vaccines</DialogTitle>
+                            <DialogDescription>
+                                Choose the vaccines batch to approve for this request.  
+                            </DialogDescription>
+                        </DialogHeader>
+                        <Select>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select a vaccine batch" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectItem value="batch1">Batch 1 - Penta (100 doses)</SelectItem>
+                                    <SelectItem value="batch2">Batch 2 - Penta (50 doses)</SelectItem>
+                                    <SelectItem value="batch3">Batch 3 - Penta (200 doses)</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <DialogFooter>
+                           <Button variant={"outline"} className="border border-red-400 hover:text-red-500 hover:bg-red-50 text-red-500">Cancel</Button>
+                           <Button variant={"ghost"} className="bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Confirm</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </CardFooter>
         </Card>
     )
