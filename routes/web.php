@@ -3,6 +3,7 @@
 use App\Http\Controllers\DailyBatchesInventoryController;
 use App\Http\Controllers\VaccineBatchesController;
 use App\Http\Controllers\VaccineManagementController;
+use App\Http\Controllers\VaccineRequestController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -26,6 +27,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/vaccine/management/store', [VaccineManagementController::class, 'Store'])->name('vaccineManagement.store');
     Route::delete('/vaccine/management/delete/{delete_vaccine_id}', [VaccineManagementController::class, 'Delete'])->name('vaccineManagement.delete');
     Route::put('/vaccine/management/update/{update_vaccine_id}', [VaccineManagementController::class, 'Update'])->name('vaccineManagement.delete');
+
+    Route::get('/vaccine/request', [VaccineRequestController::class, 'Index'])->name('vaccineRequest');
 });
 
 require __DIR__.'/settings.php';

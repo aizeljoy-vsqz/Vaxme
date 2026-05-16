@@ -12,7 +12,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard, batchesVaccineInventory, vaccineManagement } from '@/routes';
+import { dashboard, batchesVaccineInventory, vaccineManagement, vaccineRequest } from '@/routes';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -35,7 +35,7 @@ const mainNavItems: NavItem[] = [
 const BarangayNavItems: NavItem[] = [
     {
         title: 'Vaccine Request',
-        href: '',
+        href: vaccineRequest(),
         icon: StickyNote,
     },
     {
