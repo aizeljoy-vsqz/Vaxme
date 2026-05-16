@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->foreignId('rhu_id')->nullable()->index();
+            $table->enum('type', ['request', 'return']);
+            $table->boolean('is_read')->default(false);
+            $table->integer('current_balance')->nullable();
+            $table->date('expiration_date')->nullable();
+            $table->json('meta')->nullable();
             $table->timestamps();
         });
     }

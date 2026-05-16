@@ -1,6 +1,7 @@
 <?php
     	use App\Http\Controllers\Registrations\BarangayDetails_Controller;
     use App\Http\Controllers\Registrations\Registration_Controller;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use App\Http\Middleware\ForcePasswordChange;
@@ -48,6 +49,15 @@ Route::middleware(['auth', ForcePasswordChange::class, 'verified'])->group(funct
     
     Route::get('/registration/brgy-details',[BarangayDetails_Controller::class, 'index'])
         ->name('registration.brgy-details');
+
+    Route::get('/notifications', [NotificationController::class, 'index'])
+        ->name('notifications.index');
+
+    Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])
+        ->name('notifications.mark-all-read');
+
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
+        ->name('notifications.read');
 });
 
 
