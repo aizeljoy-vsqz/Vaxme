@@ -19,6 +19,25 @@ use Throwable;
 
 class Registration_Controller extends Controller
 {
+    private function uniqueBarangayEmail(string $name, ?User $ignoreUser = null): string
+    {
+        $emailPrefix = Str::lower(Str::slug($name, ''));
+        $base = $emailPrefix ?: 'user';
+        $candidate = $base . '@barangay.bhc.ph';
+        $suffix = 1;
+
+        while (
+            User::where('email', $candidate)
+                ->when($ignoreUser, fn ($query) => $query->where('id', '!=', $ignoreUser->id))
+                ->exists()
+        ) {
+            $candidate = $base . '-' . $suffix . '@barangay.bhc.ph';
+            $suffix++;
+        }
+
+        return $candidate;
+    }
+
     public function index(Request $request)
     {
         $user = $request->user();
@@ -86,11 +105,7 @@ class Registration_Controller extends Controller
 
                 $temporaryPassword = 'password';
 
-                $emailPrefix = Str::lower(
-                    Str::slug($validated['nurse_assigned'], '')
-                );
-
-                $generatedEmail = $emailPrefix . '@barangay.bhc.ph';
+                $generatedEmail = $this->uniqueBarangayEmail($validated['nurse_assigned']);
 
                 $user = User::create([
                     'name' => $validated['nurse_assigned'],
@@ -251,18 +266,7 @@ class Registration_Controller extends Controller
                 // Update name
                 $user->name = $validated['nurse_assigned'];
 
-                // Regenerate email based on nurse name and ensure uniqueness
-                $emailPrefix = Str::lower(Str::slug($validated['nurse_assigned'], ''));
-                $base = $emailPrefix ?: 'user';
-                $candidate = $base . '@barangay.bhc.ph';
-                $i = 1;
-
-                while (User::where('email', $candidate)->where('id', '!=', $user->id)->exists()) {
-                    $candidate = $base . '-' . $i . '@barangay.bhc.ph';
-                    $i++;
-                }
-
-                $user->email = $candidate;
+                $user->email = $this->uniqueBarangayEmail($validated['nurse_assigned'], $user);
                 $user->save();
             }
         }

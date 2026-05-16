@@ -1,5 +1,6 @@
 import { useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
+import SuccessDialog from '@/components/feedback/SuccessDialog';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -7,25 +8,22 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { FieldGroup, Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import SuccessDialog from '@/components/feedback/SuccessDialog';
-
-type PopulationItem = {
-  age_range: string;
-  male: number;
-  female: number;
-};
-
-type DetailsFormData = {
-  barangay_name: string;
-  nurse_assigned: string;
-  contact_number: string;
-};
+import {
+  createInitialPopulations,
+  createJsonRequestInit,
+  formatValidationErrors,
+  getCsrfToken,
+} from '@/pages/RHU_registration/Dialogs_Details/population-utils';
+import type {
+  DetailsFormData,
+  PopulationItem,
+} from '@/pages/RHU_registration/Dialogs_Details/population-utils';
 
 type SuccessState = {
   title: string;
@@ -48,18 +46,9 @@ export function InputPopulationPage({
   onDetailsError?: () => void;
   onServerErrors?: (errors: Record<string, string[]>) => void;
 }) {
-
-  const { data, setData, processing } = useForm<{
-      populations: PopulationItem[];
-    }>({
-      populations: [
-        { age_range: 'All Ages', male: 0, female: 0 },
-        { age_range: 'Under 1 (0-11 months)', male: 0, female: 0 },
-        { age_range: 'Under 0-12 months', male: 0, female: 0 },
-        { age_range: 'Under 0-53 months', male: 0, female: 0 },
-        { age_range: '10 years and above', male: 0, female: 0 },
-      ],
-    });
+  const { data, setData, processing } = useForm<{ populations: PopulationItem[] }>({
+    populations: createInitialPopulations(),
+  });
 
   const [isSaving, setIsSaving] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
@@ -69,34 +58,38 @@ export function InputPopulationPage({
     details: [],
   });
 
+  const resetSaving = () => {
+    setIsSaving(false);
+  };
+
+  const resetAndCloseDetails = () => {
+    onOpenChange(false);
+    onDetailsError?.();
+    resetSaving();
+  };
+
+  const resetPopulations = () => {
+    setData('populations', createInitialPopulations());
+  };
+
   const handleSuccessDismiss = () => {
     setSuccessOpen(false);
     onOpenChange(false);
-    setIsSaving(false);
-    setData('populations', [
-      { age_range: 'All Ages', male: 0, female: 0 },
-      { age_range: 'Under 1 (0-11 months)', male: 0, female: 0 },
-      { age_range: 'Under 0-12 months', male: 0, female: 0 },
-      { age_range: 'Under 0-53 months', male: 0, female: 0 },
-      { age_range: '10 years and above', male: 0, female: 0 },
-    ]);
-    	router.reload();
+    resetSaving();
+    resetPopulations();
+    router.reload();
   };
 
-  const handleChange = (
-      index: number,
-      field: 'male' | 'female',
-      value: string
-    ) => {
-      const updated = [...data.populations];
+  const handleChange = (index: number, field: 'male' | 'female', value: string) => {
+    const updated = [...data.populations];
 
-      updated[index] = {
-        ...updated[index],
-          [field]: Number.isNaN(Number(value)) ? 0 : Number(value),
-      };
-
-      setData('populations', updated);
+    updated[index] = {
+      ...updated[index],
+      [field]: Number.isNaN(Number(value)) ? 0 : Number(value),
     };
+
+    setData('populations', updated);
+  };
 
   const handleSaveUnified = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,28 +101,15 @@ export function InputPopulationPage({
     setIsSaving(true);
 
     try {
-      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-      
-      // Try to proceed with available token; server will return 419 if CSRF is truly required but missing
+      const csrfToken = getCsrfToken();
+
       if (!csrfToken) {
         console.warn('CSRF token not found in meta tag');
       }
 
-      // Step 1: Save Barangay Details
-      const detailsResponse = await fetch('/registration', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRF-TOKEN': csrfToken,
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify(detailsData),
-      });
+      const detailsResponse = await fetch('/registration', createJsonRequestInit(csrfToken, detailsData));
 
       if (detailsResponse.status === 422) {
-        // Validation errors from server
         try {
           const err = await detailsResponse.json();
           console.error('Validation errors (Details):', err.errors);
@@ -146,19 +126,17 @@ export function InputPopulationPage({
           alert('Validation error saving barangay details');
         }
 
-        onOpenChange(false);
-        onDetailsError?.();
-        setIsSaving(false);
+        resetAndCloseDetails();
+
         return;
       }
 
       if (detailsResponse.status === 419) {
         console.error('CSRF token expired or invalid');
         alert('Security session expired. Please refresh the page and try again.');
-        onOpenChange(false);
-        onDetailsError?.();
-        setIsSaving(false);
+        resetAndCloseDetails();
         window.location.reload();
+
         return;
       }
 
@@ -172,68 +150,53 @@ export function InputPopulationPage({
           console.error(`HTTP ${detailsResponse.status}: Failed to save barangay details`);
           alert(`Error: Failed to save barangay details (HTTP ${detailsResponse.status})`);
         }
-        onOpenChange(false);
-        onDetailsError?.();
-        setIsSaving(false);
+
+        resetAndCloseDetails();
+
         return;
       }
 
-      // Step 2: Extract BHC ID from response
       const detailsResult = await detailsResponse.json();
-
       const bhcId = detailsResult.bhc_id || detailsResult.barangay_id || detailsResult.id;
 
       if (!bhcId || bhcId <= 0) {
         console.error('Invalid BHC ID received:', bhcId);
         alert('Error: Invalid barangay ID received from server');
-        onOpenChange(false);
-        onDetailsError?.();
-        setIsSaving(false);
+        resetAndCloseDetails();
+
         return;
       }
 
-      // Step 3: Save Population Data
       const populationPayload = {
         bhc_id: bhcId,
         populations: data.populations,
       };
 
-      // proceed with saving population data
-
-      const populationResponse = await fetch('/registration/population', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRF-TOKEN': csrfToken,
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify(populationPayload),
-      });
+      const populationResponse = await fetch('/registration/population', createJsonRequestInit(csrfToken, populationPayload));
 
       if (populationResponse.status === 422) {
         try {
           const err = await populationResponse.json();
           console.error('Validation errors (Population):', err.errors);
-          
-          const errorMessages = Object.entries(err.errors || {})
-            .map(([field, msgs]) => `${field}: ${(msgs as string[]).join(', ')}`)
-            .join('\n');
-          
+
+          const errorMessages = formatValidationErrors(err.errors || {});
+
           alert(`Validation Error:\n${errorMessages}`);
         } catch {
           alert('Validation error saving population data');
         }
-        setIsSaving(false);
+
+        resetSaving();
+
         return;
       }
 
       if (populationResponse.status === 419) {
         console.error('CSRF token expired or invalid');
         alert('Security session expired. Please refresh the page and try again.');
-        setIsSaving(false);
+        resetSaving();
         window.location.reload();
+
         return;
       }
 
@@ -246,20 +209,15 @@ export function InputPopulationPage({
           console.error(`HTTP ${populationResponse.status}: Failed to save population data`);
           alert(`Error: Failed to save population data (HTTP ${populationResponse.status})`);
         }
-        setIsSaving(false);
+
+        resetSaving();
+
         return;
       }
 
-      // Step 4: Confirm successful save
-      const populationResult = await populationResponse.json();
+      await populationResponse.json();
 
-      setData('populations', [
-        { age_range: 'All Ages', male: 0, female: 0 },
-        { age_range: 'Under 1 (0-11 months)', male: 0, female: 0 },
-        { age_range: 'Under 0-12 months', male: 0, female: 0 },
-        { age_range: 'Under 0-53 months', male: 0, female: 0 },
-        { age_range: '10 years and above', male: 0, female: 0 },
-      ]);
+      resetPopulations();
 
       const generated = detailsResult?.generated_user;
       const details: Array<{ label: string; value: string }> = [];
@@ -278,25 +236,24 @@ export function InputPopulationPage({
         details,
       });
 
-      // Close population dialog and open success dialog.
       onOpenChange(false);
-      setIsSaving(false);
+      resetSaving();
       setSuccessOpen(true);
     } catch (error) {
       console.error('Unexpected error during save:', error);
       alert(`Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      setIsSaving(false);
+      resetSaving();
     }
   };
 
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent 
+        <DialogContent
           className="sm:max-w-xl"
           onInteractOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
-          >
+        >
           <form onSubmit={handleSaveUnified}>
             <DialogHeader>
               <DialogTitle className="pb-2">Barangay Details</DialogTitle>
@@ -305,7 +262,6 @@ export function InputPopulationPage({
             </DialogHeader>
 
             <FieldGroup>
-
               {data.populations.map((pop, index) => (
                 <div key={index}>
                   <Label className="pb-4 font-semibold">{pop.age_range}</Label>
@@ -317,9 +273,7 @@ export function InputPopulationPage({
                         min="0"
                         placeholder="e.g 100"
                         value={pop.male}
-                        onChange={(e) =>
-                          handleChange(index, 'male', e.target.value)
-                        }
+                        onChange={(e) => handleChange(index, 'male', e.target.value)}
                       />
                     </div>
 
@@ -329,9 +283,7 @@ export function InputPopulationPage({
                         min="0"
                         placeholder="e.g 100"
                         value={pop.female}
-                        onChange={(e) =>
-                          handleChange(index, 'female', e.target.value)
-                        }
+                        onChange={(e) => handleChange(index, 'female', e.target.value)}
                       />
                     </div>
                   </Field>
@@ -339,7 +291,7 @@ export function InputPopulationPage({
               ))}
             </FieldGroup>
 
-            <DialogFooter className='pt-6'>
+            <DialogFooter className="pt-6">
               <Button
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 cursor-pointer"

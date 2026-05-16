@@ -1,8 +1,9 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { useMemo, useState } from 'react';
 import { ChevronRight, CircleCheckBig, Mail, User } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import registrationRoutes from '@/routes/registration';
+import DeleteConfirmDialog from '@/components/feedback/DeleteConfirmDialog';
+import EmptySearchState from '@/components/feedback/EmptySearchState';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -14,8 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import EmptySearchState from '@/components/feedback/EmptySearchState';
-import DeleteConfirmDialog from '@/components/feedback/DeleteConfirmDialog';
+import registrationRoutes from '@/routes/registration';
 import { DetailsPage } from './Dialogs_Details/Details';
 import { EditBarangayDialog } from './Dialogs_Edit/Edit_barangay';
 
@@ -184,6 +184,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                 open={deleteOpen}
                 onOpenChange={(open) => {
                     setDeleteOpen(open);
+
                     if (!open) {
                         setDeleteTarget(null);
                     }

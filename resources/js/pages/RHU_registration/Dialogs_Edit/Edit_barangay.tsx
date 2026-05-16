@@ -1,8 +1,9 @@
 import { useForm } from "@inertiajs/react";
+import { CircleCheckBig } from 'lucide-react';
 import { useState, useEffect } from "react";
 import { toast } from 'sonner';
-import {Button} from '@/components/ui/button';
 import ConfirmDialog from '@/components/feedback/ConfirmDialog';
+import {Button} from '@/components/ui/button';
 import {
     Dialog, 
     DialogContent, 
@@ -16,7 +17,6 @@ import {FieldGroup, Field} from '@/components/ui/field';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Separator} from '@/components/ui/separator';
-import { CircleCheckBig } from 'lucide-react';
 
 interface EditBarangay {
     id: number;
@@ -55,6 +55,7 @@ export function EditBarangayDialog({ barangay }: Props) {
             data.contact_number.trim() === ''
         ) {
             toast.error('Please fill in all required fields.');
+
             return;
         }
 
@@ -79,7 +80,7 @@ export function EditBarangayDialog({ barangay }: Props) {
                 );
                 setOpen(false);
             },
-            onError: (errs) => {
+            onError: () => {
                 toast.error('Failed to save. Please check your input and try again.');
             }
         });

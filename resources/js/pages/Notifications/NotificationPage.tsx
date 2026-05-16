@@ -1,6 +1,6 @@
 import { Head } from '@inertiajs/react';
+import { BellOff, CheckCircle, Package, Clock3, AlertTriangle } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Bell, BellOff, CheckCircle, Package, Clock3, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Notification {

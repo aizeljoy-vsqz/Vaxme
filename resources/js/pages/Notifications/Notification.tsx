@@ -1,3 +1,5 @@
+import { Bell, BellOff, CheckCircle, Package, Clock3, AlertTriangle } from "lucide-react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -5,8 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Bell, BellOff, CheckCircle, Package, Clock3, AlertTriangle } from "lucide-react"
-import { useEffect, useState } from "react"
 
 interface Notification {
   id: number

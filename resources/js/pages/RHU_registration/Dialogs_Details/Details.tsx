@@ -1,6 +1,6 @@
 import { useForm } from '@inertiajs/react';
 import {Plus} from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {Button} from '@/components/ui/button';
 import {
     Dialog, 
@@ -26,6 +26,57 @@ type BarangayOption = {
     barangay_name: string;
 };
 
+const CONTACT_PREFIX = '+63';
+
+const createBlankDetails = () => ({
+    barangay_name: '',
+    nurse_assigned: '',
+    contact_number: '',
+});
+
+const normalizeContactDisplay = (value: string | null | undefined) => {
+    const raw = value ?? '';
+
+    if (!raw || raw === 'N/A') {
+        return CONTACT_PREFIX;
+    }
+
+    if (raw.startsWith(CONTACT_PREFIX)) {
+        return `${CONTACT_PREFIX}${raw.slice(CONTACT_PREFIX.length)}`;
+    }
+
+    if (raw.startsWith('0')) {
+        return `${CONTACT_PREFIX}${raw.slice(1)}`;
+    }
+
+    return raw.startsWith('+') ? raw : `${CONTACT_PREFIX}${raw}`;
+};
+
+const normalizeContactStorage = (value: string) => {
+    let sanitized = value || '';
+
+    sanitized = sanitized.replace(/[^+0-9]/g, '');
+
+    if (sanitized.startsWith(CONTACT_PREFIX)) {
+        sanitized = sanitized.slice(CONTACT_PREFIX.length);
+    }
+
+    if (sanitized.startsWith('0')) {
+        sanitized = sanitized.slice(1);
+    }
+
+    sanitized = sanitized.replace(/\D/g, '').slice(0, 10);
+
+    return sanitized.length > 0 ? `${CONTACT_PREFIX}${sanitized}` : '';
+};
+
+const normalizeBarangayName = (value: string) => value.trim().toLowerCase();
+
+const toTitleCase = (value: string) =>
+    value
+        .toLowerCase()
+        .replace(/\b\w/g, (character) => character.toUpperCase());
+
 export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: BarangayOption[] }) {
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
     const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
@@ -33,30 +84,29 @@ export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: Ba
     const [serverErrors, setServerErrors] = useState<Record<string, string[]> | null>(null);
     
     const {data, setData, errors, reset} = useForm({
-        barangay_name: '',
-        nurse_assigned: '',
-        contact_number: '',
-        });
+        ...createBlankDetails(),
+    });
 
-    const handleDialogClose = () => {
+    const clearFormState = () => {
         reset();
-        setData({
-            barangay_name: '',
-            nurse_assigned: '',
-            contact_number: '',
-        });
+        setData(createBlankDetails());
         setServerErrors(null);
         setDetailsFormData(null);
     };
 
-    // Contact number must be exactly +63 + 10 local digits = 13 chars total
-    const isContactNumberValid = data.contact_number.length === 13 && data.contact_number.startsWith('+63');
+    const closeDetailsDialog = () => {
+        setDetailsDialogOpen(false);
+        setPopulationDialogOpen(false);
+        clearFormState();
+    };
 
-    const normalizedBarangayName = data.barangay_name.trim().toLowerCase();
+    const isContactNumberValid = data.contact_number.length === 13 && data.contact_number.startsWith(CONTACT_PREFIX);
+
+    const normalizedBarangayName = normalizeBarangayName(data.barangay_name);
     const isBarangayNameDuplicate =
         normalizedBarangayName.length > 0 &&
         existingBarangays.some((barangay) =>
-            barangay.barangay_name.trim().toLowerCase() === normalizedBarangayName
+            normalizeBarangayName(barangay.barangay_name) === normalizedBarangayName
         );
 
     const isFormValid =
@@ -64,11 +114,6 @@ export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: Ba
         data.nurse_assigned.trim() !== '' &&
         isContactNumberValid &&
         !isBarangayNameDuplicate;
-
-    const toTitleCase = (value: string) =>
-        value
-            .toLowerCase()
-            .replace(/\b\w/g, (character) => character.toUpperCase());
 
     const handleNext = () => {
         if (!isFormValid) {
@@ -80,19 +125,35 @@ export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: Ba
         setPopulationDialogOpen(true);
     };
 
+    const handleDetailsDialogChange = (open: boolean) => {
+        setDetailsDialogOpen(open);
+
+        if (!open) {
+            closeDetailsDialog();
+        }
+    };
+
+    const handleBarangayChange = (value: string) => {
+        setData('barangay_name', value);
+        setServerErrors(null);
+    };
+
+    const handleNurseChange = (value: string) => {
+        setData('nurse_assigned', toTitleCase(value));
+        setServerErrors(null);
+    };
+
+    const handleContactChange = (value: string) => {
+        setServerErrors(null);
+        setData('contact_number', normalizeContactStorage(value));
+    };
+
     return (
             <>
             <Dialog
                 open={detailsDialogOpen}
-                onOpenChange={(open) => {
-                    setDetailsDialogOpen(open);
-                    if (!open) {
-                        handleDialogClose();
-                        setPopulationDialogOpen(false);
-                    }
-                }}
+                onOpenChange={handleDetailsDialogChange}
             >
-            {/* Ensure that when the population dialog is closed (via X), the details form is also cleared */}
                 <DialogTrigger asChild>
                    <Button className="bg-blue-600  hover:bg-blue-700 cursor-pointer">
                         <Plus/>
@@ -116,10 +177,7 @@ export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: Ba
                     <Input 
                         placeholder="e.g Alawihao" 
                         value={data.barangay_name}
-                        onChange={(e) => {
-                            setData('barangay_name', e.target.value);
-                            setServerErrors(null);
-                        }}
+                        onChange={(e) => handleBarangayChange(e.target.value)}
                     />
                     {serverErrors?.barangay_name ? (
                         <span className="text-red-500 text-sm">{serverErrors.barangay_name[0]}</span>
@@ -141,10 +199,7 @@ export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: Ba
                         placeholder="e.g Aizel Joy Vasquez" 
                         autoCapitalize="words"
                         value={data.nurse_assigned}
-                        onChange={(e) => {
-                            setData('nurse_assigned', toTitleCase(e.target.value));
-                            setServerErrors(null);
-                        }}
+                        onChange={(e) => handleNurseChange(e.target.value)}
                     />
                     {serverErrors?.nurse_assigned ? (
                         <span className="text-red-500 text-sm">{serverErrors.nurse_assigned[0]}</span>
@@ -162,28 +217,8 @@ export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: Ba
                         inputMode="numeric"
                         pattern="[0-9]*"
                         maxLength={13}
-                        value={(() => {
-                            const raw = data.contact_number ?? '';
-                            if (!raw) return '+63';
-                            if (raw === 'N/A') return '+63';
-                            if (raw.startsWith('+63')) return '+63' + raw.slice(3);
-                            if (raw.startsWith('0')) return '+63' + raw.slice(1);
-                            return raw.startsWith('+') ? raw : '+63' + raw;
-                        })()}
-                        onChange={(e) => {
-                            setServerErrors(null);
-                            let v = e.target.value || '';
-
-                            v = v.replace(/[^+0-9]/g, '');
-
-                            if (v.startsWith('+63')) v = v.slice(3);
-                            if (v.startsWith('0')) v = v.slice(1);
-
-                            v = v.replace(/\D/g, '').slice(0, 10);
-
-                            const stored = v.length > 0 ? '+63' + v : '';
-                            setData('contact_number', stored);
-                        }}
+                        value={normalizeContactDisplay(data.contact_number)}
+                        onChange={(e) => handleContactChange(e.target.value)}
                     />
                     {!isContactNumberValid && data.contact_number.length > 0 && (
                         <span className="text-red-500 text-sm">

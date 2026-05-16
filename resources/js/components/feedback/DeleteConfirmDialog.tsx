@@ -1,3 +1,4 @@
+import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -7,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Trash2 } from 'lucide-react';
 
 interface DeleteConfirmDialogProps {
   open: boolean;

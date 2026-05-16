@@ -1,10 +1,11 @@
 "use client";
 
   import { router } from '@inertiajs/react';
+import { CircleCheckBig } from 'lucide-react';
 import { useState } from "react";
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 import ConfirmDialog from '@/components/feedback/ConfirmDialog';
+import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogDescription,
@@ -17,7 +18,6 @@ import { FieldGroup, Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { CircleCheckBig } from 'lucide-react';
 
 import type { PopulationData } from "../Details/column";
 
@@ -168,6 +168,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
             onClick={() => {
                 if (male === "" || female === "") {
                     toast.error('Please fill in all required fields.');
+
                     return;
                 }
 
@@ -212,7 +213,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
                     });
                     onClose();
                   },
-                  onError: (errs) => {
+                  onError: () => {
                     // 4. Error toast
                     toast.error('Failed to save. Please check your input and try again.');
                   },

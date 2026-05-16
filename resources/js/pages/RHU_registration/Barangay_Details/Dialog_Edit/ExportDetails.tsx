@@ -43,6 +43,7 @@ export default function ExportDialog({ bhcId, barangayName }: ExportDialogProps)
 
     if (!trimmedFileName) {
       toast.error("Please enter a valid file name.");
+
       return;
     }
 

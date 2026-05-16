@@ -70,7 +70,7 @@ export default function SuccessDialog({
     } else if (!open) {
       toastShownRef.current = false;
     }
-  }, [open]);
+  }, [open, entityName]);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>

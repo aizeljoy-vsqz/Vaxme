@@ -2,8 +2,8 @@
 
 import { Head } from '@inertiajs/react';
 import {Label} from '@/components/ui/label';
-import ExportDialog from './Dialog_Edit/ExportDetails';
 import { PopulationTable } from './Details/details';
+import ExportDialog from './Dialog_Edit/ExportDetails';
 
 type PopulationRow = {
     id: string;

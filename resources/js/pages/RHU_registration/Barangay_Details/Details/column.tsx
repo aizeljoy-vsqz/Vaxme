@@ -1,9 +1,11 @@
 "use client";
 
 import { useForm } from "@inertiajs/react";
-import { toast } from 'sonner';
-import { CircleCheckBig } from 'lucide-react';
 import type { ColumnDef } from "@tanstack/react-table";
+import { CircleCheckBig } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import DeleteConfirmDialog from '@/components/feedback/DeleteConfirmDialog';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -12,8 +14,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import DeleteConfirmDialog from '@/components/feedback/DeleteConfirmDialog';
-import { useState } from 'react';
 
 /**
  * Action cell component for population table
