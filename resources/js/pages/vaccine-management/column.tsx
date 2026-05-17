@@ -16,6 +16,7 @@ export type VaccineType = {
     id: number
     name: string
     description: string
+    length:number
 }
 
 export const columns = (handleDelete: (delete_vaccine_id: number) => void): ColumnDef<VaccineType>[] => [

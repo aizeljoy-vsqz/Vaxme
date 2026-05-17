@@ -45,7 +45,7 @@ export function ChartAreaDefault() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Vaccination by Barangay</CardTitle>
+        <CardTitle>Vaccine Usage</CardTitle>
         <CardDescription>
           January - June 2024
         </CardDescription>

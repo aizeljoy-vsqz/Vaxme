@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DailyBatchesInventoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\VaccineBatchesController;
 use App\Http\Controllers\VaccineManagementController;
 use App\Http\Controllers\VaccineRequestController;
@@ -12,7 +13,8 @@ Route::inertia('/', 'welcome', [
 ])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    // Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard',[DashboardController::class, 'Index'])->name('dashboard');
     Route::get('/vaccine/inventory', [VaccineBatchesController::class, 'Index'])->name('batchesVaccineInventory');
     Route::post('/vaccine/inventory/store', [VaccineBatchesController::class, 'Store'])->name('batchesVaccineInventory.store');
     Route::delete('/vaccine/inventory/delete/{delete_vaccine}', [VaccineBatchesController::class, 'Delete'])->name('batchesVaccineInventory.delete');
