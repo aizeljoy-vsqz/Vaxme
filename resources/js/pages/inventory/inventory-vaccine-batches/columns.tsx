@@ -1,16 +1,15 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
-import { dailyVaccineInventory } from "@/routes"
 import { Link } from "@inertiajs/react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
+import type { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, Ellipsis } from "lucide-react"
-import { VaccineType } from "@/pages/vaccine-management/column"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import DeleteConfirmation from "@/components/vaccine_components/alert-dialog"
 import { VaccineBatchesForm } from "@/components/vaccine_components/vaccine-batches-form"
-import { useState } from "react"
-import { Dialog } from "radix-ui"
+import type { VaccineType } from "@/pages/vaccine-management/column"
+import { dailyVaccineInventory } from "@/routes"
 
 
 export type VaccineBatch = {
@@ -56,6 +55,7 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
         },
         cell: ({ row }) => {
             const date = row.getValue("expiration_date") as string
+
             return new Date(date).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
@@ -76,6 +76,7 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
         header: "Status",
         cell: ({ row }) => {
             const status = row.original.status == '1' ? 'active' : 'inactive'
+
             return status
         }
     },

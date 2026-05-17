@@ -1,3 +1,6 @@
+import { useForm, usePage } from "@inertiajs/react"
+import { CircleAlert, CircleCheckBig, Plus, } from "lucide-react"
+import { toast } from "sonner"
 import {
     AlertDialog,
     AlertDialogCancel,
@@ -11,12 +14,10 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { DataTable } from "./data-table"
-import { columns, VaccineType } from "./column"
-import { CircleAlert, CircleCheckBig, Plus, } from "lucide-react"
-import { useForm, usePage } from "@inertiajs/react"
-import { toast } from "sonner"
 import EmptyPage from "@/components/vaccine_components/empty-page"
+import type { VaccineType } from "./column";
+import { columns } from "./column"
+import { DataTable } from "./data-table"
 
 export default function VaccineManagement() {
     interface PageProps {
@@ -60,6 +61,7 @@ export default function VaccineManagement() {
             }
         });
     }
+
     return (
         <>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">

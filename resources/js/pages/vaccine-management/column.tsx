@@ -1,17 +1,17 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
+import type { ColumnDef } from "@tanstack/react-table"
+import { Ellipsis } from "lucide-react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { Ellipsis } from "lucide-react"
 import DeleteConfirmation from "@/components/vaccine_components/alert-dialog"
 import VaccineForm from "@/components/vaccine_components/vaccine-management-form"
-import { useState } from "react"
 export type VaccineType = {
     id: number
     name: string
@@ -41,6 +41,7 @@ export const columns = (handleDelete: (delete_vaccine_id: number) => void): Colu
         cell: ({ row }) => {
             const delete_vaccine_id = row.original.id
             const [openDropdown, setOpenDropdown] = useState(false)
+
             return (
                 <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
                     <DropdownMenuTrigger asChild>

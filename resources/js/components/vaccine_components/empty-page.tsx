@@ -1,12 +1,11 @@
+import { MessageSquare } from "lucide-react"
 import {
     Empty,
-    EmptyContent,
     EmptyDescription,
     EmptyHeader,
     EmptyMedia,
     EmptyTitle,
 } from "@/components/ui/empty"
-import { MessageSquare } from "lucide-react"
 
 interface emptyPageType{
     title: string,

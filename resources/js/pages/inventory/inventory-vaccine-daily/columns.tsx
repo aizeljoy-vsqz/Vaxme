@@ -1,9 +1,11 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
+import { usePage } from "@inertiajs/react"
+import type { ColumnDef } from "@tanstack/react-table"
 import { Ellipsis } from "lucide-react"
 import { ArrowUpDown } from "lucide-react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,9 +15,7 @@ import {
 
 import DeleteConfirmation from "@/components/vaccine_components/alert-dialog"
 import DailyBatchesForm from "@/components/vaccine_components/daily-batches-form"
-import { useState } from "react"
-import { usePage } from "@inertiajs/react"
-import { VaccineBatch } from "../inventory-vaccine-batches/columns"
+import type { VaccineBatch } from "../inventory-vaccine-batches/columns"
 
 export type DailyVaccine = {
     id: number
@@ -45,6 +45,7 @@ export const columns = (handleDelete: (daily_inventory_id: number) => void): Col
         },
         cell: ({ row }) => {
             const date = row.getValue("created_at") as string
+
             return new Date(date).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",

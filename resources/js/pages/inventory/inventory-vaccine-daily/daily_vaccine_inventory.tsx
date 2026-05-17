@@ -1,9 +1,7 @@
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { CircleAlert, CircleCheckBig, Download, Plus } from 'lucide-react';
-import { DataTable } from '../data-table';
-import { columns, DailyVaccine } from './columns';
+import { CircleAlert, CircleCheckBig, Plus } from 'lucide-react';
+import type { SyntheticEvent } from 'react';
+import { toast } from 'sonner';
 import {
     AlertDialog,
     AlertDialogCancel,
@@ -14,10 +12,13 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { SyntheticEvent } from 'react';
-import { toast } from 'sonner';
-import { VaccineBatch } from '../inventory-vaccine-batches/columns';
+import { Label } from '@/components/ui/label';
+import { DataTable } from '../data-table';
+import type { VaccineBatch } from '../inventory-vaccine-batches/columns';
+import { columns } from './columns';
+import type { DailyVaccine } from './columns';
 export default function DailyInventory() {
 
     interface PageProps {

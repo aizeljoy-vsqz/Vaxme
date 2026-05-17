@@ -1,3 +1,7 @@
+import { useForm } from "@inertiajs/react"
+import { CircleCheckBigIcon } from "lucide-react"
+import type { SyntheticEvent } from "react"
+import { toast } from "sonner"
 import {
     Dialog,
     DialogClose,
@@ -8,14 +12,10 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import type { DailyVaccine } from "@/pages/inventory/inventory-vaccine-daily/columns"
 import { Button } from "../ui/button"
-import { useForm } from "@inertiajs/react"
-import { Label } from "../ui/label"
 import { Input } from "../ui/input"
-import { DailyVaccine } from "@/pages/inventory/inventory-vaccine-daily/columns"
-import { SyntheticEvent } from "react"
-import { toast } from "sonner"
-import { CircleCheckBigIcon } from "lucide-react"
+import { Label } from "../ui/label"
 
 interface DailyInventoryType {
     update_daily_inventory: DailyVaccine
@@ -82,7 +82,9 @@ export default function DailyBatchesForm({ update_daily_inventory, onOpenDropdow
                         </div>
                         <DialogFooter>
                             <DialogClose asChild>
-                                <Button type="button" variant="outline" onClick={() => { clearErrors(); onOpenDropdown() }}>
+                                <Button type="button" variant="outline" onClick={() => {
+ clearErrors(); onOpenDropdown() 
+}}>
                                     Cancel
                                 </Button>
                             </DialogClose>

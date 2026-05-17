@@ -1,9 +1,10 @@
 "use client"
 
-import {
+import type {
     ColumnDef,
     SortingState,
-    ColumnFiltersState,
+    ColumnFiltersState} from "@tanstack/react-table";
+import {
     flexRender,
     getCoreRowModel,
     getPaginationRowModel,
@@ -12,6 +13,10 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 
+
+import React from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
     Table,
     TableBody,
@@ -20,10 +25,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-
-import { Input } from "@/components/ui/input"
-import React from "react"
-import { Button } from "@/components/ui/button"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]

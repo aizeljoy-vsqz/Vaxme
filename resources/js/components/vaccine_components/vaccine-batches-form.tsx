@@ -1,13 +1,11 @@
 "use client"
-import * as React from "react"
+import { useForm, usePage } from "@inertiajs/react"
 import { format } from "date-fns"
-import { Calendar } from "@/components/ui/calendar"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
+import { ChevronDownIcon, CircleCheckBigIcon } from "lucide-react"
+import * as React from "react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
     Dialog,
     DialogClose,
@@ -18,29 +16,30 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import {
     Select,
     SelectContent,
     SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ChevronDownIcon, CircleCheckBigIcon } from "lucide-react"
-import { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns"
-import { useForm, usePage } from "@inertiajs/react"
-import { VaccineType } from "@/pages/vaccine-management/column"
-import { toast } from "sonner"
+import type { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns"
+import type { VaccineType } from "@/pages/vaccine-management/column"
 
 interface batchFormType {
     update_batch_id: VaccineBatch;
 }
 export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
     console.log('check', update_batch_id);
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, put, errors } = useForm({
         batch_number: update_batch_id.batch_number,
         vaccine_id: update_batch_id.vaccine.id,
         expiration_date: update_batch_id.expiration_date,
@@ -92,7 +91,9 @@ export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
                     <div className="flex gap-4">
                         <div className="w-full flex flex-col gap-2">
                             <Label>Vaccine Name</Label>
-                            <Select value={data.vaccine_id.toString()} onValueChange={(e) => { setData('vaccine_id', Number(e)) }}>
+                            <Select value={data.vaccine_id.toString()} onValueChange={(e) => {
+ setData('vaccine_id', Number(e)) 
+}}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder={'asl'} />
                                 </SelectTrigger>
@@ -145,7 +146,10 @@ export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
                                         mode="single"
                                         selected={data.expiration_date}
                                         onSelect={(date) => {
-                                            if (!date) return
+                                            if (!date) {
+return
+}
+
                                             setDate(date)
                                             setData('expiration_date', date)
                                         }}

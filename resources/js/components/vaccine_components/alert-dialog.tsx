@@ -1,3 +1,4 @@
+import { TrashIcon } from "lucide-react"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -9,7 +10,6 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Separator } from "../ui/separator"
-import { TrashIcon } from "lucide-react"
 
 interface handleDeleteType {
     handleDelete: (delete_vaccine_id: number) => void
@@ -37,7 +37,9 @@ export default function DeleteConfirmation({handleDelete, delete_vaccine_id}:han
                 <Separator />
                 <AlertDialogFooter>
                     <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-                    <AlertDialogAction className="bg-red-100 text-red-600 hover:bg-red-200" onClick={() => { handleDelete(delete_vaccine_id)}}>Delete</AlertDialogAction>
+                    <AlertDialogAction className="bg-red-100 text-red-600 hover:bg-red-200" onClick={() => {
+ handleDelete(delete_vaccine_id)
+}}>Delete</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

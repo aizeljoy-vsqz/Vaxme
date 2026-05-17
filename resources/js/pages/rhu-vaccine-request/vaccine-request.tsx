@@ -1,8 +1,8 @@
 import { Head } from '@inertiajs/react';
-import { vaccineRequest } from '@/routes';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import VaccineRequestCard from '@/components/vaccine_components/vaccine-request-card';
+import { vaccineRequest } from '@/routes';
 export default function VaccineRequest() {
     return (
         <>

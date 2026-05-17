@@ -1,3 +1,6 @@
+import { useForm } from "@inertiajs/react"
+import { CircleCheckBigIcon, PencilIcon } from "lucide-react"
+import { toast } from "sonner"
 import {
     Dialog,
     DialogClose,
@@ -8,13 +11,10 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Label } from "../ui/label"
-import { Input } from "../ui/input"
+import type { VaccineType } from "@/pages/vaccine-management/column"
 import { Button } from "../ui/button"
-import { useForm } from "@inertiajs/react"
-import { VaccineType } from "@/pages/vaccine-management/column"
-import { toast } from "sonner"
-import { CircleCheckBigIcon, PencilIcon } from "lucide-react"
+import { Input } from "../ui/input"
+import { Label } from "../ui/label"
 interface VaccineFormType {
     update_vaccine_id: VaccineType
     onOpenDropdown: () => void
@@ -49,6 +49,7 @@ export default function VaccineForm({ update_vaccine_id, onOpenDropdown }: Vacci
         console.log(errors);
 
     }
+
     return (
         <Dialog>
             <DialogTrigger className='flex items-center hover:bg-muted rounded-md p-1 text-sm w-full text-left'>
@@ -91,7 +92,9 @@ export default function VaccineForm({ update_vaccine_id, onOpenDropdown }: Vacci
 
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button type="button" variant="outline" onClick={() => {clearErrors(); onOpenDropdown()}}>
+                            <Button type="button" variant="outline" onClick={() => {
+clearErrors(); onOpenDropdown()
+}}>
                                 Cancel
                             </Button>
                         </DialogClose>

@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Layers, LayoutGrid, List, SquareChartGantt, StickyNote, UsersRound } from 'lucide-react';
+import { Layers, LayoutGrid, SquareChartGantt, StickyNote, UsersRound } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';

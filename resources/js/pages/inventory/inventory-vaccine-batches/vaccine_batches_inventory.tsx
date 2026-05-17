@@ -1,10 +1,11 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { columns, VaccineBatch } from "./columns"
-import { DataTable } from "../data-table"
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+
+import { format } from "date-fns"
 import { CircleAlert, CircleCheckBig, Plus } from 'lucide-react';
-import { batchesVaccineInventory } from '@/routes';
+import { ChevronDownIcon } from "lucide-react"
+import * as React from "react"
+
+import { toast } from 'sonner';
 import {
     AlertDialog,
     AlertDialogCancel,
@@ -15,18 +16,16 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Input } from '@/components/ui/input';
-
-import * as React from "react"
-import { format } from "date-fns"
-import { ChevronDownIcon } from "lucide-react"
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Calendar } from "@/components/ui/calendar"
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-
 import {
     Select,
     SelectContent,
@@ -35,10 +34,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { VaccineType } from '@/pages/vaccine-management/column';
-import { toast } from 'sonner';
 import EmptyPage from '@/components/vaccine_components/empty-page';
-import { Badge } from '@/components/ui/badge';
+import type { VaccineType } from '@/pages/vaccine-management/column';
+import { batchesVaccineInventory } from '@/routes';
+import { DataTable } from "../data-table"
+import { columns } from "./columns"
+import type { VaccineBatch } from "./columns";
 
 export default function InventoryByBatch() {
 
@@ -104,7 +105,9 @@ export default function InventoryByBatch() {
 
     const filteredBatches = rhu_vaccines_batches.filter((batch) => {
 
-        if (statusFilter === "all") return true;
+        if (statusFilter === "all") {
+return true;
+}
 
         const today = new Date();
         const expirationDate = new Date(batch.expiration_date);
@@ -145,7 +148,9 @@ export default function InventoryByBatch() {
                                         <div className='flex gap-4'>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Name of Drug:</Label>
-                                                <Select value={data.vaccine_id} onValueChange={(val) => { setData('vaccine_id', val) }}>
+                                                <Select value={data.vaccine_id} onValueChange={(val) => {
+ setData('vaccine_id', val) 
+}}>
                                                     <SelectTrigger className="w-full">
                                                         <SelectValue placeholder="Select Drug" />
                                                     </SelectTrigger>
@@ -168,7 +173,9 @@ export default function InventoryByBatch() {
                                         <div className='flex gap-4'>
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Stock Received:</Label>
-                                                <Input value={data.stock_receive} onChange={(e) => { setData('stock_receive', e.target.value); setData('current_balance', Number(e.target.value)); }}></Input>
+                                                <Input value={data.stock_receive} onChange={(e) => {
+ setData('stock_receive', e.target.value); setData('current_balance', Number(e.target.value)); 
+}}></Input>
                                                 <div className='text-red-500 text-sm'>{errors.stock_receive}</div>
                                             </div>
                                             <div className='w-full flex flex-col gap-2'>
@@ -190,7 +197,10 @@ export default function InventoryByBatch() {
                                                             mode="single"
                                                             selected={date}
                                                             onSelect={(date) => {
-                                                                if (!date) return
+                                                                if (!date) {
+return
+}
+
                                                                 setDate(date)
                                                                 setData('expiration_date', date.toLocaleDateString())
                                                             }}

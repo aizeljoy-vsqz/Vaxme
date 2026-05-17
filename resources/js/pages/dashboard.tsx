@@ -1,19 +1,20 @@
 import { Head, usePage } from '@inertiajs/react';
-import { dashboard } from '@/routes';
-import { SectionCards } from '@/components/vaccine_components/dashboard-top-card';
-import { ChartBarDefault } from '@/components/vaccine_components/dashboard-bar-chart';
-import { ChartAreaDefault } from '@/components/vaccine_components/dashboard-chart-area';
 import { Bookmark } from 'lucide-react';
-import { Label } from '@/components/ui/label';
 import {
     Card,
     CardContent,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import { Label } from '@/components/ui/label';
+import { ChartBarDefault } from '@/components/vaccine_components/dashboard-bar-chart';
+import { ChartAreaDefault } from '@/components/vaccine_components/dashboard-chart-area';
+import { SectionCards } from '@/components/vaccine_components/dashboard-top-card';
+import { dashboard } from '@/routes';
+import type { AvailabilityType } from './dashboard-column-availability';
+import { columns } from './dashboard-column-availability';
 import { DataTable } from './dashboard-data-table';
-import { columns, AvailabilityType } from './dashboard-column-availability';
-import { VaccineType } from './vaccine-management/column';
+import type { VaccineType } from './vaccine-management/column';
 export default function Dashboard() {
     const availability: AvailabilityType[] = [
         {
