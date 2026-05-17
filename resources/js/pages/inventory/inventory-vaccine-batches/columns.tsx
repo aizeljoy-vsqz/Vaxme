@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button"
 import { ArrowUpDown, Ellipsis } from "lucide-react"
 import { VaccineType } from "@/pages/vaccine-management/column"
 import DeleteConfirmation from "@/components/vaccine_components/alert-dialog"
-import VaccineBatchesForm from "@/components/vaccine_components/vaccine-batches-form"
+import { VaccineBatchesForm } from "@/components/vaccine_components/vaccine-batches-form"
 import { useState } from "react"
+import { Dialog } from "radix-ui"
 
 
 export type VaccineBatch = {
@@ -109,7 +110,8 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
 
                     <DropdownMenuContent >
                         {/* Edit */}
-                        <VaccineBatchesForm onOpenDropdown={() => setOpenDropdown(false)} update_batch_id={row.original} />
+                        {/* <VaccineBatchesForm onOpenDropdown={() => setOpenDropdown(false)} update_batch_id={row.original} /> */}
+                        <VaccineBatchesForm update_batch_id = {row.original}></VaccineBatchesForm>
                         <DropdownMenuSeparator></DropdownMenuSeparator>
                         {/* Delete */}
                         <DeleteConfirmation handleDelete={() => handleDelete(delete_vaccine)} delete_vaccine_id={delete_vaccine} />
