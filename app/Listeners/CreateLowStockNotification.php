@@ -11,7 +11,7 @@ class CreateLowStockNotification
     {
         $batch = $event->batch;
         
-        // Calculate percentage
+        // Calculate the remaining stock as a percentage of the total quantity.
         $percentage = $batch->total_quantity > 0 
             ? ($batch->current_balance / $batch->total_quantity) * 100 
             : 0;
