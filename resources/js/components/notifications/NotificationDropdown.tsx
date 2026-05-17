@@ -1,4 +1,4 @@
-import { Bell, BellOff, CheckCircle, Package, Clock3, AlertTriangle } from 'lucide-react';
+import { Bell, BellOff, CheckCircle, Package, Clock3, AlertTriangle, PackageMinusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -166,9 +166,9 @@ export function NotificationDropdown() {
                     ) : notification.type === 'return' ? (
                       <CheckCircle className="h-6 w-6 text-green-600" />
                     ) : notification.type === 'low_stock' ? (
-                      <Clock3 className="h-6 w-6 text-yellow-400" />
+                      <PackageMinusIcon className="h-6 w-6 text-yellow-400" />
                     ) : notification.type === 'near_expired' ? (
-                      <AlertTriangle className="h-6 w-6 text-orange-400" />
+                      <Clock3 className="h-6 w-6 text-orange-400" />
                     ) : notification.type === 'expired' ? (
                       <AlertTriangle className="h-6 w-6 text-red-600" />
                     ) : null}

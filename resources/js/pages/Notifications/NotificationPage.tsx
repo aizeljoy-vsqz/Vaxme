@@ -1,5 +1,5 @@
 import { Head, router } from '@inertiajs/react';
-import { BellOff, CheckCircle, Package, Clock3, AlertTriangle } from 'lucide-react';
+import { BellOff, CheckCircle, Package, Clock3, AlertTriangle, PackageMinusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 
@@ -163,7 +163,7 @@ export default function NotificationPage() {
                                     ) : notification.type === 'return' ? (
                                         <CheckCircle className="h-6 w-6 text-green-600" />
                                     ) : notification.type === 'low_stock' ? (
-                                        <Clock3 className="h-6 w-6 text-yellow-400" />
+                                        <PackageMinusIcon className="h-6 w-6 text-yellow-400" />
                                     ) : notification.type === 'near_expired' ? (
                                         <Clock3 className="h-6 w-6 text-orange-400" />
                                     ) : notification.type === 'expired' ? (
@@ -186,7 +186,7 @@ export default function NotificationPage() {
                                         )}
                                     </p>
 
-                                    <p className="text-sm text-gray-600 mt-1">
+                                    <p className="text-sm text-gray-600 ">
                                         {notification.type === 'request' ? (
                                             'A new vaccine request has been submitted'
                                         ) : notification.type === 'return' ? (
@@ -200,11 +200,11 @@ export default function NotificationPage() {
                                         )}
                                     </p>
 
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    {/* <p className="text-xs text-gray-500 mt-1">
                                         Nurse assigned: {notification.bhc?.nurse_assigned ?? 'N/A'}
-                                    </p>
+                                    </p> */}
 
-                                     <p className="text-xs text-gray-500 mt-1">
+                                     <p className="text-xs text-gray-500">
                                         {notification.bhc?.barangay_name ?? notification.meta?.barangay_name ?? 'Unknown barangay'}
                                     </p>
                                 </div>
