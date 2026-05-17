@@ -17,46 +17,52 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        // RHU USER
-        $rhuUser = User::create([
-            'name' => 'RHU User',
-            'email' => 'rhu@test.com',
-            'password' => bcrypt('password'),
-            'user_type' => 'rhu',
+        $rhuUser1 =  User::create([
+            'name' => 'RHU1',
+            'email' => 'rhu1@example.com',
+            'password' => bcrypt('password')
         ]);
 
-
-        $rhu = Rhu::create([
-            'user_id' => $rhuUser->id,
-            'facility_name' => 'Daet RHU',
+        Rhu::create([
+            
+            'user_id' => $rhuUser1->id,
+            'facility_name' => 'RHU 1',
             'address' => 'Daet Camarines Norte',
-            'nurse_assigned' => 'Nurse 1',
+            'nurse_assigned' => 'Nurse 1'
+        
         ]);
 
 
-        // BHC USER
-        $bhcUser = User::create([
-            'name' => 'BHC User',
-            'email' => 'bhc@test.com',
-            'password' => bcrypt('password'),
+        $rhuUser2 =  User::create([
+            'name' => 'RHU2',
+            'email' => 'rhu2@example.com',
+            'password' => bcrypt('password')
         ]);
 
-        $bhc = Bhc::create([
-            'user_id' => $bhcUser->id,
-            'rhu_id' => $rhu->id,
+        Rhu::create([
+            
+            'user_id' => $rhuUser2->id,
+            'facility_name' => 'RHU 2',
+            'address' => 'Daet Camarines Norte',
+            'nurse_assigned' => 'Nurse 2'
+        
         ]);
 
-        // BHC USER
-        $bhcUser2 = User::create([
-            'name' => 'BHC User 2',
-            'email' => 'bhc2@test.com',
-            'password' => bcrypt('password'),
+
+        $rhuUser3 =  User::create([
+            'name' => 'RHU3',
+            'email' => 'rhu3@example.com',
+            'password' => bcrypt('password')
         ]);
 
-        $bhc2 = Bhc::create([
-            'user_id' => $bhcUser2->id,
-            'rhu_id' => $rhu->id,
+        Rhu::create([
+            
+            'user_id' => $rhuUser3->id,
+            'facility_name' => 'RHU 3',
+            'address' => 'Daet Camarines Norte',
+            'nurse_assigned' => 'Nurse 3'
+        
         ]);
-
+        
     }
 }

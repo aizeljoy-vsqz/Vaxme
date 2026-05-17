@@ -8,11 +8,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Rhu extends Model
 {
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
     public function requests(): HasMany {
         return $this->hasMany(Request::class);
+    public function vaccineBatches():HasMany
+    {
+        return $this->hasMany(VaccineBatch::class);
+    }
+
+    public function vaccines():HasMany
+    {
+        return $this->hasMany(Vaccine::class);
     }
 }

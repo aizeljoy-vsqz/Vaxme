@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ArrowBigLeftDashIcon, ArrowBigRightDashIcon, Clock, Layers, LayoutGrid, PackageCheck, StickyNote, UsersRound } from 'lucide-react';
+import { ArrowBigLeftDashIcon, ArrowBigRightDashIcon, Clock, Layers, LayoutGrid, PackageCheck, StickyNote, UsersRound, SquareChartGantt } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -12,12 +12,12 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard, batchesVaccineInventory, vaccineManagement, vaccineRequest } from '@/routes';
+import type { NavItem } from '@/types';
 import bhc from '@/routes/bhc';
 import history from '@/routes/history';
 import returnMethod from '@/routes/return';
 import track from '@/routes/track';
-import type { NavItem } from '@/types';
 
 
 const mainNavItems: NavItem[] = [
@@ -28,15 +28,20 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Inventory',
-        href: '',
+        href: batchesVaccineInventory(),
         icon: Layers,
+    },
+        {
+        title: 'Vaccine Management',
+        href: vaccineManagement(),
+        icon: SquareChartGantt,
     },
 ];
 
 const BarangayNavItems: NavItem[] = [
     {
         title: 'Vaccine Request',
-        href: '',
+        href: vaccineRequest(),
         icon: StickyNote,
     },
     {
