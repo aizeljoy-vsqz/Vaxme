@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { BellOff, CheckCircle, Package, Clock3, AlertTriangle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,7 @@ interface Notification {
 
 export default function NotificationPage() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
-
+    const [mounted, setMounted] = useState(false);
     const fetchNotifications = () => {
         fetch('/api/notifications', { method: 'GET' })
             .then((res) => res.json())
@@ -27,6 +27,8 @@ export default function NotificationPage() {
     };
 
     useEffect(() => {
+        const id = setTimeout(() => setMounted(true), 0);
+
         fetchNotifications();
 
         const handleNotificationsUpdated = () => {
@@ -36,6 +38,7 @@ export default function NotificationPage() {
         window.addEventListener('notifications-updated', handleNotificationsUpdated);
 
         return () => {
+            clearTimeout(id);
             window.removeEventListener('notifications-updated', handleNotificationsUpdated);
         };
     }, []);
@@ -102,7 +105,7 @@ export default function NotificationPage() {
         }
     };
 
-    const unreadCount = notifications.filter(n => (n.type === 'request' || n.type === 'return') && !n.is_read).length;
+    const unreadCount = notifications.filter((notification) => !notification.is_read).length;
     const hasNotifications = notifications.length > 0;
     const canMarkAllAsRead = hasNotifications && unreadCount > 0;
 
@@ -141,11 +144,16 @@ export default function NotificationPage() {
                             <button
                                 type="button"
                                 key={notification.id}
-                                data-href=""
                                 className="flex w-full gap-4 rounded-lg border border-gray-200 p-4 text-left transition-colors hover:bg-gray-50 cursor-pointer"
-                                onClick={() => {
-                                    if ((notification.type === 'request' || notification.type === 'return') && !notification.is_read) {
-                                        void markOneAsRead(notification.id);
+                                onClick={async () => {
+                                    if (!notification.is_read) {
+                                        await markOneAsRead(notification.id);
+                                    }
+
+                                    const url = notification.meta?.url;
+
+                                    if (url) {
+                                        router.visit(url);
                                     }
                                 }}
                             >
@@ -172,7 +180,7 @@ export default function NotificationPage() {
                                         ) : notification.type === 'near_expired' ? (
                                             'Vaccine batch near expiration'
                                         ) : notification.type === 'expired' ? (
-                                            'Vaccine batch expired'
+                                            'Critical expiration detected'
                                         ) : (
                                             'Low vaccine stock detected'
                                         )}
@@ -201,10 +209,12 @@ export default function NotificationPage() {
                                     </p>
                                 </div>
 
-                                {/* Time and Status */}
                                 <div className="shrink-0 flex flex-col items-end ">
                                     <p className="text-xs text-gray-500">
-                                        {new Date(notification.created_at).toLocaleString()}
+                                        {mounted
+                                            ? new Date(notification.created_at).toLocaleString()
+                                            : notification.created_at
+                                        }
                                     </p>
                                     {!notification.is_read && (
                                         <div className="h-3 w-3 bg-blue-600 rounded-full" />

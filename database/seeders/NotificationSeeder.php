@@ -58,7 +58,12 @@ class NotificationSeeder extends Seeder
                 'rhu_id' => $rhu->id,
                 'type' => 'near_expired',
                 'is_read' => false,
-                'meta' => ['batch_no' => 'NE-' . rand(100,999), 'expiration_date' => Carbon::now()->addDays(rand(16,30))->toDateString(), 'seeded' => true, 'barangay_name' => $firstBhc?->barangay_name ?? 'N/A'],
+                'meta' => [
+                    'batch_no' => 'NE-' . rand(100,999),
+                    'expiration_date' => Carbon::now()->addDays(rand(16,30))->toDateString(),
+                    'seeded' => true,
+                    'barangay_name' => $firstBhc?->barangay_name ?? 'N/A'
+                ],
             ]);
 
             Notification::create([
@@ -66,7 +71,25 @@ class NotificationSeeder extends Seeder
                 'rhu_id' => $rhu->id,
                 'type' => 'expired',
                 'is_read' => false,
-                'meta' => ['batch_no' => 'EX-' . rand(100,999), 'expiration_date' => Carbon::now()->subDays(rand(1,30))->toDateString(), 'seeded' => true, 'barangay_name' => $firstBhc?->barangay_name ?? 'N/A'],
+                'meta' => [
+                    'batch_no' => 'EX-' . rand(100,999),
+                    'expiration_date' => Carbon::now()->addDays(rand(0,15))->toDateString(),
+                    'seeded' => true,
+                    'barangay_name' => $firstBhc?->barangay_name ?? 'N/A'
+                ],
+            ]);
+
+            Notification::create([
+                'user_id' => $user->id,
+                'rhu_id' => $rhu->id,
+                'type' => 'expired',
+                'is_read' => false,
+                'meta' => [
+                    'batch_no' => 'EXP-' . rand(100,999),
+                    'expiration_date' => Carbon::now()->subDays(rand(1,30))->toDateString(),
+                    'seeded' => true,
+                    'barangay_name' => $firstBhc?->barangay_name ?? 'N/A'
+                ],
             ]);
         }
     }

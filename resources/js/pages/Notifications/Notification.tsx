@@ -1,3 +1,4 @@
+import { router } from '@inertiajs/react';
 import { Bell, BellOff, CheckCircle, Package, Clock3, AlertTriangle } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -22,6 +23,13 @@ interface Notification {
 
 export function NotificationDropdown() {
   const [notifications, setNotifications] = useState<Notification[]>([])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    const id = setTimeout(() => setMounted(true), 0);
+
+    return () => clearTimeout(id);
+  }, [])
 
   const fetchNotifications = () => {
     fetch("/api/notifications", { method: "GET" })
@@ -158,10 +166,16 @@ export function NotificationDropdown() {
                 role="button"
                 tabIndex={0}
                 className="flex gap-3 rounded-xl p-3 transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30 cursor-pointer"
-                onClick={() => {
-                  if ((notification.type === 'request' || notification.type === 'return') && !notification.is_read) {
-                    void markOneAsRead(notification.id)
-                  }
+                onClick={async () => {
+                    if (!notification.is_read) {
+                        await markOneAsRead(notification.id);
+                    }
+
+                    const url = notification.meta?.url;
+
+                    if (url) {
+                        router.visit(url);
+                    }
                 }}
               >
                 <div className="shrink-0 mt-1">
@@ -189,7 +203,7 @@ export function NotificationDropdown() {
                     ) : notification.type === 'near_expired' ? (
                       'Vaccine batch near expiration (within 30 days)'
                     ) : notification.type === 'expired' ? (
-                      'Vaccine batch expired (within 15 days)'
+                      'Critical vaccine expiration alert'
                     ) : (
                       'Notification'
                     )}
@@ -213,7 +227,7 @@ export function NotificationDropdown() {
                     </p>
                   ) : null}
 
-                  <p className="text-xs text-gray-500 mt-1">{new Date(notification.created_at).toLocaleString()}</p>
+                  <p className="text-xs text-gray-500 mt-1">{mounted ? new Date(notification.created_at).toLocaleString() : notification.created_at}</p>
                 </div>
 
                 {!notification.is_read && (

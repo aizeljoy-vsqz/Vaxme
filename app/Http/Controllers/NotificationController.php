@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
-use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -23,34 +22,7 @@ class NotificationController extends Controller
             ->map(function (Notification $n) {
                 return [
                     'id' => $n->id,
-                            'type' => (function () use ($n) {
-                                $type = $n->type;
-
-                                $meta = $n->meta ?? null;
-
-                                if (
-                                    is_array($meta) &&
-                                    isset($meta['expiration_date']) &&
-                                    in_array($type, ['near_expired', 'expired'])
-                                ) {
-                                    try {
-                                        $exp = Carbon::parse($meta['expiration_date']);
-
-                                        if ($exp->isPast()) {
-                                            return 'expired';
-                                        }
-
-                                        $days = now()->diffInDays($exp);
-
-                                        if ($days <= 30) {
-                                            return 'near_expired';
-                                        }
-                                    } catch (\Exception $e) {
-                                    }
-                                }
-
-                                return $type;
-                            })(),
+                    'type' => $n->type,
                     'bhc_id' => $n->rhu_id ?? null,
                     'is_read' => (bool) $n->is_read,
                     'created_at' => $n->created_at?->toDateTimeString(),
