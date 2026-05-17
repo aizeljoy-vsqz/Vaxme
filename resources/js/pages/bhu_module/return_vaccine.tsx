@@ -1,0 +1,199 @@
+import { Head, usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
+import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { dashboard } from '@/routes';
+
+export default function BhuDashboard() {
+
+    type RequestItem = {
+        id: number;
+        name: string;
+        vaccine: string;
+        is_vaccinated: boolean;
+    };
+
+    type VaccineRequest = {
+        id: number;
+        type: "request" | "return";
+        status: "submitted" | "reviewed" | "approved";
+        items: RequestItem[];
+    };
+
+    type PageProps = {
+        requests: VaccineRequest[];
+    };
+
+    const handleReturn = () => {
+        if (!selectedRequest) {
+return;
+}
+
+        const unusedItems = selectedRequest.items.filter(
+            (item) => !item.is_vaccinated
+        );
+
+        router.post('/bhc/return/vaccines/store', {
+            request_id: selectedRequest.id,
+            items: unusedItems.map(item => ({
+                name: item.name,
+                vaccine: item.vaccine,
+            })),
+        }, {
+            onSuccess: () => {
+                setOpen(false);
+            }
+        });
+    };
+
+    const [open, setOpen] = useState(false);
+    const [selectedRequest, setSelectedRequest] = useState<VaccineRequest | null>(null);
+    const { requests } = usePage<PageProps>().props;
+
+    return (
+        <>
+            <Head title="Return Vaccine" />
+
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-hidden rounded-xl p-4">
+
+                {/* Header */}
+                <div>
+
+                    <Label className="text-lg font-bold">
+                        Return unused vaccines
+                    </Label>
+
+                    <p className="text-sm text-muted-foreground">
+                        View vaccine requests and return remaining doses
+                    </p>
+
+                </div>
+
+                {/* Scrollable Content */}
+                <div className="flex-1 overflow-y-auto">
+
+                    <div className="flex flex-col gap-4 pr-1">
+
+                        {requests.map((request) => {
+
+                            const unusedItems = request.items.filter(
+                                (item) => !item.is_vaccinated
+                            );
+
+                            return (
+
+                                <div
+                                    key={request.id}
+                                    onClick={() => {
+                                        setSelectedRequest(request);
+                                        setOpen(true);
+                                    }}
+                                    className="group cursor-pointer rounded-2xl border bg-background p-6 shadow-sm transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+                                >
+
+                                    {/* Header */}
+                                    <div className="flex items-start justify-between">
+
+                                        <div className="space-y-1">
+
+                                            <div className="flex items-center gap-2">
+
+                                                <h3 className="text-md font-semibold">
+                                                    Request Vaccine
+                                                </h3>
+
+                                                <span className="rounded-md bg-muted px-2 py-1 text-xs">
+                                                    #{request.id}
+                                                </span>
+
+                                            </div>
+
+                                            <p className="text-xs text-muted-foreground">
+                                                {unusedItems.length} unused vaccine(s)
+                                            </p>
+                                            
+
+                                        </div>
+
+                                        <Badge className='capitalize font-medium' variant={'outline'}>{unusedItems[0]?.vaccine}</Badge>
+
+                                    </div>
+
+                                    {/* Return Status */}
+                                    <div className="mt-4 flex items-center justify-between rounded-xl border px-4 py-3 text-sm border-slate-200 bg-slate-50 text-muted-foreground">
+
+                                        <div>
+                                            <p className="text-sm font-medium">
+                                                Ready for return
+                                            </p>
+
+                                            <p className="text-xs">
+                                                Click to review unused vaccines before returning them to RHU.
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            );
+                        })}
+
+                    </div>
+
+                </div>
+
+            </div>
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent className="max-w-3xl">
+
+                    <DialogHeader>
+                        <DialogTitle>
+                            Request Items #{selectedRequest?.id}
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-2">
+                        {selectedRequest?.items
+                            ?.filter(item => !item.is_vaccinated)
+                            .map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="flex items-center justify-between rounded-lg border p-3"
+                                >
+                                    <div>
+                                        <p className="font-medium">{item.name}</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {item.vaccine}
+                                        </p>
+                                    </div>
+
+                                    <span className="text-xs text-red-500">
+                                        Not vaccinated
+                                    </span>
+                                </div>
+                            ))}
+                    </div>
+                    <div className="flex justify-end pt-4 border-t">
+                        <Button onClick={handleReturn}>
+                            Return
+                        </Button>
+                    </div>
+
+                </DialogContent>
+            </Dialog>
+        </>
+    );
+}
+
+BhuDashboard.layout = {
+    breadcrumbs: [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+        },
+    ],
+};

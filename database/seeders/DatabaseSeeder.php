@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Bhc;
 use App\Models\Rhu;
 use App\Models\User;
 use Illuminate\Database\Seeder;

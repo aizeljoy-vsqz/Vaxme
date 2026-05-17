@@ -29,6 +29,11 @@ class Bhc extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function requests(): HasMany 
+    {
+        return $this->hasMany(Request::class);
+    }
+  
     public function rhu(): BelongsTo
     {
         return $this->belongsTo(Rhu::class);

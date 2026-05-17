@@ -20,6 +20,11 @@ class Rhu extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function requests(): HasMany 
+    {
+        return $this->hasMany(Request::class);
+    }
+
     public function bhcs(): HasMany
     {
         return $this->hasMany(Bhc::class);
