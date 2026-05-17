@@ -26,6 +26,9 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  // TanStack Table returns functions that React Compiler flags as incompatible for memoization.
+  // This is an expected library warning, so we suppress it at the call site only.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
