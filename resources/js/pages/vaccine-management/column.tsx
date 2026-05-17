@@ -16,7 +16,51 @@ export type VaccineType = {
     id: number
     name: string
     description: string
-    length:number
+    length: number
+}
+
+type ActionCellProps = {
+    row: {
+        original: VaccineType
+    }
+    handleDelete: (delete_vaccine_id: number) => void
+}
+
+function ActionCell({ row, handleDelete }: ActionCellProps) {
+    const delete_vaccine_id = row.original.id
+
+    const [openDropdown, setOpenDropdown] = useState(false)
+
+    return (
+        <DropdownMenu
+            open={openDropdown}
+            onOpenChange={setOpenDropdown}
+        >
+            <DropdownMenuTrigger asChild>
+                <Button
+                    variant="ghost"
+                    className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
+                    size="icon"
+                >
+                    <Ellipsis />
+                </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent>
+                <VaccineForm
+                    update_vaccine_id={row.original}
+                    onOpenDropdown={() => setOpenDropdown(false)}
+                />
+
+                <DropdownMenuSeparator />
+
+                <DeleteConfirmation
+                    handleDelete={() => handleDelete(delete_vaccine_id)}
+                    delete_vaccine_id={delete_vaccine_id}
+                />
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
 }
 
 export const columns = (handleDelete: (delete_vaccine_id: number) => void): ColumnDef<VaccineType>[] => [
@@ -38,26 +82,11 @@ export const columns = (handleDelete: (delete_vaccine_id: number) => void): Colu
     {
         accessorKey: "actions",
         id: "actions",
-        cell: ({ row }) => {
-            const delete_vaccine_id = row.original.id
-            const [openDropdown, setOpenDropdown] = useState(false)
-
-            return (
-                <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
-                            <Ellipsis />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent >
-                        {/* Edit */}
-                        <VaccineForm update_vaccine_id={row.original} onOpenDropdown={() => setOpenDropdown(false)}></VaccineForm>
-                        <DropdownMenuSeparator></DropdownMenuSeparator>
-                        {/* Delete */}
-                        <DeleteConfirmation handleDelete={() => handleDelete(delete_vaccine_id)} delete_vaccine_id={delete_vaccine_id} />
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )
-        }
+        cell: ({ row }) => (
+            <ActionCell
+                row={row}
+                handleDelete={handleDelete}
+            />
+        )
     },
 ]

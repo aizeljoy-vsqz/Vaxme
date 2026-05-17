@@ -24,6 +24,58 @@ export type VaccineBatch = {
     vaccine: VaccineType
 }
 
+type ActionCellProps = {
+    row: {
+        original: VaccineBatch
+    }
+    handleDelete: (delete_vaccine: number) => void
+}
+
+function ActionCell({ row, handleDelete }: ActionCellProps) {
+    const [openDropdown, setOpenDropdown] = useState(false)
+    const [openEdit, setOpenEdit] = useState(false)
+
+    const delete_vaccine = row.original.id
+
+    return (
+        <>
+            {/* DROPDOWN ONLY */}
+            <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                        <Ellipsis />
+                    </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent>
+                    <button
+                        className="w-full text-left px-2 py-1"
+                        onClick={() => {
+                            setOpenEdit(true)
+                            setOpenDropdown(false)
+                        }}
+                    >
+                        Edit
+                    </button>
+
+                    <DropdownMenuSeparator />
+
+                    <DeleteConfirmation
+                        handleDelete={() => handleDelete(delete_vaccine)}
+                        delete_vaccine_id={delete_vaccine}
+                    />
+                </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* DIALOG OUTSIDE DROPDOWN */}
+            <VaccineBatchesForm
+                open={openEdit}
+                onOpenChange={setOpenEdit}
+                update_batch_id={row.original}
+            />
+        </>
+    )
+}
 
 export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnDef<VaccineBatch>[] => [
     {
@@ -83,42 +135,12 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
     {
         accessorKey: "actions",
         id: "actions",
-        cell: ({ row }) => {
-            const delete_vaccine = row.original.id
-            // For dropdown edit open state
-            const [openDropdown, setOpenDropdown] = useState(false)
-            // For disabling button when vaccine expiired
-            const expired_vaccine = row.original.status
 
-            return (
-                <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
-
-                    {/* start diable button if expired vaccine ----------*/}
-                    {
-                        expired_vaccine
-                            ?
-                            <DropdownMenuTrigger asChild >
-                                <Button variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
-                                    <Ellipsis />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            :
-                            <Button disabled variant={'ghost'} className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size={'icon'}>
-                                <Ellipsis />
-                            </Button>
-                    }
-                    {/* ---------- end diable button if expired vaccine */}
-
-                    <DropdownMenuContent >
-                        {/* Edit */}
-                        {/* <VaccineBatchesForm onOpenDropdown={() => setOpenDropdown(false)} update_batch_id={row.original} /> */}
-                        <VaccineBatchesForm update_batch_id = {row.original}></VaccineBatchesForm>
-                        <DropdownMenuSeparator></DropdownMenuSeparator>
-                        {/* Delete */}
-                        <DeleteConfirmation handleDelete={() => handleDelete(delete_vaccine)} delete_vaccine_id={delete_vaccine} />
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )
-        }
-    },
+        cell: ({ row }) => (
+            <ActionCell
+                row={row}
+                handleDelete={handleDelete}
+            />
+        )
+    }
 ]

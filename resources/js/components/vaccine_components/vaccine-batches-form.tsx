@@ -35,9 +35,11 @@ import type { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/c
 import type { VaccineType } from "@/pages/vaccine-management/column"
 
 interface batchFormType {
+    open: boolean
+    onOpenChange: (open: boolean) => void
     update_batch_id: VaccineBatch;
 }
-export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
+export function VaccineBatchesForm({ update_batch_id, open, onOpenChange }: batchFormType) {
     console.log('check', update_batch_id);
     const { data, setData, put, errors } = useForm({
         batch_number: update_batch_id.batch_number,
@@ -74,8 +76,7 @@ export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
     }
 
     return (
-        <Dialog>
-
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger asChild>
                 <Button variant="outline">Edit</Button>
             </DialogTrigger>
@@ -92,8 +93,8 @@ export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
                         <div className="w-full flex flex-col gap-2">
                             <Label>Vaccine Name</Label>
                             <Select value={data.vaccine_id.toString()} onValueChange={(e) => {
- setData('vaccine_id', Number(e)) 
-}}>
+                                setData('vaccine_id', Number(e))
+                            }}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder={'asl'} />
                                 </SelectTrigger>
@@ -147,8 +148,8 @@ export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
                                         selected={data.expiration_date}
                                         onSelect={(date) => {
                                             if (!date) {
-return
-}
+                                                return
+                                            }
 
                                             setDate(date)
                                             setData('expiration_date', date)
