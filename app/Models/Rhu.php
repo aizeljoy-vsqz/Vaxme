@@ -15,6 +15,7 @@ class Rhu extends Model
 
     public function requests(): HasMany {
         return $this->hasMany(Request::class);
+    }
     public function vaccineBatches():HasMany
     {
         return $this->hasMany(VaccineBatch::class);
