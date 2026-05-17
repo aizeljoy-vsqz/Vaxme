@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified', 'user_type:rhu'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     // Route::inertia('dashboard', 'dashboard')->name('dashboard');
     Route::get('/dashboard',[DashboardController::class, 'Index'])->name('dashboard');
+});
 Route::middleware(['auth'])->group(function () {
     Route::get('/first-login/change-password', [FirstLoginPasswordController::class, 'show']);
     Route::post('/first-login/change-password', [FirstLoginPasswordController::class, 'update']);
