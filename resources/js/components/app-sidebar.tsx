@@ -13,11 +13,11 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import type { NavItem } from '@/types';
 import bhc from '@/routes/bhc';
-import track from '@/routes/track';
 import history from '@/routes/history';
 import returnMethod from '@/routes/return';
+import track from '@/routes/track';
+import type { NavItem } from '@/types';
 
 
 const mainNavItems: NavItem[] = [

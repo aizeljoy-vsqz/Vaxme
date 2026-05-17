@@ -1,6 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { login, dashboard } from '@/routes';
 import { Button } from '@/components/ui/button';
+import { login, dashboard } from '@/routes';
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
 </style>

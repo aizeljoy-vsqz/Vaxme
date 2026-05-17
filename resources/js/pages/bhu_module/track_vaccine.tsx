@@ -1,11 +1,10 @@
 import { Head, usePage } from '@inertiajs/react';
-import track from '@/routes/track';
-import { Label } from '@/components/ui/label';
-import TrackVaccine from '@/components/request_vaccine/track_vaccination';
 import { useMemo, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import TrackVaccine from '@/components/request_vaccine/track_vaccination';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import track from '@/routes/track';
 
 
 export default function TrackVaccination() {

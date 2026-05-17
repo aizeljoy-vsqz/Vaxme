@@ -1,13 +1,13 @@
 import { Head, useForm } from "@inertiajs/react";
+import { Plus, ArrowBigRightDashIcon } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Plus, ArrowBigRightDashIcon, LucideThumbsUp } from "lucide-react";
 import { toast } from "sonner";
 
-import RequestTable from "@/components/request_vaccine/request_table";
 import Request_Select from "@/components/request_vaccine/request_select";
+import RequestTable from "@/components/request_vaccine/request_table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function BhuDashboard() {
     const [name, setName] = useState("");
@@ -29,6 +29,7 @@ export default function BhuDashboard() {
                     </div>
                 ),
             });
+
             return;
         }
 
@@ -40,6 +41,7 @@ export default function BhuDashboard() {
                     </div>
                 ),
             });
+
             return;
         }
 
@@ -57,6 +59,7 @@ export default function BhuDashboard() {
                     </div>
                 ),
             });
+
             return;
         }
 
@@ -83,6 +86,7 @@ export default function BhuDashboard() {
 
         if (data.items.length === 0) {
             toast.error("Add at least one entry before submitting");
+
             return;
         }
 

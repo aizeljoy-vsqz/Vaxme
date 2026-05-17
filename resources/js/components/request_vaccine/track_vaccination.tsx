@@ -1,17 +1,20 @@
-import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { Check, LucideThumbsUp } from "lucide-react";
+import { useState } from "react";
 
+import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch"
 import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import { Label } from "../ui/label";
-
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
 } from "../ui/dialog";
+import { Label } from "../ui/label";
+
 
 import {
     Table,
@@ -22,9 +25,6 @@ import {
     TableRow,
 } from "../ui/table";
 
-import { Switch } from "@/components/ui/switch"
-import { Button } from "../ui/button";
-import { toast } from "sonner";
 
 type RequestItem = {
     id: number;
@@ -368,7 +368,10 @@ export default function TrackVaccine({ request }: Props) {
                                                 checked={item.is_vaccinated}
                                                 disabled={!canEdit}
                                                 onCheckedChange={(checked) => {
-                                                    if (!canEdit) return;
+                                                    if (!canEdit) {
+return;
+}
+
                                                     setItems(prev =>
                                                         prev.map(i =>
                                                             i.id === item.id

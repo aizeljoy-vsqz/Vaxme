@@ -1,3 +1,5 @@
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -6,8 +8,6 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
 
 type Props = {
   items: { name: string }[];

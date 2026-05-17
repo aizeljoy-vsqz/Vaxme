@@ -1,5 +1,5 @@
+import { File } from 'lucide-react';
 import { Label } from '@/components/ui/label';
-import { ArrowBigRightDash, File, LucidePaperclip, Paperclip } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
 

@@ -1,18 +1,11 @@
 import { Head, usePage } from '@inertiajs/react';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
-import { dashboard } from '@/routes';
-import { Label } from '@/components/ui/label';
-import AppLayout from '@/layouts/app-layout';
-import { Button } from '@/components/ui/button';
-import RequestTable from '@/components/request_vaccine/request_table';
-import { Input } from '@/components/ui/input';
-import Request_Select from '@/components/request_vaccine/request_select';
-import { Separator } from '@/components/ui/separator';
-import { ArrowBigLeftDashIcon } from 'lucide-react';
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { router } from '@inertiajs/react';
+import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { dashboard } from '@/routes';
 
 export default function BhuDashboard() {
 
@@ -35,7 +28,9 @@ export default function BhuDashboard() {
     };
 
     const handleReturn = () => {
-        if (!selectedRequest) return;
+        if (!selectedRequest) {
+return;
+}
 
         const unusedItems = selectedRequest.items.filter(
             (item) => !item.is_vaccinated
