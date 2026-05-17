@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Layers, LayoutGrid, StickyNote, UsersRound } from 'lucide-react';
+import { Layers, LayoutGrid, SquareChartGantt, StickyNote, UsersRound } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -12,24 +12,30 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { batchesVaccineInventory, dashboard, vaccineManagement, vaccineRequest } from '@/routes';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: '/dashboard',
+        href: dashboard(),
         icon: LayoutGrid,
     },
     {
         title: 'Inventory',
-        href: '',
+        href: batchesVaccineInventory(),
         icon: Layers,
+    },
+    {
+        title: 'Vaccine Management',
+        href: vaccineManagement(),
+        icon: SquareChartGantt,
     },
 ];
 const BarangayNavItems: NavItem[] = [
     {
         title: 'Vaccine Request',
-        href: '',
+        href: vaccineRequest(),
         icon: StickyNote,
     },
     {
@@ -55,8 +61,8 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} sidebarLabel='Actions' />
-                <NavMain items={BarangayNavItems} sidebarLabel='Barangay Management' />
+                <NavMain items={mainNavItems} sidebarLabel="Actions" />
+                <NavMain items={BarangayNavItems} sidebarLabel="Barangay Management" />
             </SidebarContent>
 
             <SidebarFooter>
