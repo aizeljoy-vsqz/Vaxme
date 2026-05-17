@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('bhcs', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('rhu_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('barangay_name');
+            $table->string('nurse_assigned');
+            $table->string('contact_number')->default('N/A');
+            $table->timestamps();
         });
     }
 

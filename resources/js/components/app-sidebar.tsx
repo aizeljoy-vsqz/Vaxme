@@ -12,7 +12,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard, batchesVaccineInventory, vaccineManagement, vaccineRequest } from '@/routes';
+import { batchesVaccineInventory, dashboard, vaccineManagement, vaccineRequest } from '@/routes';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -26,7 +26,7 @@ const mainNavItems: NavItem[] = [
         href: batchesVaccineInventory(),
         icon: Layers,
     },
-        {
+    {
         title: 'Vaccine Management',
         href: vaccineManagement(),
         icon: SquareChartGantt,
@@ -40,7 +40,7 @@ const BarangayNavItems: NavItem[] = [
     },
     {
         title: 'Registration',
-        href: '',
+        href: '/registration',
         icon: UsersRound,
     },
 ];
@@ -52,7 +52,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
+                            <Link href="/dashboard" prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -61,8 +61,8 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} sidebarLabel='Actions' />
-                <NavMain items={BarangayNavItems} sidebarLabel='Barangay Management' />
+                <NavMain items={mainNavItems} sidebarLabel="Actions" />
+                <NavMain items={BarangayNavItems} sidebarLabel="Barangay Management" />
             </SidebarContent>
 
             <SidebarFooter>

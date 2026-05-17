@@ -17,17 +17,22 @@ class VaccineBatch extends Model
         'current_balance',
         'status',
     ];
-    public function dailyVaccine():HasMany
+
+    protected $casts = [
+        'expiration_date' => 'date',
+    ];
+
+    public function dailyVaccine(): HasMany
     {
         return $this->hasMany(DailyBatchesInventory::class);
     }
 
-    public function vaccine():BelongsTo
+    public function vaccine(): BelongsTo
     {
         return $this->belongsTo(Vaccine::class);
     }
 
-    public function rhus():BelongsTo
+    public function rhu(): BelongsTo
     {
         return $this->belongsTo(Rhu::class);
     }
