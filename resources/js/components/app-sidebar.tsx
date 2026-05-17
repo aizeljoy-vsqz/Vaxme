@@ -31,7 +31,7 @@ const mainNavItems: NavItem[] = [
         href: batchesVaccineInventory(),
         icon: Layers,
     },
-        {
+    {
         title: 'Vaccine Management',
         href: vaccineManagement(),
         icon: SquareChartGantt,
@@ -46,7 +46,7 @@ const BarangayNavItems: NavItem[] = [
     },
     {
         title: 'Registration',
-        href: '',
+        href: '/registration',
         icon: UsersRound,
     },
 ];

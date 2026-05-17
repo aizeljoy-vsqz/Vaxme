@@ -15,6 +15,7 @@ import type { AvailabilityType } from './dashboard-column-availability';
 import { columns } from './dashboard-column-availability';
 import { DataTable } from './dashboard-data-table';
 import type { VaccineType } from './vaccine-management/column';
+
 export default function Dashboard() {
     const availability: AvailabilityType[] = [
         {
@@ -30,13 +31,13 @@ export default function Dashboard() {
             status: "inactive",
         },
     ]
+
     interface PageProps {
         [key: string]: unknown
         total_vaccines: VaccineType
     }
 
     const { total_vaccines } = usePage<PageProps>().props
-    console.log(total_vaccines);
 
     const totalVaccine = total_vaccines.length
     const totalBarangay = 5
@@ -59,8 +60,6 @@ export default function Dashboard() {
                     <SectionCards total={totalStockAlert} title={'Total Stock Alerts'} description={`Total number of stock alerts.`}></SectionCards>
                 </div>
                 <div className="grid gap-4 auto-rows-min md:grid-cols-1 lg:grid-cols-4">
-
-                    {/* Dashboard Char */}
                     <div className='grid md:grid-cols-2 lg:col-span-3 gap-4'>
                         <div>
                             <ChartBarDefault />
@@ -70,7 +69,6 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    {/* Dashboard Vaccine Availabilit & Summaries */}
                     <div className='grid gap-4'>
                         <Card>
                             <CardHeader>
@@ -103,7 +101,6 @@ export default function Dashboard() {
                             </CardContent>
                         </Card>
                     </div>
-
                 </div>
             </div>
         </>

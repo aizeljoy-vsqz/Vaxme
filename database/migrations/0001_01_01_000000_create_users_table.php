@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('user_type', ['rhu', 'bhc'])->default('bhc');
+            $table->boolean('is_first_login')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
