@@ -29,17 +29,18 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ChevronDownIcon } from "lucide-react"
+import { ChevronDownIcon, CircleCheckBigIcon } from "lucide-react"
 import { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns"
 import { useForm, usePage } from "@inertiajs/react"
 import { VaccineType } from "@/pages/vaccine-management/column"
+import { toast } from "sonner"
 
 interface batchFormType {
     update_batch_id: VaccineBatch;
 }
 export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
     console.log('check', update_batch_id);
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, put, processing, errors } = useForm({
         batch_number: update_batch_id.batch_number,
         vaccine_id: update_batch_id.vaccine.id,
         expiration_date: update_batch_id.expiration_date,
@@ -57,13 +58,30 @@ export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
     const { vaccines_data } = usePage<PageProps>().props
     console.log('vaccines_data: ', vaccines_data);
 
+    const handleUpdate = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        put(`/vaccine/inventory/update/${update_batch_id.id}`, {
+            onSuccess: () => {
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleCheckBigIcon className="p-1 text-green-500" />
+                        <Label>Vaccine batch updated successfully!</Label>
+                    </div>, { position: 'top-right' })
+            },
+            onError: (errors) => {
+                console.log(errors);
+            }
+        })
+    }
+
     return (
         <Dialog>
-            <form>
-                <DialogTrigger asChild>
-                    <Button variant="outline">Edit</Button>
-                </DialogTrigger>
-                <DialogContent>
+
+            <DialogTrigger asChild>
+                <Button variant="outline">Edit</Button>
+            </DialogTrigger>
+            <DialogContent>
+                <form onSubmit={handleUpdate}>
                     <DialogHeader>
                         <DialogTitle>Edit profile</DialogTitle>
                         <DialogDescription>
@@ -80,25 +98,34 @@ export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        {/* {rhu_vaccines_batches.map((vaccineName) => {
-                                            return <SelectItem value={String(vaccineName.id)}>{vaccineName.vaccine.name}</SelectItem>
-                                        })} */}
-                                        {vaccines_data.map((vaccine) => {
+                                        {/* {vaccines_data.map((vaccine) => {
                                             return <SelectItem value={String(vaccine.id)}>{vaccine.name}</SelectItem>
-                                        })}
+                                        })} */}
+                                        {vaccines_data.map((vaccine) => (
+                                            <SelectItem
+                                                key={vaccine.id}
+                                                value={String(vaccine.id)}
+                                            >
+                                                {vaccine.name}
+                                            </SelectItem>
+                                        ))}
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
+                            <div>{errors.vaccine_id}</div>
                         </div>
                         <div className="w-full flex flex-col gap-2">
                             <Label>Batch Number</Label>
-                            <Input value={data.batch_number} />
+                            <Input value={data.batch_number} onChange={(e) => setData('batch_number', e.target.value)} />
+                            <div>{errors.batch_number}</div>
+
                         </div>
                     </div>
                     <div className="flex gap-4">
                         <div className="w-full flex flex-col gap-2">
-                            <Label>Stock Recieve</Label>
-                            <Input value={data.stock_receive} />
+                            <Label>Stock Receive</Label>
+                            <Input value={data.stock_receive} onChange={(e) => setData('stock_receive', Number(e.target.value))} />
+                            <div>{errors.stock_receive}</div>
                         </div>
                         <div className="w-full flex flex-col gap-2">
                             <Label>Expiration Date</Label>
@@ -120,11 +147,12 @@ export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
                                         onSelect={(date) => {
                                             if (!date) return
                                             setDate(date)
-
+                                            setData('expiration_date', date)
                                         }}
                                     />
                                 </PopoverContent>
                             </Popover>
+                            <div>{errors.expiration_date}</div>
                         </div>
                     </div>
                     <DialogFooter>
@@ -133,8 +161,8 @@ export function VaccineBatchesForm({ update_batch_id }: batchFormType) {
                         </DialogClose>
                         <Button type="submit">Save changes</Button>
                     </DialogFooter>
-                </DialogContent>
-            </form>
+                </form>
+            </DialogContent>
         </Dialog>
     )
 }
