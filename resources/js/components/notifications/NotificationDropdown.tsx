@@ -1,5 +1,5 @@
-import { Bell, BellOff, CheckCircle, Package, Clock3, AlertTriangle, PackageMinusIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Bell, BellOff, CheckCircle, Package, Clock3, AlertTriangle, PackageMinus } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+
 
 interface Notification {
   id: number;
@@ -20,29 +21,81 @@ interface Notification {
   meta?: Record<string, any>;
 }
 
-export function NotificationDropdown() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+declare global {
+  interface Window {
+    Echo: any;
+  }
+}
 
-  const fetchNotifications = () => {
-    fetch('/api/notifications', { method: 'GET' })
-      .then((res) => res.json())
-      .then((data) => setNotifications(data))
-      .catch((err) => console.error(err));
+interface NotificationDropdownProps {
+  auth: {
+    user: {
+      id: number;
+    };
   };
+}
 
-  useEffect(() => {
-    fetchNotifications();
+export function NotificationDropdown({ auth }: NotificationDropdownProps) {
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [mounted, setMounted] = useState(false);
+    const channelRef = React.useRef<any>(null);
 
-    const handleNotificationsUpdated = () => {
+    useEffect(() => {
+      const id = setTimeout(() => setMounted(true), 0);
+
+      return () => clearTimeout(id);
+    }, []);
+
+    const fetchNotifications = () => {
+      fetch('/api/notifications', { method: 'GET' })
+        .then((res) => res.json())
+        .then((data) => setNotifications(data))
+        .catch((err) => console.error(err));
+    };
+
+    useEffect(() => {
       fetchNotifications();
-    };
 
-    window.addEventListener('notifications-updated', handleNotificationsUpdated);
+      const handleNotificationsUpdated = () => {
+        fetchNotifications();
+      };
 
-    return () => {
-      window.removeEventListener('notifications-updated', handleNotificationsUpdated);
-    };
-  }, []);
+      window.addEventListener('notifications-updated', handleNotificationsUpdated);
+
+      // Setup Echo listeners
+      if (window.Echo && auth?.user?.id && mounted) {
+        const channel = window.Echo.private(`notifications.${auth.user.id}`);
+        channelRef.current = channel;
+
+        // Listen to all notification events and fetch fresh notifications from server
+        channel
+          .listen('.low.stock', () => {
+            fetchNotifications();
+          })
+          .listen('.near_expired', () => {
+            fetchNotifications();
+          })
+          .listen('.expired', () => {
+            fetchNotifications();
+          })
+          .listen('.request', () => {
+            fetchNotifications();
+          })
+          .listen('.return', () => {
+            fetchNotifications();
+          });
+      }
+
+      return () => {
+        window.removeEventListener('notifications-updated', handleNotificationsUpdated);
+
+        // Properly unsubscribe from Echo channel
+        if (channelRef.current && window.Echo && auth?.user?.id) {
+          window.Echo.leave(`private-notifications.${auth.user.id}`);
+          channelRef.current = null;
+        }
+      };
+    }, [auth?.user?.id, mounted]);
 
   const markAllAsRead = async () => {
     try {
@@ -166,7 +219,7 @@ export function NotificationDropdown() {
                     ) : notification.type === 'return' ? (
                       <CheckCircle className="h-6 w-6 text-green-600" />
                     ) : notification.type === 'low_stock' ? (
-                      <PackageMinusIcon className="h-6 w-6 text-yellow-400" />
+                      <PackageMinus className="h-6 w-6 text-yellow-400" />
                     ) : notification.type === 'near_expired' ? (
                       <Clock3 className="h-6 w-6 text-orange-400" />
                     ) : notification.type === 'expired' ? (

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Notification;
 use App\Models\VaccineBatch;
+use App\Events\LowStockDetected;
 use Illuminate\Support\Carbon;
 
 class NotificationService
@@ -12,7 +13,7 @@ class NotificationService
 
     private const EXPIRATION_CRITICAL_DAYS = 15;
 
-    private const LOW_STOCK_THRESHOLD = 20;
+    private const LOW_STOCK_THRESHOLD_PERCENTAGE = 30; // 30% means 3 out of 10
 
     public function resolveExpirationNotificationType(string|Carbon|null $expirationDate): ?string
     {
@@ -74,11 +75,21 @@ class NotificationService
 
     public function checkLowStock(): void
     {
-        $batches = VaccineBatch::with('rhu.bhcs')
-            ->where('current_balance', '<=', self::LOW_STOCK_THRESHOLD)
-            ->get();
+        $batches = VaccineBatch::with('rhu.bhcs')->get();
 
         foreach ($batches as $batch) {
+            // Skip if total_quantity is 0 or not set
+            if ($batch->total_quantity <= 0) {
+                continue;
+            }
+
+            // Calculate percentage
+            $percentage = ($batch->current_balance / $batch->total_quantity) * 100;
+
+            // Check if below threshold (30%)
+            if ($percentage > self::LOW_STOCK_THRESHOLD_PERCENTAGE) {
+                continue;
+            }
 
             $exists = Notification::where('rhu_id', $batch->rhu_id)
                 ->where('type', 'low_stock')
@@ -97,9 +108,13 @@ class NotificationService
                 'meta' => [
                     'batch_no' => $batch->batch_number,
                     'current_balance' => $batch->current_balance,
+                    'total_quantity' => $batch->total_quantity,
+                    'percentage' => round($percentage, 2),
                     'barangay_name' => optional($batch->rhu->bhcs->first())->barangay_name,
                 ],
             ]);
+
+            event(new LowStockDetected($batch));
         }
     }
 }

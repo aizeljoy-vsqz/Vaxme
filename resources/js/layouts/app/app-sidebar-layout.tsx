@@ -11,16 +11,17 @@ export default function AppSidebarLayout({
     breadcrumbs = [],
 }: AppLayoutProps) {
     const { auth } = usePage<{
-        auth?: {
-            user?: {
-                user_type?: string | null;
-                is_first_login?: boolean;
-            };
+    auth: {
+        user: {
+        id: number;
+        user_type?: string | null;
+        is_first_login?: boolean;
         };
+    };
     }>().props;
+
     const user = auth?.user;
 
-    // Show first login dialog only for barangay users on first login
     const showFirstLoginDialog =
         !!user &&
         (user.user_type ?? '') === 'barangay' &&
@@ -31,12 +32,19 @@ export default function AppSidebarLayout({
             <AppShell variant="sidebar">
                 <AppSidebar />
                 <AppContent variant="sidebar" className="overflow-x-hidden">
-                    <AppSidebarHeader breadcrumbs={breadcrumbs} />
+                    <AppSidebarHeader
+                        breadcrumbs={breadcrumbs}
+                        auth={auth ?? {
+                        user: {
+                            id: 0,
+                            user_type: null,
+                            is_first_login: false,
+                        },
+                        }}
+                    />
                     {children}
                 </AppContent>
             </AppShell>
-
-            {/* First Login Password Change Dialog - Barangay accounts only */}
             <FirstLoginPasswordDialog open={showFirstLoginDialog} />
         </>
     );

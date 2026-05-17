@@ -20,20 +20,13 @@ export function NavMain({ items = [], sidebarLabel }: { items?: NavItem[], sideb
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
                             asChild
-                            isActive={!!item.href && isCurrentUrl(item.href)}
+                            isActive={isCurrentUrl(item.href)}
                             tooltip={{ children: item.title }}
                         >
-                            {item.href ? (
-                                <Link href={item.href} prefetch>
-                                    {item.icon && <item.icon />}
-                                    <span>{item.title}</span>
-                                </Link>
-                            ) : (
-                                <div className="flex items-center gap-2">
-                                    {item.icon && <item.icon />}
-                                    <span>{item.title}</span>
-                                </div>
-                            )}
+                            <Link href={item.href} prefetch>
+                                {item.icon && <item.icon />}
+                                <span>{item.title}</span>
+                            </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 ))}

@@ -5,8 +5,14 @@ import type { BreadcrumbItem as BreadcrumbItemType } from '@/types';
 
 export function AppSidebarHeader({
     breadcrumbs = [],
+    auth,
 }: {
     breadcrumbs?: BreadcrumbItemType[];
+    auth: {
+        user: {
+            id: number;
+        };
+    };
 }) {
     return (
         <header className="flex h-16 shrink-0 items-center gap-2 border-b border-sidebar-border/50 px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4">
@@ -17,7 +23,7 @@ export function AppSidebarHeader({
                 </div>
 
                 <div className="ml-auto flex items-center">
-                    <NotificationDropdown />
+                    <NotificationDropdown auth={auth} />
                 </div>
             </div>
         </header>
