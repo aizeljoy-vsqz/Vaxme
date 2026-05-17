@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vaccine_batches', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('rhu_id')->constrained('rhus')->onDelete('cascade');
-            $table->string('batch_number')->unique()->index();
-            $table->string('vaccine_type')->index();
-            $table->integer('total_quantity')->default(0);
-            $table->integer('current_balance')->default(0);
-            $table->date('expiration_date')->index();
-            $table->timestamps();
+        Schema::table('vaccine_batches', function (Blueprint $table) {
+            if (! Schema::hasColumn('vaccine_batches', 'vaccine_type')) {
+                $table->string('vaccine_type')->index();
+            }
+
+            if (! Schema::hasColumn('vaccine_batches', 'total_quantity')) {
+                $table->integer('total_quantity')->default(0);
+            }
         });
     }
 
@@ -28,6 +27,14 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vaccine_batches');
+        Schema::table('vaccine_batches', function (Blueprint $table) {
+            if (Schema::hasColumn('vaccine_batches', 'vaccine_type')) {
+                $table->dropColumn('vaccine_type');
+            }
+
+            if (Schema::hasColumn('vaccine_batches', 'total_quantity')) {
+                $table->dropColumn('total_quantity');
+            }
+        });
     }
 };
