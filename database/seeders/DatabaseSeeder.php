@@ -45,5 +45,18 @@ class DatabaseSeeder extends Seeder
             'user_id' => $bhcUser->id,
             'rhu_id' => $rhu->id,
         ]);
+
+        // BHC USER
+        $bhcUser2 = User::create([
+            'name' => 'BHC User 2',
+            'email' => 'bhc2@test.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $bhc2 = Bhc::create([
+            'user_id' => $bhcUser2->id,
+            'rhu_id' => $rhu->id,
+        ]);
+
     }
 }
