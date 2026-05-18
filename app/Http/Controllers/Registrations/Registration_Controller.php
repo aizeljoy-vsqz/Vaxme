@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -111,7 +112,7 @@ class Registration_Controller extends Controller
                     'name' => $validated['nurse_assigned'],
                     'email' => $generatedEmail,
                     'password' => Hash::make($temporaryPassword),
-                    'user_type' => 'barangay',
+                    'user_type' => 'bhc',
                     'is_first_login' => true,
                 ]);
 
@@ -138,7 +139,7 @@ class Registration_Controller extends Controller
 
             // Log the actual error for debugging
             report($throwable);
-            \Log::error('Barangay registration failed:', [
+            Log::error('Barangay registration failed:', [
                 'error' => $throwable->getMessage(),
                 'exception' => get_class($throwable),
                 'file' => $throwable->getFile(),
