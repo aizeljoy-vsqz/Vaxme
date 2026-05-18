@@ -25,22 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'user_type' => UserTypeMiddleware::class
+            'user_type' => UserTypeMiddleware::class,
         ]);
-        
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })
-
-    ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
-        channels: __DIR__.'/../routes/channels.php',
-        health: '/up',
-    )
-
-    ->withProviders([
-    App\Providers\EventServiceProvider::class,
-    
-    ])->create();
+    ->create();

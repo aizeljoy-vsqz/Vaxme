@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'RHU1',
             'email' => 'rhu1@example.com',
             'password' => bcrypt('password'),
+            'user_type' => 'rhu'
         ]);
 
         Rhu::create([
@@ -33,6 +34,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'RHU2',
             'email' => 'rhu2@example.com',
             'password' => bcrypt('password'),
+            'user_type' => 'rhu'
         ]);
 
         Rhu::create([
@@ -46,6 +48,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'RHU3',
             'email' => 'rhu3@example.com',
             'password' => bcrypt('password'),
+            'user_type' => 'rhu'
         ]);
 
         Rhu::create([
