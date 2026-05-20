@@ -62,6 +62,6 @@ class FirstLoginPasswordController extends Controller
 
         session()->flash('toast', ['type' => 'success', 'message' => __('Password updated.')]);
 
-        return redirect()->route('dashboard');
+        return redirect('bhc/dashboard');
     }
 }
