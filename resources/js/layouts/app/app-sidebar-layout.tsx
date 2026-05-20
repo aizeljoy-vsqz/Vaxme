@@ -24,7 +24,7 @@ export default function AppSidebarLayout({
 
     const showFirstLoginDialog =
         !!user &&
-        (user.user_type ?? '') === 'barangay' &&
+        (user.user_type ?? '') === 'bhc' &&
         user.is_first_login === true;
 
     return (

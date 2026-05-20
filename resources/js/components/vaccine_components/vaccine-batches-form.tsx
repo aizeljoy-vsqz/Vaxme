@@ -44,9 +44,8 @@ export function VaccineBatchesForm({ update_batch_id, open, onOpenChange }: batc
     const { data, setData, put, errors } = useForm({
         batch_number: update_batch_id.batch_number,
         vaccine_id: update_batch_id.vaccine.id,
-        expiration_date: update_batch_id.expiration_date,
+        expiration_date: update_batch_id.expiration_date.toString(),
         stock_receive: update_batch_id.stock_receive,
-        current_balance: 0,
     })
     const [date, setDate] = React.useState<Date>()
 
@@ -62,6 +61,8 @@ export function VaccineBatchesForm({ update_batch_id, open, onOpenChange }: batc
     const handleUpdate = (e: React.SyntheticEvent) => {
         e.preventDefault();
         put(`/vaccine/inventory/update/${update_batch_id.id}`, {
+            preserveScroll: true,
+            preserveState: true,
             onSuccess: () => {
                 toast(
                     <div className="flex gap-1 justify-center">
@@ -77,9 +78,6 @@ export function VaccineBatchesForm({ update_batch_id, open, onOpenChange }: batc
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogTrigger asChild>
-                <Button variant="outline">Edit</Button>
-            </DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleUpdate}>
                     <DialogHeader>
@@ -145,14 +143,14 @@ export function VaccineBatchesForm({ update_batch_id, open, onOpenChange }: batc
                                 <PopoverContent className="w-auto p-0" align="start">
                                     <Calendar
                                         mode="single"
-                                        selected={data.expiration_date}
+                                        selected={new Date(data.expiration_date)}
                                         onSelect={(date) => {
                                             if (!date) {
                                                 return
                                             }
 
                                             setDate(date)
-                                            setData('expiration_date', date)
+                                            setData('expiration_date', format(date, "yyyy-MM-dd"))
                                         }}
                                     />
                                 </PopoverContent>

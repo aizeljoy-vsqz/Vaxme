@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Hash;
@@ -13,9 +14,9 @@ class FirstLoginPasswordController extends Controller
 {
     private function ensureBarangayPasswordChangeAllowed(): void
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
-        if (! $user || $user->user_type !== 'barangay' || ! $user->bhc) {
+        if (! $user || $user->user_type !== 'bhc' || ! $user->bhc) {
             abort(403, 'Only barangay accounts can change password.');
         }
 
@@ -29,14 +30,14 @@ class FirstLoginPasswordController extends Controller
      */
     public function show(): Response
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (
             ! $user ||
-            $user->user_type !== 'barangay' ||
+            $user->user_type !== 'bhc' ||
             ! $user->is_first_login
         ) {
-            return redirect()->route('dashboard');
+            return Inertia::render('dashboard');
         }
 
         return Inertia::render('auth/change-password');

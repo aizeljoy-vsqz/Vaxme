@@ -60,11 +60,20 @@ export default function TrackVaccination() {
                 <div className="flex flex-col gap-3 rounded-2xl md:flex-row md:items-center md:justify-between">
 
                     {/* COUNTS */}
-                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <div className="mt-3 flex flex-wrap gap-3">
 
-                        <Badge variant={'outline'}>All: {requests.length}</Badge>
-                        <Badge variant={'outline'}>Requests: {requests.filter((r) => r.type === 'request').length}</Badge>
-                        <Badge variant={'outline'}>Returns: {requests.filter((r) => r.type === 'return').length}</Badge>
+                        <div className='flex gap-1'>
+                            <span className='text-sm'>All:</span>
+                            <Badge variant={'secondary'}>{requests.length}</Badge>
+                        </div>
+                        <div className='flex gap-1'>
+                            <span>Requests:</span>
+                            <Badge className='text-blue-500' variant={'secondary'}>{requests.filter((r) => r.type === 'request').length}</Badge>
+                        </div>
+                        <div className='flex gap-1'>
+                            <span>Returns:</span>
+                            <Badge className='text-red-500' variant={'secondary'}>{requests.filter((r) => r.type === 'return').length}</Badge>
+                        </div>
 
                     </div>
                     <div className="flex flex-wrap gap-2">

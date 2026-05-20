@@ -15,27 +15,35 @@ class VaccineBatchesController extends Controller
 {
     public function Index(Request $request)
     {
-        $current_user_id = $request->user()->id;
-        $rhu_id = User::with('rhu')->findorFail($current_user_id)->id;
-        $rhu_vaccines_batches = User::with(['rhu.vaccineBatches.vaccine'])->findOrFail($current_user_id);
-        $rhu_vaccines_batches = $rhu_vaccines_batches->rhu->vaccineBatches;
+        $user = $request->user();
+        $rhu = $user->rhu;
 
-        $vaccines_data = User::with('rhu.vaccines')->findOrFail($current_user_id);
-        $vaccines_data = $vaccines_data->rhu->vaccines;
+        $rhu_id = $rhu->id;
 
-        $date_today = Carbon::now();
-        foreach ($rhu_vaccines_batches as $vaccine_status) {
-            $expired = Carbon::parse($vaccine_status->expiration_date);
+        $rhu_vaccines_batches = $rhu->vaccineBatches()
+            ->with(['vaccine', 'dailyVaccine'])
+            ->get();
 
-            if ($date_today->greaterThan($expired)) {
-                $vaccine_batch = VaccineBatch::find($vaccine_status->id);
-                $vaccine_batch->status = false;
-                $vaccine_batch->save();
+        $vaccines_data = $rhu->vaccines;
+
+        foreach ($rhu_vaccines_batches as $batch) {
+
+            $batch->current_balance =
+                $batch->dailyVaccine->sum('stock_transferred')
+                - $batch->dailyVaccine->sum('daily_dispense')
+                - $batch->dailyVaccine->sum('vaccine_lose');
+
+            if (now()->greaterThan($batch->expiration_date)) {
+                $batch->update(['status' => false]);
+            } else {
+                $batch->update(['status' => true]);
             }
         }
-        $rhu_vaccines_batches = User::with(['rhu.vaccineBatches.vaccine'])->findOrFail($current_user_id);
-        $rhu_vaccines_batches = $rhu_vaccines_batches->rhu->vaccineBatches;
-        return Inertia::render('inventory/inventory-vaccine-batches/vaccine_batches_inventory', compact('rhu_id', 'rhu_vaccines_batches', 'vaccines_data'));
+
+        return Inertia::render(
+            'inventory/inventory-vaccine-batches/vaccine_batches_inventory',
+            compact('rhu_id', 'rhu_vaccines_batches', 'vaccines_data')
+        );
     }
 
     public function Store(Request $request)
@@ -72,17 +80,26 @@ class VaccineBatchesController extends Controller
             'vaccine_id' => ['required'],
             'batch_number' => ['required', 'string'],
             'stock_receive' => ['required', 'integer'],
-            'current_balance' => ['required', 'integer'],
             'expiration_date' => ['required', 'date']
         ]);
-        
-        // Update vaccine batch
-        $update_batch_id->update($request->all());
 
-        // Update related daily inventory
-        DailyBatchesInventory::where('vaccine_batch_id', $update_batch_id->id)->update([
-            'stock_transferred' => $validatedData['current_balance'],
-            'current_balance' => $validatedData['current_balance'],
-        ]);
+        $update_batch_id->update($validatedData);
+
+        $firstDaily = $update_batch_id->dailyVaccine()
+            ->orderBy('id')
+            ->first();
+
+        if ($firstDaily) {
+            $firstDaily->update([
+                'stock_transferred' => $validatedData['stock_receive'],
+                'current_balance' => $validatedData['stock_receive'],
+            ]);
+        }
+
+        // not using relationship 
+        // DailyBatchesInventory::where('vaccine_batch_id', $update_batch_id->id)->update([
+        //     'stock_transferred' => $validatedData['stock_receive'],
+        //     'current_balance' => $validatedData['stock_receive'],
+        // ]);
     }
 }

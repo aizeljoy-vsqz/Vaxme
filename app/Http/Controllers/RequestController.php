@@ -26,7 +26,7 @@ class RequestController extends Controller
         $items = collect($validated['items'])->map(function ($item) use ($validated) {
             return [
                 'name' => $item['name'],
-                'vaccine' => $validated['vaccine'], // 🔥 APPLY GLOBAL VALUE
+                'vaccine' => $validated['vaccine'],
             ];
         });
 

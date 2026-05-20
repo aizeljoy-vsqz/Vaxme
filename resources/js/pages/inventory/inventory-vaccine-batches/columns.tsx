@@ -21,6 +21,7 @@ export type VaccineBatch = {
     stock_receive: number
     current_balance: number
     status: string
+    computed_balance: number
     vaccine: VaccineType
 }
 
@@ -122,6 +123,9 @@ export const columns = (handleDelete: (delete_vaccine: number) => void): ColumnD
     {
         accessorKey: "current_balance",
         header: "Balance",
+        cell: ({ row }) => {
+            return row.original.current_balance
+        }
     },
     {
         accessorKey: "status",

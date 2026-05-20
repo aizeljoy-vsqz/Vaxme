@@ -47,7 +47,7 @@ export default function InventoryByBatch() {
         [key: string]: unknown
         rhu_vaccines_batches: VaccineBatch[]
         vaccines_data: VaccineType[]
-        rhu_id:number
+        rhu_id: number
     }
 
     const { vaccines_data, rhu_id, rhu_vaccines_batches } = usePage<PageProps>().props
@@ -106,8 +106,8 @@ export default function InventoryByBatch() {
     const filteredBatches = rhu_vaccines_batches.filter((batch) => {
 
         if (statusFilter === "all") {
-return true;
-}
+            return true;
+        }
 
         const today = new Date();
         const expirationDate = new Date(batch.expiration_date);
@@ -131,7 +131,12 @@ return true;
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className='px-2 h-full'>
                     <div className='flex justify-between mb-2'>
-                        <Label className='text-md flex items-center'>Vaccine Inventory</Label>
+
+                        <div>
+                            <Label className='text-md flex items-center'>Vaccine Inventory</Label>
+                            <span className="text-sm text-muted-foreground">Track your vaccine inventory.</span>
+                        </div>
+
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button className='bg-blue-600 hover:bg-blue-700' onClick={() => clearErrors()}> <Plus /> Add Inventory</Button>
@@ -149,8 +154,8 @@ return true;
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Name of Drug:</Label>
                                                 <Select value={data.vaccine_id} onValueChange={(val) => {
- setData('vaccine_id', val) 
-}}>
+                                                    setData('vaccine_id', val)
+                                                }}>
                                                     <SelectTrigger className="w-full">
                                                         <SelectValue placeholder="Select Drug" />
                                                     </SelectTrigger>
@@ -174,8 +179,8 @@ return true;
                                             <div className='w-full flex flex-col gap-2'>
                                                 <Label>Stock Received:</Label>
                                                 <Input value={data.stock_receive} onChange={(e) => {
- setData('stock_receive', e.target.value); setData('current_balance', Number(e.target.value)); 
-}}></Input>
+                                                    setData('stock_receive', e.target.value); setData('current_balance', Number(e.target.value));
+                                                }}></Input>
                                                 <div className='text-red-500 text-sm'>{errors.stock_receive}</div>
                                             </div>
                                             <div className='w-full flex flex-col gap-2'>
@@ -198,8 +203,8 @@ return true;
                                                             selected={date}
                                                             onSelect={(date) => {
                                                                 if (!date) {
-return
-}
+                                                                    return
+                                                                }
 
                                                                 setDate(date)
                                                                 setData('expiration_date', date.toLocaleDateString())
@@ -219,16 +224,23 @@ return
                             </AlertDialogContent>
                         </AlertDialog>
                     </div>
-                    <span className="text-sm text-muted-foreground">Track your vaccine inventory.</span>
 
                     {/* filter with badge of active and inactive panis */}
-                    <div className='flex flex-row justify-between gap-3 mt-2'>
-                        <div className="mt-3 flex flex-wrap gap-2 items-center">
+                    <div className='flex flex-row justify-between gap-3 mt-8'>
+                        <div className="mt-3 flex gap-2">
 
-                            <Badge variant="outline">Total Batches {rhu_vaccines_batches.length}</Badge>
-                            <Badge variant="outline">Active Batches {activeBatches}</Badge>
-                            <Badge variant="outline">Inactive Batches {inactiveBatches}</Badge>
-
+                            <div className='flex gap-2'>
+                                <span className='text-sm text-muted-foreground'>Total Batches:</span>
+                                <Badge variant="secondary">{rhu_vaccines_batches.length}</Badge>
+                            </div>
+                            <div className='flex gap-2'>
+                                <span className='text-sm text-muted-foreground '>Active Batches:</span>
+                                <Badge className='text-blue-500' variant="secondary">{activeBatches}</Badge>
+                            </div>
+                            <div className='flex gap-2'>
+                                <span className='text-sm text-muted-foreground'>Inactive Batches:</span>
+                                <Badge className='text-red-500' variant="secondary">{inactiveBatches}</Badge>
+                            </div>
                         </div>
 
                         <div className="flex gap-2">
@@ -251,7 +263,7 @@ return
                     <div className='px-2 py-4 h-8/10'>
                         {
                             rhu_vaccines_batches.length > 0
-                                ? (<DataTable columns={columns(handleDelete)} data={filteredBatches}/>)
+                                ? (<DataTable columns={columns(handleDelete)} data={filteredBatches} />)
                                 : (<EmptyPage title={'Empty vaccine batch inventory'} description={`You haven't created any vaccines batches yet. Start creating your inventory.`}></EmptyPage>)
                         }
                     </div>
