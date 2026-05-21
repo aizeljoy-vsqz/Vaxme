@@ -13,7 +13,7 @@ class RequestController extends Controller
 {
     public function addRequest(Request $request)
     {
-        $user = $request->user()->bhc->id;
+        $user = $request->user()->bhc;
 
         $validated = $request->validate([
             'type' => 'required|string',
@@ -58,8 +58,8 @@ class RequestController extends Controller
         DB::transaction(function () use ($validated, $user, $items) {
 
             $req = ModelsRequest::create([
-                'bhc_id' => $user,
-                'rhu_id' => 1,
+                'bhc_id' => $user->id,
+                'rhu_id' => $user->rhu_id,
                 'type' => $validated['type'],
                 'status' => $validated['status'],
             ]);

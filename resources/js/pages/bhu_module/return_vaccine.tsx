@@ -6,8 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { dashboard } from '@/routes';
+import { toast } from 'sonner';
 
 export default function BhuDashboard() {
+
+
 
     type RequestItem = {
         id: number;
@@ -20,6 +23,7 @@ export default function BhuDashboard() {
         id: number;
         type: "request" | "return";
         status: "submitted" | "reviewed" | "approved";
+        is_returned: boolean;
         items: RequestItem[];
     };
 
@@ -29,8 +33,8 @@ export default function BhuDashboard() {
 
     const handleReturn = () => {
         if (!selectedRequest) {
-return;
-}
+            return;
+        }
 
         const unusedItems = selectedRequest.items.filter(
             (item) => !item.is_vaccinated
@@ -45,6 +49,19 @@ return;
         }, {
             onSuccess: () => {
                 setOpen(false);
+                setSelectedRequest(null);
+                scrollPreservation: true;
+
+                router.reload({
+                    only: ['requests'],
+                });
+
+                toast.success("Return submitted successfully");
+            },
+            onError: (errors) => {
+                if (errors.request_id) {
+                    toast.error(errors.request_id);
+                }
             }
         });
     };
@@ -83,6 +100,8 @@ return;
                                 (item) => !item.is_vaccinated
                             );
 
+                            const isAlreadyReturned = request.is_returned;
+
                             return (
 
                                 <div
@@ -114,11 +133,13 @@ return;
                                             <p className="text-xs text-muted-foreground">
                                                 {unusedItems.length} unused vaccine(s)
                                             </p>
-                                            
+
 
                                         </div>
 
                                         <Badge className='capitalize font-medium' variant={'outline'}>{unusedItems[0]?.vaccine}</Badge>
+
+
 
                                     </div>
 
@@ -126,13 +147,31 @@ return;
                                     <div className="mt-4 flex items-center justify-between rounded-xl border px-4 py-3 text-sm border-slate-200 bg-slate-50 text-muted-foreground">
 
                                         <div>
-                                            <p className="text-sm font-medium">
-                                                Ready for return
-                                            </p>
+                                            {isAlreadyReturned
+                                                ?
+                                                <>
+                                                    <p className="text-sm font-medium text-green-500">
+                                                        Returned
+                                                    </p>
 
-                                            <p className="text-xs">
-                                                Click to review unused vaccines before returning them to RHU.
-                                            </p>
+                                                    <p className="text-xs">
+                                                        Click to review returned vaccines.
+                                                    </p>
+                                                </>
+                                                :
+                                                <>
+                                                    <p className="text-sm font-medium text-yellow-500">
+                                                        Ready for return
+                                                    </p>
+
+                                                    <p className="text-xs">
+                                                        Click to review unused vaccines before returning them to RHU.
+                                                    </p>
+                                                </>
+                                            }
+
+
+
                                         </div>
 
                                     </div>
