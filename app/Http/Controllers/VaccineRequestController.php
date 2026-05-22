@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DailyBatchesInventory;
 use App\Models\Request as ModelsRequest;
 use App\Models\VaccineBatch;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class VaccineRequestController extends Controller
 {
+
     public function Index(Request $request)
     {
 
@@ -42,16 +45,71 @@ class VaccineRequestController extends Controller
             'batch_id' => ['nullable', 'exists:vaccine_batches,id'],
         ]);
 
-        if ($requestId->type === 'request') {
-            $requestId->update([
-                'status' => 'approved',
-                'batch_id' => $validated['batch_id'],
-            ]);
-        } else {
-            $requestId->update([
-                'status' => 'approved',
+        if ($requestId->status === 'approved') {
+            return back()->withErrors([
+                'request' => 'Request is already approved.',
             ]);
         }
+
+        DB::transaction(function () use ($validated, $requestId) {
+
+            $quantity = $requestId->items()->count();
+
+            if ($requestId->type === 'request') {
+
+                $batch = VaccineBatch::findOrFail($validated['batch_id']);
+
+                $newBalance = $batch->current_balance - $quantity;
+
+                DailyBatchesInventory::create([
+                    'vaccine_batch_id' => $batch->id,
+
+                    'stock_transferred' => 0,
+
+                    'daily_dispense' => $quantity,
+
+                    'number_of_receipients' => $quantity,
+
+                    'current_balance' => $newBalance,
+
+                    'vaccine_lose' => 0,
+                ]);
+
+                $batch->update([
+                    'current_balance' => $newBalance,
+                ]);
+            }
+
+            if ($requestId->type === 'return') {
+
+                $batch = VaccineBatch::findOrFail($requestId->batch_id);
+
+                $newBalance = $batch->current_balance + $quantity;
+
+                DailyBatchesInventory::create([
+                    'vaccine_batch_id' => $batch->id,
+
+                    'stock_transferred' => $quantity,
+
+                    'daily_dispense' => 0,
+
+                    'number_of_receipients' => 0,
+
+                    'current_balance' => $newBalance,
+
+                    'vaccine_lose' => 0,
+                ]);
+
+                $batch->update([
+                    'current_balance' => $newBalance,
+                ]);
+            }
+
+            $requestId->update([
+                'status' => 'approved',
+                'batch_id' => $validated['batch_id'] ?? $requestId->batch_id,
+            ]);
+        });
 
 
         return back();

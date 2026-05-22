@@ -28,11 +28,6 @@ class VaccineBatchesController extends Controller
 
         foreach ($rhu_vaccines_batches as $batch) {
 
-            $batch->current_balance =
-                $batch->dailyVaccine->sum('stock_transferred')
-                - $batch->dailyVaccine->sum('daily_dispense')
-                - $batch->dailyVaccine->sum('vaccine_lose');
-
             if (now()->greaterThan($batch->expiration_date)) {
                 $batch->update(['status' => false]);
             } else {

@@ -81,7 +81,7 @@ export default function VaccineRequestCard({ request, batches }: VaccineRequestC
                         toast.success("Approved successfully");
                     },
                     onError: (errors) => {
-                        toast.error("Failed to approve request");
+                        toast.error(errors.request || "Failed to approve request");
                         console.error(errors);
                     },
                 }
