@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\VaccineBatch;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -47,6 +48,21 @@ class HandleInertiaRequests extends Middleware
                 'barangay_id' => $request->session()->get('barangay_id'),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'lowStockBatches' => function () use ($request) {
+
+                $user = $request->user();
+
+                if (!$user || !$user->rhu) {
+                    return [];
+                }
+
+                return $user->rhu
+                    ->vaccineBatches()
+                    ->with('vaccine')
+                    ->where('current_balance', '<=', 100)
+                    ->where('status', true)
+                    ->get();
+            },
         ];
     }
 }

@@ -15,6 +15,7 @@ import type { AvailabilityType } from './dashboard-column-availability';
 import { columns } from './dashboard-column-availability';
 import { DataTable } from './dashboard-data-table';
 import type { VaccineType } from './vaccine-management/column';
+import { VaccineBatch } from './inventory/inventory-vaccine-batches/columns';
 
 export default function Dashboard() {
     const availability: AvailabilityType[] = [
@@ -35,14 +36,17 @@ export default function Dashboard() {
     interface PageProps {
         [key: string]: unknown
         total_vaccines: VaccineType
+        lowStockBatches: VaccineBatch[]
     }
 
-    const { total_vaccines } = usePage<PageProps>().props
+    const { total_vaccines, lowStockBatches } = usePage<PageProps>().props
 
     const totalVaccine = total_vaccines.length
     const totalBarangay = 5
     const totalRequest = 5
     const totalStockAlert = 5
+
+    console.log("lowlowlow ",lowStockBatches)
 
     return (
         <>
