@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['bhc_id', 'rhu_id', 'type', 'status', 'original_request_id'])]
+#[Fillable(['bhc_id', 'rhu_id', 'batch_id', 'type', 'status', 'original_request_id'])]
 class Request extends Model
 {
     public function items()

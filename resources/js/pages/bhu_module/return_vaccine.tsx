@@ -15,7 +15,10 @@ export default function BhuDashboard() {
     type RequestItem = {
         id: number;
         name: string;
-        vaccine: string;
+        vaccine: {
+            id: number;
+            name: string;
+        };
         is_vaccinated: boolean;
     };
 
@@ -41,16 +44,16 @@ export default function BhuDashboard() {
         );
 
         router.post('/bhc/return/vaccines/store', {
+            preserveScroll: true,
             request_id: selectedRequest.id,
             items: unusedItems.map(item => ({
                 name: item.name,
-                vaccine: item.vaccine,
+                vaccine_id: item.vaccine.id,
             })),
         }, {
             onSuccess: () => {
                 setOpen(false);
                 setSelectedRequest(null);
-                scrollPreservation: true;
 
                 router.reload({
                     only: ['requests'],
@@ -137,7 +140,7 @@ export default function BhuDashboard() {
 
                                         </div>
 
-                                        <Badge className='capitalize font-medium' variant={'outline'}>{unusedItems[0]?.vaccine}</Badge>
+                                        <Badge className='capitalize font-medium' variant={'outline'}>{unusedItems[0]?.vaccine?.name}</Badge>
 
 
 
@@ -206,7 +209,7 @@ export default function BhuDashboard() {
                                     <div>
                                         <p className="font-medium">{item.name}</p>
                                         <p className="text-sm text-muted-foreground">
-                                            {item.vaccine}
+                                            {item.vaccine?.name}
                                         </p>
                                     </div>
 

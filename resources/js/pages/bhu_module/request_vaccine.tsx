@@ -8,10 +8,16 @@ import RequestTable from "@/components/request_vaccine/request_table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { VaccineType } from "../vaccine-management/column";
 
-export default function BhuDashboard() {
+interface BhuDashboardProps {
+    vaccines: VaccineType[]
+}
+
+export default function BhuDashboard({vaccines}: BhuDashboardProps) {
+    
+    console.log(vaccines);
     const [name, setName] = useState("");
-
     const { data, setData, post } = useForm({
         type: "request",
         status: "submitted",
@@ -153,6 +159,7 @@ export default function BhuDashboard() {
                         </p>
 
                         <Request_Select
+                            vaccines={vaccines}
                             value={data.vaccine}
                             onChange={(value) => setData("vaccine", value)}
                         />

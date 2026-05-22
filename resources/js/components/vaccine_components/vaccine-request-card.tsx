@@ -12,6 +12,7 @@ import {
 
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -21,36 +22,89 @@ import {
 } from "@/components/ui/dialog"
 
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
+import { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns"
+import { useState } from "react"
+import { router } from "@inertiajs/react"
+import { toast } from "sonner"
 
-export default function VaccineRequestCard() {
+interface VaccineRequestCardProps {
+    request: {
+        id: number;
+        type: 'request' | 'return';
+        status: 'submitted' | 'reviewed' | 'approved';
+        created_at: string;
+        batch_id?: number;
+        items: {
+            id: number;
+            name: string;
+            vaccine: {
+                id: number;
+                name: string;
+            };
+            is_vaccinated: boolean;
+        }[];
+        bhc?: {
+            barangay_name: string;
+        }
+    }
+    batches: VaccineBatch[];
+}
+
+export default function VaccineRequestCard({ request, batches }: VaccineRequestCardProps) {
+
+    console.log("request batch id:", request.batch_id);
+    const [selectedBatch, setSelectedBatch] = useState("");
+    const isReturn = request.type === "return";
+    const isRequest = request.type === "request";
+    const filteredBatches = batches.filter(
+        (batch) =>
+            (batch.vaccine.name).toLowerCase() === request.items[0]?.vaccine.name.toLowerCase() &&
+            batch.status &&
+            batch.current_balance >= request.items.length
+    )
+
+    const handleApprove = () => {
+            router.put(`/vaccine-request/${request.id}/approve`,
+                {
+                    batch_id: selectedBatch,
+                },
+                {
+                    onSuccess: () => {
+                        toast.success("Approved successfully");
+                    },
+                    onError: (errors) => {
+                        toast.error("Failed to approve request");
+                        console.error(errors);
+                    },
+                }
+            )
+            return;
+        
+    }
+
     return (
-        <Card className="gap-2 rounded-2xl border-border/50 bg-background/80 backdrop-blur shadow-sm transition-all hover:shadow-md w-xs md:w-full ">
+        <Card className="gap-2 rounded-2xl border-border/50 bg-background/80 shadow-xs transition-all hover:shadow-md w-xs md:w-full ">
             <CardHeader>
                 <div className="flex items-start justify-between mb-2">
                     <div>
-                        <CardTitle className="text-sm font-medium tracking-tight">
-                            Vaccine Request
+                        <CardTitle className="capitalize text-sm font-medium tracking-tight">
+                            {request.type}
                         </CardTitle>
 
                         <CardDescription className="mt-1 text-xs">
-                            Barangay Cobeng-beng
+                            Barangay {request.bhc?.barangay_name || 'N/A'}
                         </CardDescription>
                     </div>
 
-                    <Badge
-                        variant="secondary"
-                        className="rounded-full px-3 py-1"
-                    >
-                        Pending
-                    </Badge>
+                    <Badge variant="outline">{request.status}</Badge>
                 </div>
 
                 <Separator />
@@ -65,10 +119,12 @@ export default function VaccineRequestCard() {
                         </h4>
                     </div>
 
-                    <div className="space-y-2 rounded-xl bg-muted/40 p-4">
-                        <p className="text-xs">John John</p>
-                        <p className="text-xs">Panget</p>
-                        <p className="text-xs">Di Magana</p>
+                    <div className="space-y-2 rounded-xl p-4">
+                        {request.items.map((item) => (
+                            <p key={item.id} className="text-xs">
+                                {item.name}
+                            </p>
+                        ))}
                     </div>
                 </div>
 
@@ -79,7 +135,7 @@ export default function VaccineRequestCard() {
                     </span>
 
                     <span className="font-medium text-sm">
-                        Penta
+                        {request.items[0]?.vaccine.name || 'N/A'}
                     </span>
                 </div>
 
@@ -92,26 +148,55 @@ export default function VaccineRequestCard() {
                     <DialogTrigger className="py-2 px-4 text-sm rounded-md bg-blue-500 hover:bg-blue-600 hover:text-white text-white">Approve</DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Select Vaccines</DialogTitle>
+                            <DialogTitle>Return to Batch Inventory</DialogTitle>
                             <DialogDescription>
-                                Choose the vaccines batch to approve for this request.  
+                                {isReturn
+                                    ? "Vaccine batch inventory is already linked from its original request."
+                                    : "Choose the vaccines batch to approve for this request."}
                             </DialogDescription>
                         </DialogHeader>
-                        <Select>
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select a vaccine batch" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectItem value="batch1">Batch 1 - Penta (100 doses)</SelectItem>
-                                    <SelectItem value="batch2">Batch 2 - Penta (50 doses)</SelectItem>
-                                    <SelectItem value="batch3">Batch 3 - Penta (200 doses)</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                        {isRequest && (
+                            <>
+                                <Select
+                                    value={selectedBatch}
+                                    onValueChange={setSelectedBatch}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select a vaccine batch" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            {filteredBatches.length > 0 ? (
+
+                                                filteredBatches.map((batch) => (
+                                                    <SelectItem
+                                                        key={batch.id}
+                                                        value={String(batch.id)}
+                                                    >
+                                                        {batch.batch_number} - {batch.vaccine.name} ({batch.current_balance} doses)
+                                                    </SelectItem>
+                                                ))
+
+                                            ) : (
+
+                                                <div className="p-1 text-sm text-muted-foreground text-center">
+                                                    No available vaccine batch
+                                                </div>
+
+                                            )}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-xs text-muted-foreground">
+                                    Selected Batch: {selectedBatch}
+                                </p>
+                            </>
+                        )}
+
                         <DialogFooter>
-                           <Button variant={"outline"} className="border border-red-400 hover:text-red-500 hover:bg-red-50 text-red-500">Cancel</Button>
-                           <Button variant={"ghost"} className="bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Confirm</Button>
+                            <DialogClose className="w-auto py-1 px-4 border border-red-400 rounded-md hover:text-red-500 hover:bg-red-50 text-red-500">
+                                Cancel
+                            </DialogClose>
+                            <Button onClick={handleApprove} variant={"ghost"} className="bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Confirm</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>

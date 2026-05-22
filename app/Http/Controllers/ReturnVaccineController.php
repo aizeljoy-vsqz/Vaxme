@@ -18,7 +18,7 @@ class ReturnVaccineController extends Controller
         $bhc = $user->bhc;
 
         $requests = $bhc->requests()
-            ->with(['items'])
+            ->with(['items.vaccine'])
             ->where('type', 'request')
             ->where('status', 'approved')
             ->whereHas('items', function ($query) {
@@ -45,7 +45,7 @@ class ReturnVaccineController extends Controller
             'request_id' => 'required|exists:requests,id',
             'items' => 'required|array|min:1',
             'items.*.name' => 'required|string',
-            'items.*.vaccine' => 'required|string',
+            'items.*.vaccine_id' => 'required|exists:vaccines,id',
         ]);
 
         DB::transaction(function () use ($validated, $request) {
@@ -65,6 +65,7 @@ class ReturnVaccineController extends Controller
             $returnRequest = ModelsRequest::create([
                 'bhc_id' => $original->bhc_id,
                 'rhu_id' => $original->rhu_id,
+                'batch_id' => $original->batch_id,
                 'type' => 'return',
                 'status' => 'submitted',
                 'original_request_id' => $original->id,
@@ -73,7 +74,7 @@ class ReturnVaccineController extends Controller
             $returnRequest->items()->createMany(
                 collect($validated['items'])->map(fn($item) => [
                     'name' => $item['name'],
-                    'vaccine' => $item['vaccine'],
+                    'vaccine_id' => $item['vaccine_id'],
                     'is_vaccinated' => false,
                 ])->toArray()
             );

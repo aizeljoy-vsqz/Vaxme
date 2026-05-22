@@ -1,9 +1,40 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import VaccineRequestCard from '@/components/vaccine_components/vaccine-request-card';
 import { vaccineRequest } from '@/routes';
+import { VaccineBatch } from '../inventory/inventory-vaccine-batches/columns';
+
 export default function VaccineRequest() {
+
+    type RequestItem = {
+        id: number;
+        name: string;
+        vaccine: {
+            id: number
+            name: string
+        };
+        is_vaccinated: boolean;
+    };
+
+    type VaccineRequest = {
+        id: number;
+        type: 'request' | 'return';
+        status: 'submitted' | 'reviewed' | 'approved';
+        created_at: string;
+        items: RequestItem[];
+    };
+
+    type PageProps = {
+        requests: VaccineRequest[];
+        batches: VaccineBatch[];
+    };
+
+    const { requests, batches } = usePage<PageProps>().props;
+
+    console.log(requests);
+    console.log(batches);
+
     return (
         <>
             <Head title="Vaccine Request" />
@@ -21,15 +52,15 @@ export default function VaccineRequest() {
                     </TabsList>
 
                     <TabsContent value='all'>
-                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center'>
-                        <VaccineRequestCard/>
-                        <VaccineRequestCard/>
-                        <VaccineRequestCard/>
-                        <VaccineRequestCard/>
-                        <VaccineRequestCard/>
-                        <VaccineRequestCard/>
-                        <VaccineRequestCard/>
-                    </div>
+                        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-center'>
+                            {requests.map((request) => (
+                                <VaccineRequestCard
+                                    key={request.id}
+                                    request={request}
+                                    batches={batches}
+                                />
+                            ))}
+                        </div>
                     </TabsContent>
                 </Tabs>
             </div>

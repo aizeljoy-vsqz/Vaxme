@@ -6,13 +6,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { VaccineType } from "@/pages/vaccine-management/column";
 
 type RequestSelectProps = {
     value: string;
+    vaccines: VaccineType[];
     onChange: (value: string) => void;
 };
 
-export default function Request_Select({ value, onChange }: RequestSelectProps) {
+export default function Request_Select({ value, vaccines, onChange }: RequestSelectProps) {
 
     return (
         <Select value={value} onValueChange={onChange}>
@@ -21,9 +23,14 @@ export default function Request_Select({ value, onChange }: RequestSelectProps) 
             </SelectTrigger>
             <SelectContent position="item-aligned">
                 <SelectGroup>
-                    <SelectItem value="penta">Penta</SelectItem>
-                    <SelectItem value="tetanus">Tetanus</SelectItem>
-                    <SelectItem value="Zietza">Zietza</SelectItem>
+                    {vaccines.map((vaccine) => (
+                        <SelectItem
+                            key={vaccine.id}
+                            value={vaccine.id.toString()}
+                        >
+                            {vaccine.name}
+                        </SelectItem>
+                    ))}
                 </SelectGroup>
             </SelectContent>
         </Select>
