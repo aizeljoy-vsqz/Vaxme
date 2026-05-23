@@ -68,33 +68,61 @@ class VaccineBatchesController extends Controller
     {
         $delete_vaccine->delete();
     }
+
     public function Update(Request $request, VaccineBatch $update_batch_id)
     {
         $validatedData = $request->validate([
-            // 'rhu_id' => 'required',
             'vaccine_id' => ['required'],
             'batch_number' => ['required', 'string'],
             'stock_receive' => ['required', 'integer'],
             'expiration_date' => ['required', 'date']
         ]);
 
-        $update_batch_id->update($validatedData);
+        $update_batch_id->update([
+            'vaccine_id' => $validatedData['vaccine_id'],
+            'batch_number' => $validatedData['batch_number'],
+            'expiration_date' => $validatedData['expiration_date'],
+        ]);
 
+        // first inventory row = original stock receive
         $firstDaily = $update_batch_id->dailyVaccine()
             ->orderBy('id')
             ->first();
 
         if ($firstDaily) {
+
+            // update original receive
             $firstDaily->update([
                 'stock_transferred' => $validatedData['stock_receive'],
-                'current_balance' => $validatedData['stock_receive'],
+            ]);
+
+            // recalculate ALL balances
+            $inventories = $update_batch_id->dailyVaccine()
+                ->orderBy('id')
+                ->get();
+
+            $runningBalance = 0;
+
+            foreach ($inventories as $inventory) {
+
+                $runningBalance =
+                    $runningBalance
+                    + $inventory->stock_transferred
+                    - $inventory->daily_dispense
+                    - $inventory->vaccine_lose;
+
+                $inventory->update([
+                    'current_balance' => $runningBalance,
+                ]);
+            }
+
+            // sync latest balance to batch
+            $update_batch_id->update([
+                'stock_receive' => $validatedData['stock_receive'],
+                'current_balance' => $runningBalance,
             ]);
         }
 
-        // not using relationship 
-        // DailyBatchesInventory::where('vaccine_batch_id', $update_batch_id->id)->update([
-        //     'stock_transferred' => $validatedData['stock_receive'],
-        //     'current_balance' => $validatedData['stock_receive'],
-        // ]);
+        return back();
     }
 }
