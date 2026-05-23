@@ -1,12 +1,12 @@
 import { Head, usePage } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { dashboard } from '@/routes';
-import { toast } from 'sonner';
 
 export default function BhuDashboard() {
 

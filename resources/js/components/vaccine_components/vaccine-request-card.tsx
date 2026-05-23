@@ -1,4 +1,7 @@
 
+import { router } from "@inertiajs/react"
+import { useState } from "react"
+import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,10 +33,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-import { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns"
-import { useState } from "react"
-import { router } from "@inertiajs/react"
-import { toast } from "sonner"
+import type { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns"
 
 interface VaccineRequestCardProps {
     request: {
@@ -86,6 +86,7 @@ export default function VaccineRequestCard({ request, batches }: VaccineRequestC
                     },
                 }
             )
+
             return;
         
     }

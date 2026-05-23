@@ -14,8 +14,8 @@ import { dashboard } from '@/routes';
 import type { AvailabilityType } from './dashboard-column-availability';
 import { columns } from './dashboard-column-availability';
 import { DataTable } from './dashboard-data-table';
+import type { VaccineBatch } from './inventory/inventory-vaccine-batches/columns';
 import type { VaccineType } from './vaccine-management/column';
-import { VaccineBatch } from './inventory/inventory-vaccine-batches/columns';
 
 export default function Dashboard() {
     const availability: AvailabilityType[] = [

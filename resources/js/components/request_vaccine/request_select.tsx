@@ -6,7 +6,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { VaccineType } from "@/pages/vaccine-management/column";
+import type { VaccineType } from "@/pages/vaccine-management/column";
 
 type RequestSelectProps = {
     value: string;

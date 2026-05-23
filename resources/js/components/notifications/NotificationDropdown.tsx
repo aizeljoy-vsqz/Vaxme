@@ -1,12 +1,12 @@
-import { Bell, AlertTriangle } from 'lucide-react';
 import { usePage } from "@inertiajs/react"
+import { Bell, AlertTriangle } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { VaccineBatch } from '@/pages/inventory/inventory-vaccine-batches/columns';
+import type { VaccineBatch } from '@/pages/inventory/inventory-vaccine-batches/columns';
 
 interface PageProps {
   [key: string]: unknown;

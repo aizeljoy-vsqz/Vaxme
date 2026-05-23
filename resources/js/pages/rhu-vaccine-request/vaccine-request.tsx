@@ -3,7 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import VaccineRequestCard from '@/components/vaccine_components/vaccine-request-card';
 import { vaccineRequest } from '@/routes';
-import { VaccineBatch } from '../inventory/inventory-vaccine-batches/columns';
+import type { VaccineBatch } from '../inventory/inventory-vaccine-batches/columns';
 
 export default function VaccineRequest() {
 

@@ -8,7 +8,7 @@ import RequestTable from "@/components/request_vaccine/request_table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { VaccineType } from "../vaccine-management/column";
+import type { VaccineType } from "../vaccine-management/column";
 
 interface BhuDashboardProps {
     vaccines: VaccineType[]
