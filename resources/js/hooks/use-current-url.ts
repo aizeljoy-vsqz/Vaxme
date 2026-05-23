@@ -28,12 +28,16 @@ export type UseCurrentUrlReturn = {
 
 export function useCurrentUrl(): UseCurrentUrlReturn {
     const page = usePage();
-    const currentUrlPath = new URL(
-        page.url,
-        typeof window !== 'undefined'
-            ? window.location.origin
-            : 'http://localhost',
-    ).pathname;
+    // Use a stable base host to parse the page.url into a pathname.
+    // Avoid using `window.location` here to prevent SSR/client hydration mismatches.
+    const currentUrlPath = (() => {
+        try {
+            return new URL(page.url, 'http://example.invalid').pathname;
+        } catch {
+            // Fallback: strip query string if URL parsing fails
+            return String(page.url).split('?')[0];
+        }
+    })();
 
     const isCurrentUrl: IsCurrentUrlFn = (
         urlToCheck: NonNullable<InertiaLinkProps['href']>,

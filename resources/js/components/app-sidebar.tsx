@@ -1,7 +1,6 @@
-import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { ArrowBigLeftDashIcon, ArrowBigRightDashIcon, Clock, Layers, LayoutGrid, PackageCheck, StickyNote, UsersRound, SquareChartGantt } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -13,8 +12,13 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard, batchesVaccineInventory, vaccineManagement, vaccineRequest } from '@/routes';
+import bhc from '@/routes/bhc';
+import history from '@/routes/history';
+import returnMethod from '@/routes/return';
+import track from '@/routes/track';
 import type { NavItem } from '@/types';
+
 
 const mainNavItems: NavItem[] = [
     {
@@ -22,44 +26,113 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
-];
-
-const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
+        title: 'Inventory',
+        href: batchesVaccineInventory(),
+        icon: Layers,
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Vaccine Management',
+        href: vaccineManagement(),
+        icon: SquareChartGantt,
+    },
+];
+
+const BarangayNavItems: NavItem[] = [
+    {
+        title: 'Vaccine Request',
+        href: vaccineRequest(),
+        icon: StickyNote,
+    },
+    {
+        title: 'Registration',
+        href: '/registration',
+        icon: UsersRound,
+    },
+];
+
+const BHCNavItems: NavItem[] = [
+    {
+        title: 'Request new vaccines',
+        href: bhc.dashboard(),
+        icon: ArrowBigRightDashIcon,
+    },
+    {
+        title: 'Track & Manage',
+        href: track.vaccination(),
+        icon: PackageCheck,
+    },
+    {
+        title: 'Return vaccines',
+        href: returnMethod.vaccine(),
+        icon: ArrowBigLeftDashIcon,
+    },
+    {
+        title: 'Vaccination History',
+        href: history.vaccination(),
+        icon: Clock,
     },
 ];
 
 export function AppSidebar() {
-    return (
-        <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
-                                <AppLogo />
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarHeader>
 
-            <SidebarContent>
-                <NavMain items={mainNavItems} />
-            </SidebarContent>
+    const { auth } = usePage().props;
+    const userType = auth.user.user_type;
 
-            <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
-                <NavUser />
-            </SidebarFooter>
-        </Sidebar>
-    );
+    // RHU Sidebar
+    if (userType === 'rhu') {
+        return (
+            <Sidebar collapsible="icon" variant="inset">
+                <SidebarHeader>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton size="lg" asChild>
+                                <Link href={dashboard()} prefetch>
+                                    <AppLogo />
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarHeader>
+
+                <SidebarContent>
+                    <NavMain items={mainNavItems} sidebarLabel='Actions' />
+                    <NavMain items={BarangayNavItems} sidebarLabel='Barangay Management' />
+                </SidebarContent>
+
+                <SidebarFooter>
+                    <NavUser />
+                </SidebarFooter>
+            </Sidebar>
+        );
+    }
+
+    // BHC Sidebar
+    if (userType === 'bhc') {
+        return (
+            <Sidebar collapsible="icon" variant="inset">
+                <SidebarHeader>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton size="lg" asChild>
+                                <Link href={dashboard()} prefetch>
+                                    <AppLogo />
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarHeader>
+
+                <SidebarContent>
+                    <NavMain items={BHCNavItems} sidebarLabel='Actions' />
+                </SidebarContent>
+
+                <SidebarFooter>
+                    <NavUser />
+                </SidebarFooter>
+            </Sidebar>
+        );
+    }
+
+
 }

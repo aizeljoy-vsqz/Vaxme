@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\LoginResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -27,11 +28,26 @@ class FortifyServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-    {
-        $this->configureActions();
-        $this->configureViews();
-        $this->configureRateLimiting();
-    }
+{
+    $this->configureActions();
+    $this->configureViews();
+    $this->configureRateLimiting();
+
+    $this->app->singleton(LoginResponse::class, function () {
+        return new class implements LoginResponse {
+            public function toResponse($request)
+            {
+                $user = $request->user();
+
+                return redirect()->intended(
+                    $user->user_type === 'bhc'
+                        ? '/bhc/dashboard'
+                        : '/dashboard'
+                );
+            }
+        };
+    });
+}
 
     /**
      * Configure Fortify actions.

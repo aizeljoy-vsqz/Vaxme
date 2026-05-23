@@ -6,8 +6,8 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { edit } from '@/routes/profile';
 import { send } from '@/routes/verification';
+import type { Auth } from '@/types/auth';
 
 export default function Profile({
     mustVerifyEmail,
@@ -16,7 +16,7 @@ export default function Profile({
     mustVerifyEmail: boolean;
     status?: string;
 }) {
-    const { auth } = usePage().props;
+    const { auth } = usePage<{ auth: Auth }>().props;
 
     return (
         <>
@@ -117,7 +117,9 @@ export default function Profile({
                 </Form>
             </div>
 
-            <DeleteUser />
+                    {typeof window !== 'undefined' && (
+                        <DeleteUser />
+                    )}
         </>
     );
 }
@@ -126,7 +128,7 @@ Profile.layout = {
     breadcrumbs: [
         {
             title: 'Profile settings',
-            href: edit(),
+            href: '/settings/profile',
         },
     ],
 };
