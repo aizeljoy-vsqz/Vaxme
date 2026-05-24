@@ -38,7 +38,7 @@ export default function VaccineRequest() {
     return (
         <>
             <Head title="Vaccine Request" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl py-4 px-6">
                 <Label className='text-md flex items-center'>Barangay Vaccine Request</Label>
                 <span className="text-sm text-muted-foreground">
                     Review and manage vaccine requests from barangays.

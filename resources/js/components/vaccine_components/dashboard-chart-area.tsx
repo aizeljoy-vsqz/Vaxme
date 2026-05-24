@@ -14,9 +14,17 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent
-  
+
 } from "@/components/ui/chart"
-import type {ChartConfig} from "@/components/ui/chart";
+import type { ChartConfig } from "@/components/ui/chart";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export const description = "A simple area chart"
 
@@ -42,20 +50,39 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartAreaDefault() {
+export function ChartAreaDefault({ data, selectedVaccine, vaccines, onSelectVaccine }: any) { // ngett baguhin mo yung any!
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Vaccine Usage</CardTitle>
-        <CardDescription>
-          January - June 2024
-        </CardDescription>
+      <CardHeader className="flex">
+        <div className="w-full">
+          <CardTitle>Vaccine Usage</CardTitle>
+          <CardDescription>
+            2026
+          </CardDescription>
+        </div>
+        <Select
+          value={selectedVaccine}
+          onValueChange={onSelectVaccine}
+        >
+          <SelectTrigger className="w-auto">
+            <SelectValue placeholder="Select vaccine" />
+          </SelectTrigger>
+
+          <SelectContent>
+            {vaccines?.map((vaccine: string) => (
+              <SelectItem key={vaccine} value={vaccine}>
+                {vaccine}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="aspect-auto h-[220px] w-full"
+        >
           <AreaChart
             accessibilityLayer
-            data={chartData}
+            data={data}
             margin={{
               left: 12,
               right: 12,
@@ -74,7 +101,7 @@ export function ChartAreaDefault() {
               content={<ChartTooltipContent indicator="line" />}
             />
             <Area
-              dataKey="desktop"
+              dataKey="value"
               type="natural"
               fill="var(--color-desktop)"
               fillOpacity={0.4}
