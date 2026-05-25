@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\DailyBatchesInventory;
-use App\Models\Vaccine;
-use App\Models\VaccineBatch;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\VaccineBatch;
+use App\Models\DailyBatchesInventory;
 
 class DailyBatchesInventorySeeder extends Seeder
 {
@@ -16,39 +14,75 @@ class DailyBatchesInventorySeeder extends Seeder
      */
     public function run(): void
     {
-        $vaccines = Vaccine::with('vaccineBatch')->get();
 
-        if ($vaccines->isEmpty()) {
-            $this->command->info("No vaccines found. Seeder stopped.");
-            return;
-        }
+        $batches = VaccineBatch::all();
 
-        foreach ($vaccines as $vaccine) {
+        $currentYear = now()->year;
 
-            if ($vaccine->vaccineBatch->isEmpty()) {
-                continue;
-            }
+        $currentMonth = now()->month;
 
-            foreach ($vaccine->vaccineBatch as $batch) {
+        foreach ($batches as $batch) {
 
-                for ($month = 1; $month <= 12; $month++) {
+            $remainingBalance = $batch->stock_receive;
 
-                    DailyBatchesInventory::create([
-                        'vaccine_batch_id' => $batch->id,
-                        'stock_transferred' => rand(0, 50),
-                        'daily_dispense' => rand(20, 100),
-                        'number_of_receipients' => rand(20, 100),
-                        'current_balance' => rand(200, 1000),
-                        'vaccine_lose' => rand(0, 5),
+            /*
+            |--------------------------------------------------------------------------
+            | Generate records from January until current month
+            |--------------------------------------------------------------------------
+            */
 
-                        // force fake monthly distribution
-                        'created_at' => Carbon::create(2026, $month, rand(1, 28)),
-                        'updated_at' => Carbon::create(2026, $month, rand(1, 28)),
-                    ]);
+            for ($month = 1; $month <= $currentMonth; $month++) {
+
+                $dailyDispense = rand(5, 25);
+
+                $vaccineLose = rand(0, 5);
+
+                $stockTransferred = rand(0, 20);
+
+                $recipients = rand(1, 20);
+
+                $remainingBalance =
+                    $remainingBalance
+                    - $dailyDispense
+                    - $vaccineLose;
+
+                /*
+                |--------------------------------------------------------------------------
+                | Prevent negative balance
+                |--------------------------------------------------------------------------
+                */
+
+                if ($remainingBalance < 0) {
+                    $remainingBalance = rand(10, 50);
                 }
+
+                DailyBatchesInventory::create([
+
+                    'vaccine_batch_id' => $batch->id,
+
+                    'stock_transferred' => $stockTransferred,
+
+                    'daily_dispense' => $dailyDispense,
+
+                    'number_of_receipients' => $recipients,
+
+                    'current_balance' => $remainingBalance,
+
+                    'vaccine_lose' => $vaccineLose,
+
+                    'created_at' => Carbon::create(
+                        $currentYear,
+                        $month,
+                        rand(1, 28)
+                    ),
+
+                    'updated_at' => Carbon::create(
+                        $currentYear,
+                        $month,
+                        rand(1, 28)
+                    ),
+                ]);
             }
         }
-
-        $this->command->info("Seeded ALL vaccines with monthly inventory data (2026).");
     }
 }

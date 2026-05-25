@@ -60,7 +60,7 @@ export default function VaccineRequest() {
                 <span className="text-sm text-muted-foreground">
                     Review and manage vaccine requests from barangays.
                 </span>
-                <Tabs defaultValue="all" className="w-full">
+                <Tabs defaultValue="submitted" className="w-full">
                     <TabsList className='mb-2'>
                         <TabsTrigger value="all">All</TabsTrigger>
                         <TabsTrigger value="submitted">Submitted</TabsTrigger>

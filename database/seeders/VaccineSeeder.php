@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Rhu;
 use App\Models\Vaccine;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class VaccineSeeder extends Seeder
@@ -14,45 +13,48 @@ class VaccineSeeder extends Seeder
      */
     public function run(): void
     {
-        $rhus = Rhu::all();
 
-        if ($rhus->isEmpty()) {
-            $this->command->info("No RHU found. Seeder stopped.");
-            return;
-        }
+        $vaccines = [
 
-        // 👇 different vaccine sets per RHU
-        $rhuVaccines = [
-            1 => [ // RHU 1
-                ['name' => 'Penta', 'description' => 'Pentavalent vaccine'],
-                ['name' => 'BCG', 'description' => 'Tuberculosis vaccine'],
-                ['name' => 'Polio', 'description' => 'Polio vaccine'],
+            [
+                'name' => 'BCG Vaccine',
+                'description' => 'Tuberculosis vaccine',
             ],
-            2 => [ // RHU 2
-                ['name' => 'MMR', 'description' => 'Measles, Mumps, Rubella'],
-                ['name' => 'Hepatitis B', 'description' => 'Hepatitis B vaccine'],
-                ['name' => 'Tetanus', 'description' => 'Tetanus toxoid vaccine'],
+
+            [
+                'name' => 'Hepatitis B Vaccine',
+                'description' => 'Protection against Hepatitis B',
             ],
-            3 => [ // RHU 3
-                ['name' => 'Influenza', 'description' => 'Flu vaccine'],
-                ['name' => 'HPV', 'description' => 'Human Papillomavirus vaccine'],
-                ['name' => 'Rabies', 'description' => 'Rabies vaccine'],
+
+            [
+                'name' => 'Pentavalent Vaccine',
+                'description' => '5-in-1 childhood vaccine',
             ],
+
+            [
+                'name' => 'Polio Vaccine',
+                'description' => 'Protection against poliovirus',
+            ],
+
+            [
+                'name' => 'Measles Vaccine',
+                'description' => 'Protection against measles',
+            ],
+
         ];
+
+        $rhus = Rhu::all();
 
         foreach ($rhus as $rhu) {
 
-            $vaccines = $rhuVaccines[$rhu->id] ?? [];
+            foreach ($vaccines as $vaccineData) {
 
-            foreach ($vaccines as $vaccine) {
                 Vaccine::create([
                     'rhu_id' => $rhu->id,
-                    'name' => $vaccine['name'],
-                    'description' => $vaccine['description'],
+                    'name' => $vaccineData['name'],
+                    'description' => $vaccineData['description'],
                 ]);
             }
         }
-
-        $this->command->info("Vaccines seeded with different sets per RHU.");
     }
 }
