@@ -1,5 +1,5 @@
 import { useForm } from "@inertiajs/react"
-import { CircleCheckBigIcon } from "lucide-react"
+import { CircleCheckBigIcon, PencilIcon } from "lucide-react"
 import type { SyntheticEvent } from "react"
 import { toast } from "sonner"
 import {
@@ -46,7 +46,10 @@ export default function DailyBatchesForm({ update_daily_inventory, onOpenDropdow
 
     return (
         <Dialog>
-            <DialogTrigger>Edit</DialogTrigger>
+            <DialogTrigger className='flex items-center hover:bg-muted rounded-md p-1 text-sm w-full text-left'>
+                <PencilIcon className="p-1" />
+                Edit
+                </DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleEdit}>
                     <DialogHeader>
@@ -54,7 +57,7 @@ export default function DailyBatchesForm({ update_daily_inventory, onOpenDropdow
                         <DialogDescription>
                             Modify the details of the daily batch inventory.
                         </DialogDescription>
-                        <div className='flex flex-col gap-4'>
+                        <div className='flex flex-col gap-2'>
                             <div className='flex gap-4'>
                                 <div className='flex flex-col w-full gap-2'>
                                     <Label>Daily Dispensed:</Label>
@@ -89,7 +92,7 @@ export default function DailyBatchesForm({ update_daily_inventory, onOpenDropdow
                                 </Button>
                             </DialogClose>
 
-                            <Button type="submit" disabled={processing}>
+                            <Button className="bg-blue-600 hover:bg-blue-700" type="submit" disabled={processing}>
                                 Save changes
                             </Button>
                         </DialogFooter>
