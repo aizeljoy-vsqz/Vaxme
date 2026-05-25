@@ -252,15 +252,24 @@ export default function InventoryByBatch() {
 
                         <div className="flex gap-2">
 
-                            <Button variant={statusFilter === "all" ? "default" : "outline"} onClick={() => setStatusFilter("all")}>
+                            <Button className={statusFilter === "all"
+                                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                : ""
+                            } variant={statusFilter === "all" ? "default" : "outline"} onClick={() => setStatusFilter("all")}>
                                 All
                             </Button>
 
-                            <Button variant={statusFilter === "active" ? "default" : "outline"} onClick={() => setStatusFilter("active")}>
+                            <Button className={statusFilter === "active"
+                                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                : ""
+                            } variant={statusFilter === "active" ? "default" : "outline"} onClick={() => setStatusFilter("active")}>
                                 Active
                             </Button>
 
-                            <Button variant={statusFilter === "inactive" ? "default" : "outline"} onClick={() => setStatusFilter("inactive")} >
+                            <Button className={statusFilter === "inactive"
+                                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                : ""
+                            } variant={statusFilter === "inactive" ? "default" : "outline"} onClick={() => setStatusFilter("inactive")} >
                                 Inactive
                             </Button>
 

@@ -80,13 +80,12 @@ export function VaccineBatchesForm({ update_batch_id, open, onOpenChange }: batc
             <DialogContent>
                 <form onSubmit={handleUpdate}>
                     <DialogHeader>
-                        <DialogTitle>Edit profile</DialogTitle>
+                        <DialogTitle>Edit Vaccine Batch</DialogTitle>
                         <DialogDescription>
-                            Make changes to your profile here. Click save when you&apos;re
-                            done.
+                            Make changes to the vaccine batch and click save when you're done.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 mt-4">
                         <div className="w-full flex flex-col gap-2">
                             <Label>Vaccine Name</Label>
                             <Select value={data.vaccine_id.toString()} onValueChange={(e) => {
@@ -164,7 +163,7 @@ export function VaccineBatchesForm({ update_batch_id, open, onOpenChange }: batc
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>
-                        <Button type="submit" disabled={processing}>
+                        <Button className="bg-blue-600 hover:bg-blue-700" type="submit" disabled={processing}>
                             Save changes
                         </Button>
                     </DialogFooter>
