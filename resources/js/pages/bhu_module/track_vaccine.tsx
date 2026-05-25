@@ -7,22 +7,24 @@ import { Label } from '@/components/ui/label';
 import track from '@/routes/track';
 import EmptyPage from '@/components/vaccine_components/empty-page';
 import { usePoll } from '@inertiajs/react'
+import { VaccineType } from '../vaccine-management/column';
 
 export default function TrackVaccination() {
 
     type RequestItem = {
         id: number;
         name: string;
-        vaccine: string;
+        vaccine: VaccineType;
         is_vaccinated: boolean;
     };
 
     type VaccineRequest = {
         id: number;
         type: 'request' | 'return';
-        status: 'submitted' | 'reviewed' | 'approved';
+        status: 'submitted' | 'reviewed' | 'approved' | 'rejected';
         created_at: string;
         items: RequestItem[];
+        rejection_reason: string
     };
 
     type PageProps = {

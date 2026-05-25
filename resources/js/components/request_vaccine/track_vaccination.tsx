@@ -37,9 +37,10 @@ type RequestItem = {
 type VaccineRequest = {
     id: number;
     type: "request" | "return";
-    status: "submitted" | "reviewed" | "approved";
+    status: "submitted" | "reviewed" | "approved" | "rejected";
     created_at: string;
     items: RequestItem[],
+    rejection_reason: string
 };
 
 type Props = {
@@ -48,6 +49,7 @@ type Props = {
 
 export default function TrackVaccine({ request }: Props) {
 
+    const isRejected = request.status === "rejected";
     const [open, setOpen] = useState(false);
     const [processing, setProcessing] = useState(false);
     const [items, setItems] = useState(request.items);
@@ -229,17 +231,10 @@ export default function TrackVaccine({ request }: Props) {
                     <div className="flex flex-col items-center gap-2">
 
                         <div
-                            className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-medium transition-colors
-                ${request.status === "approved"
-                                    ? "bg-primary text-primary-foreground border-primary"
-                                    : "bg-muted text-muted-foreground"
-                                }`}
-                        >
+                            className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-medium transition-colors ${request.status === "approved" ? "bg-primary text-primary-foreground border-primary" : "bg-muted text-muted-foreground"}`}>
                             {request.status === "approved" ? (
                                 <Check className="h-4 w-4" />
-                            ) : (
-                                "3"
-                            )}
+                            ) : ("3")}
                         </div>
 
                         <span className="text-xs text-muted-foreground">
@@ -253,7 +248,7 @@ export default function TrackVaccine({ request }: Props) {
                 {/* approval message */}
                 {request.status === "approved" && (
                     <div
-                        className={`w-full mt-4 rounded-xl border px-4 py-3 text-sm border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-900 dark:bg-slate-800 dark:text-slate-100`}
+                        className={`w-full mt-4 rounded-xl border px-4 py-3 text-sm border-green-200 bg-green-50 text-green-600 dark:border-slate-900 dark:bg-slate-800 dark:text-slate-100`}
                     >
                         {request.type === "request" ? (
                             <>
@@ -274,6 +269,27 @@ export default function TrackVaccine({ request }: Props) {
                                 </p>
                             </>
                         )}
+                    </div>
+                )}
+
+
+                {isRejected && (
+                    <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-red-600">
+                                {request.type === "return"
+                                    ? "Return Rejected"
+                                    : "Request Rejected"}
+                            </span>
+                        </div>
+
+                        {request.rejection_reason && (
+                            <p className="text-xs text-red-500 mt-1">
+                                Reason: {request.rejection_reason}
+                            </p>
+                        )}
+
                     </div>
                 )}
 
