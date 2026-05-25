@@ -100,9 +100,9 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
         <>
             <Head title="Registration" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="flex flex-col">
-                    <div className="mb-6 flex items-center justify-between">
-                        <Label className="text-lg font-semibold">Barangay Registration</Label>
+                <div className="flex flex-col px-2">
+                    <div className="mb-4 flex items-center justify-between">
+                        <Label className="text-md">Barangay Registration</Label>
                         <DetailsPage existingBarangays={registrationBarangays} />
                     </div>
                     {/* Empty State */}
@@ -110,7 +110,7 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                         <EmptyPage title="No Registered Barangays Found" description="You have no registered barangays to display." />
                     ) : (
                         <>
-                            <div className="px-2">
+                            <div className="">
                                 <Input
                                     placeholder="Search..."
                                     className="mb-4 max-w-sm"
@@ -119,12 +119,12 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 gap-4 px-2 md:grid-cols-2 lg:grid-cols-4">
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                                 {filteredBarangays.length > 0 ? (
                                     filteredBarangays.map((barangay) => (
                                         <Card key={barangay.id} className="w-full">
                                             <CardHeader className="relative pb-4 pt-6">
-                                                <div className="absolute -top-3 right-5">
+                                                <div className="absolute right-5">
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
                                                             <Button variant="ghost" size="icon" className="cursor-pointer">
@@ -142,14 +142,14 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                                                     </DropdownMenu>
                                                 </div>
 
-                                                <div className="space-y-1 text-center">
-                                                    <CardTitle className="text-xl font-bold">{barangay.barangay_name}</CardTitle>
+                                                <div className=" text-center">
+                                                    <CardTitle className="text-md font-bold">{barangay.barangay_name}</CardTitle>
                                                     <p className="text-sm text-muted-foreground">Barangay</p>
                                                     <div className="pt-2 text-center text-sm font-medium">
                                                         <Link href={registrationRoutes.brgyDetails.url({ query: { bhc_id: barangay.id } })}>
                                                             <Button
                                                                 variant="ghost"
-                                                                className="absolute right-2 flex cursor-pointer items-center text-sm text-muted-foreground"
+                                                                className="absolute right-2 flex cursor-pointer text-xs text-muted-foreground"
                                                             >
                                                                 View details
                                                                 <ChevronRight />
@@ -159,12 +159,12 @@ export default function Registration({ barangays = [] }: { barangays?: Barangay[
                                                 </div>
                                             </CardHeader>
 
-                                            <div className="px-6">
+                                            <div className="px-4">
                                                 <Separator />
                                             </div>
 
-                                            <CardContent className="space-y-2">
-                                                <Label className="-top-3 text-sm font-semibold text-muted-foreground">Details</Label>
+                                            <CardContent>
+                                                <Label className="text-sm font-semibold text-muted-foreground">Details</Label>
 
                                                 <div className="flex items-center gap-2 text-sm">
                                                     <User className="h-4 w-4 text-gray-600" />

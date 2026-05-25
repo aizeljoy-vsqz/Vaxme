@@ -5,6 +5,7 @@ import VaccineRequestCard from '@/components/vaccine_components/vaccine-request-
 import { vaccineRequest } from '@/routes';
 import type { VaccineBatch } from '../inventory/inventory-vaccine-batches/columns';
 import EmptyPage from '@/components/vaccine_components/empty-page';
+import { usePoll } from '@inertiajs/react'
 
 export default function VaccineRequest() {
 
@@ -47,6 +48,9 @@ export default function VaccineRequest() {
 
     console.log(requests);
     console.log(batches);
+
+    usePoll(2000)
+
 
     return (
         <>

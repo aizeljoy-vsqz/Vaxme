@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Label } from '@/components/ui/label';
 import { dashboard } from '@/routes';
 import EmptyPage from '@/components/vaccine_components/empty-page';
+import { usePoll } from '@inertiajs/react'
 
 export default function BhuDashboard() {
 
@@ -76,6 +77,9 @@ export default function BhuDashboard() {
     const [open, setOpen] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState<VaccineRequest | null>(null);
     const { requests } = usePage<PageProps>().props;
+
+    usePoll(2000)
+
 
     return (
         <>

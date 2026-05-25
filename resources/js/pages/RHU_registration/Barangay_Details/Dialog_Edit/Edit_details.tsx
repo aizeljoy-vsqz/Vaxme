@@ -1,18 +1,18 @@
 "use client";
 
-  import { router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { CircleCheckBig } from 'lucide-react';
 import { useState } from "react";
 import { toast } from 'sonner';
 import ConfirmDialog from '@/components/feedback/ConfirmDialog';
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogDescription,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogDescription,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { FieldGroup, Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -33,25 +33,23 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
   const [female, setFemale] = useState<number | "">(data.female ?? "");
   const [processing, setProcessing] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  
+
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-        <form>
-      <DialogContent 
-        className="sm:max-w-xl"
-        onInteractOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
+      <form>
+        <DialogContent
+          className="w-md"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
         >
-        <DialogHeader>
-          <DialogTitle className="text pb-2">Barangay Details</DialogTitle>
-          <Separator />
-          <DialogDescription>Edit Barangay Populations</DialogDescription>
-        </DialogHeader>
-
-        <FieldGroup>
+          <DialogHeader>
+            <DialogTitle className="text-md">Barangay Details</DialogTitle>
+            <Separator />
+            <DialogDescription>Edit Barangay Populations</DialogDescription>
+          </DialogHeader>
 
           <Label className='font-semibold'>All Ages</Label>
-          <Field className="grid grid-cols-2 gap-4">
+          <Field className="grid grid-cols-2">
             <div className="flex flex-col gap-2">
               <Label>Total of Male:</Label>
               <Input
@@ -73,7 +71,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
 
 
           <Label className="font-semibold">Under 1 (0-11 months)</Label>
-          <Field className="grid grid-cols-2 gap-4">
+          <Field className="grid grid-cols-2">
             <div className="flex flex-col gap-2">
               <Label>Total of Male:</Label>
               <Input
@@ -95,7 +93,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
 
 
           <Label className="font-semibold">Under 0-12 months</Label>
-          <Field className="grid grid-cols-2 gap-4">
+          <Field className="grid grid-cols-2">
             <div className="flex flex-col gap-2">
               <Label>Total of Male:</Label>
               <Input
@@ -117,7 +115,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
 
 
           <Label className="font-semibold">Under 0-53 months</Label>
-          <Field className="grid grid-cols-2 gap-4">
+          <Field className="grid grid-cols-2">
             <div className="flex flex-col gap-2">
               <Label>Total of Male:</Label>
               <Input
@@ -139,7 +137,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
 
 
           <Label className="font-semibold">10 years and above</Label>
-          <Field className="grid grid-cols-2 gap-4">
+          <Field className="grid grid-cols-2">
             <div className="flex flex-col gap-2">
               <Label>Total of Male:</Label>
               <Input
@@ -149,7 +147,7 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
               />
             </div>
 
-            <div className="flex flex-col gap-2 pb-4">
+            <div className="flex flex-col gap-2">
               <Label>Total of Female:</Label>
               <Input
                 placeholder='e.g 100'
@@ -159,52 +157,50 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
             </div>
           </Field>
 
-        </FieldGroup>
-
-        <DialogFooter>
-          <Button
-            type="button"
-            className='bg-blue-500 hover:bg-blue-700'
-            onClick={() => {
+          <DialogFooter>
+            <Button
+              type="button"
+              className='bg-blue-500 hover:bg-blue-700'
+              onClick={() => {
                 if (male === "" || female === "") {
-                    toast.error('Please fill in all required fields.');
+                  toast.error('Please fill in all required fields.');
 
-                    return;
+                  return;
                 }
 
                 // open confirmation dialog
                 setConfirmOpen(true);
-            }}
-            disabled={processing}
+              }}
+              disabled={processing}
             >
-            Save
+              Save
             </Button>
-        </DialogFooter>
-        <ConfirmDialog
+          </DialogFooter>
+          <ConfirmDialog
             open={confirmOpen}
             onOpenChange={setConfirmOpen}
             title="Save changes?"
             description="This will save the updated population numbers."
             onConfirm={() => {
-                const nextMale = Number(male) || 0;
-                const nextFemale = Number(female) || 0;
-                setProcessing(true);
+              const nextMale = Number(male) || 0;
+              const nextFemale = Number(female) || 0;
+              setProcessing(true);
 
-                router.put(`/registration/population/${data.id}`,
-                  {
-                    male: nextMale,
-                    female: nextFemale,
-                  },
-                  {
+              router.put(`/registration/population/${data.id}`,
+                {
+                  male: nextMale,
+                  female: nextFemale,
+                },
+                {
                   preserveScroll: true,
                   onSuccess: () => {
                     toast(
-                    <div className="flex items-center gap-2">
-                      <CircleCheckBig className="h-4 w-4 text-emerald-600" />
-                      Successfully saved.
-                    </div>,
-                    { position: 'top-right' }
-                  );
+                      <div className="flex items-center gap-2">
+                        <CircleCheckBig className="h-4 w-4 text-emerald-600" />
+                        Successfully saved.
+                      </div>,
+                      { position: 'top-right' }
+                    );
                     onSave({
                       ...data,
                       male: nextMale,
@@ -223,9 +219,9 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
             confirmLabel="Save"
             isProcessing={processing}
             intent="primary"
-        />
+          />
 
-      </DialogContent>
+        </DialogContent>
       </form>
     </Dialog>
   );

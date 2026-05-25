@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import track from '@/routes/track';
 import EmptyPage from '@/components/vaccine_components/empty-page';
-
+import { usePoll } from '@inertiajs/react'
 
 export default function TrackVaccination() {
 
@@ -44,6 +44,8 @@ export default function TrackVaccination() {
     }, [requests, typeFilter]);
 
     console.log(requests);
+
+    usePoll(2000)
 
     return (
         <>

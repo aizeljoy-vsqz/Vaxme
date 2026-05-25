@@ -1,9 +1,10 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage, router } from '@inertiajs/react';
 import { Label } from '@/components/ui/label';
 import { ChartAreaDefault } from '@/components/vaccine_components/dashboard-chart-area';
 import { SectionCards } from '@/components/vaccine_components/dashboard-top-card';
 import { dashboard } from '@/routes';
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { usePoll } from '@inertiajs/react'
 
 export default function Dashboard() {
 
@@ -19,7 +20,7 @@ export default function Dashboard() {
         }[]>
     }
 
-    const { vaccines_total, request_total, barangay_total, low_stocks_total, vaccineMonthlyUsage, vaccines } = usePage<PageProps>().props
+    const { vaccines_total, request_total, barangay_total, low_stocks_total, vaccineMonthlyUsage } = usePage<PageProps>().props
 
     const totalVaccine = vaccines_total;
     const totalBarangay = barangay_total;
@@ -29,8 +30,9 @@ export default function Dashboard() {
     const [selectedVaccine, setSelectedVaccine] = useState(Object.keys(vaccineMonthlyUsage)[0])
     console.log(vaccineMonthlyUsage);
 
-    const chartData =
-        vaccineMonthlyUsage?.[selectedVaccine] ?? []
+    const chartData = vaccineMonthlyUsage?.[selectedVaccine] ?? [];
+
+    usePoll(3000)
 
 
     return (
