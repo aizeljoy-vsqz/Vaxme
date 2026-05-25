@@ -1,5 +1,5 @@
 import { router } from "@inertiajs/react";
-import { Check, LucideThumbsUp } from "lucide-react";
+import { BookCheck, Check, CheckCheck, CheckCircle, CheckCircle2, CheckIcon, CheckSquare, LucideCircleCheck, LucideThumbsUp, RefreshCcw, RefreshCcwDotIcon } from "lucide-react";
 import { useState } from "react";
 
 import { toast } from "sonner";
@@ -24,12 +24,13 @@ import {
     TableHeader,
     TableRow,
 } from "../ui/table";
+import { VaccineType } from "@/pages/vaccine-management/column";
 
 
 type RequestItem = {
     id: number;
     name: string;
-    vaccine: string;
+    vaccine: VaccineType;
     is_vaccinated: boolean;
 };
 
@@ -38,8 +39,7 @@ type VaccineRequest = {
     type: "request" | "return";
     status: "submitted" | "reviewed" | "approved";
     created_at: string;
-
-    items: RequestItem[];
+    items: RequestItem[],
 };
 
 type Props = {
@@ -49,6 +49,7 @@ type Props = {
 export default function TrackVaccine({ request }: Props) {
 
     const [open, setOpen] = useState(false);
+    const [processing, setProcessing] = useState(false);
     const [items, setItems] = useState(request.items);
     const isReturnRequest = request.type === "return";
     const canEdit = request.type === "request" && request.status === "approved";
@@ -57,7 +58,27 @@ export default function TrackVaccine({ request }: Props) {
         item => item.is_vaccinated
     ).length;
 
+    const vaccinateAll = () => {
+        setItems(prev =>
+            prev.map(item => ({
+                ...item,
+                is_vaccinated: true,
+            }))
+        );
+    };
+
+    const unvaccinateAll = () => {
+        setItems(prev =>
+            prev.map(item => ({
+                ...item,
+                is_vaccinated: false,
+            }))
+        );
+    };
+
     const saveChanges = () => {
+
+        setProcessing(true);
 
         router.put(
             `/request/${request.id}/vaccination-status`,
@@ -66,6 +87,7 @@ export default function TrackVaccine({ request }: Props) {
             },
             {
                 onSuccess: () => {
+                    setProcessing(false);
                     setOpen(false);
                     toast("Success", {
                         description:
@@ -319,93 +341,116 @@ export default function TrackVaccine({ request }: Props) {
 
                     </div>
 
+                    {canEdit && (
+                        <div className="flex items-center justify-end gap-2">
 
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                onClick={unvaccinateAll}
+                            >
+                                <RefreshCcw />
+                            </Button>
 
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                onClick={vaccinateAll}
+                            >
+                                <CheckIcon />
+                                {/* Vaccinate All */}
+                            </Button>
 
-                    <Table>
+                        </div>
+                    )}
+                    <div className="min-h-48 max-h-48 overflow-y-auto">
+                        <Table>
 
-                        <TableHeader>
+                            <TableHeader>
 
-                            <TableRow>
+                                <TableRow>
 
-                                <TableHead>Name</TableHead>
+                                    <TableHead>Name</TableHead>
 
-                                <TableHead>Vaccine</TableHead>
+                                    <TableHead>Vaccine</TableHead>
 
-                                <TableHead>Status</TableHead>
-
-                            </TableRow>
-
-                        </TableHeader>
-
-                        <TableBody>
-
-                            {items.map((item) => (
-
-                                <TableRow
-                                    key={item.id}
-                                    className={
-                                        item.is_vaccinated
-                                            ? "dark:bg-green-950/10"
-                                            : ""
-                                    }
-                                >
-
-                                    <TableCell>
-                                        {item.name}
-                                    </TableCell>
-
-                                    <TableCell>
-                                        {item.vaccine}
-                                    </TableCell>
-
-                                    <TableCell>
-
-                                        <div className="flex items-center space-x-2">
-
-                                            <Switch
-                                                id={`vaccinated-${item.id}`}
-                                                checked={item.is_vaccinated}
-                                                disabled={!canEdit}
-                                                onCheckedChange={(checked) => {
-                                                    if (!canEdit) {
-return;
-}
-
-                                                    setItems(prev =>
-                                                        prev.map(i =>
-                                                            i.id === item.id
-                                                                ? {
-                                                                    ...i,
-                                                                    is_vaccinated: checked
-                                                                }
-                                                                : i
-                                                        )
-                                                    );
-
-                                                }}
-                                            />
-
-                                            <Label htmlFor={`vaccinated-${item.id}`}>
-
-                                                {item.is_vaccinated
-                                                    ? "Vaccinated"
-                                                    : "Not Vaccinated"}
-
-                                            </Label>
-
-                                        </div>
-
-                                    </TableCell>
+                                    <TableHead>Status</TableHead>
 
                                 </TableRow>
 
+                            </TableHeader>
 
-                            ))}
+                            <TableBody>
 
-                        </TableBody>
+                                {items.map((item) => (
 
-                    </Table>
+                                    <TableRow
+                                        key={item.id}
+                                        className={
+                                            item.is_vaccinated
+                                                ? "dark:bg-green-950/10"
+                                                : ""
+                                        }
+                                    >
+
+                                        <TableCell>
+                                            {item.name}
+                                        </TableCell>
+
+                                        <TableCell>
+                                            {item.vaccine?.name}
+                                        </TableCell>
+
+                                        <TableCell>
+
+                                            <div className="flex items-center space-x-2">
+
+                                                <Switch
+                                                    id={`vaccinated-${item.id}`}
+                                                    checked={item.is_vaccinated}
+                                                    disabled={!canEdit}
+                                                    onCheckedChange={(checked) => {
+                                                        if (!canEdit) {
+                                                            return;
+                                                        }
+
+                                                        setItems(prev =>
+                                                            prev.map(i =>
+                                                                i.id === item.id
+                                                                    ? {
+                                                                        ...i,
+                                                                        is_vaccinated: checked
+                                                                    }
+                                                                    : i
+                                                            )
+                                                        );
+
+                                                    }}
+                                                />
+
+                                                <Label htmlFor={`vaccinated-${item.id}`}>
+
+                                                    {item.is_vaccinated
+                                                        ? "Vaccinated"
+                                                        : "Not Vaccinated"}
+
+                                                </Label>
+
+                                            </div>
+
+                                        </TableCell>
+
+                                    </TableRow>
+
+
+                                ))}
+
+                            </TableBody>
+
+                        </Table>
+                    </div>
 
                     {request.type === "request" && (
 
@@ -424,7 +469,7 @@ return;
                                         This request is ready for vaccination updates.
                                     </p>
 
-                                    <Button onClick={saveChanges}>
+                                    <Button onClick={saveChanges} disabled={processing}>
                                         Save Changes
                                     </Button>
                                 </>

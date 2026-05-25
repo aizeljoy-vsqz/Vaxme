@@ -67,11 +67,6 @@ const BHCNavItems: NavItem[] = [
         href: returnMethod.vaccine(),
         icon: ArrowBigLeftDashIcon,
     },
-    {
-        title: 'Vaccination History',
-        href: history.vaccination(),
-        icon: Clock,
-    },
 ];
 
 export function AppSidebar() {

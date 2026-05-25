@@ -22,6 +22,7 @@ class VaccineBatchesController extends Controller
 
         $rhu_vaccines_batches = $rhu->vaccineBatches()
             ->with(['vaccine', 'dailyVaccine'])
+            ->latest()
             ->get();
 
         $vaccines_data = $rhu->vaccines;

@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import { Label } from '../ui/label';
 
 type SuccessDetail = {
   label: string;
@@ -75,33 +76,33 @@ export default function SuccessDialog({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
-        className="sm:max-w-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95"
+        className="w-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100">
-            <CircleCheckBig className="h-7 w-7" aria-hidden="true" />
+          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-green-50 text-green-600 ring-1 ring-green-100">
+            <CircleCheckBig className="h-6 w-6" />
           </div>
-          <DialogTitle className="text-center text-xl font-semibold text-slate-900">
+          <DialogTitle className="text-center text-md font-semibold">
             {title}
           </DialogTitle>
-          <DialogDescription className="text-center text-sm leading-relaxed text-slate-600">
+          <DialogDescription className="text-center text-sm leading-relaxed text-muted-foreground">
             {description}
           </DialogDescription>
         </DialogHeader>
 
         {details.length > 0 && (
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <div className="rounded-lg border border-slate-200 p-4">
+            <Label className="mb-2">
               Account Details
-            </p>
+            </Label>
             <Separator className="mb-3" />
             <div className="space-y-2">
               {details.map((item) => (
                 <div key={item.label} className="flex items-center justify-between gap-3 text-sm">
-                  <span className="text-slate-600">{item.label}</span>
-                  <span className="font-medium text-slate-900">{item.value}</span>
+                  <span className="text-muted-foreground">{item.label}</span>
+                  <span className="font-medium">{item.value}</span>
                 </div>
               ))}
             </div>

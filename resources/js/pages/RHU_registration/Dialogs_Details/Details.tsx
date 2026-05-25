@@ -1,19 +1,19 @@
 import { useForm } from '@inertiajs/react';
-import {Plus} from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import {Button} from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
-    Dialog, 
-    DialogContent, 
-    DialogFooter, 
-    DialogHeader, 
-    DialogTitle, 
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
     DialogTrigger
 } from '@/components/ui/dialog';
-import {FieldGroup, Field} from '@/components/ui/field';
-import {Input} from '@/components/ui/input';
-import {Label} from '@/components/ui/label';
-import {Separator} from '@/components/ui/separator';
+import { FieldGroup, Field } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import InputPopulationPage from '@/pages/RHU_registration/Dialogs_Details/Population';
 
 type DetailsFormData = {
@@ -82,8 +82,8 @@ export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: Ba
     const [populationDialogOpen, setPopulationDialogOpen] = useState(false);
     const [detailsFormData, setDetailsFormData] = useState<DetailsFormData | null>(null);
     const [serverErrors, setServerErrors] = useState<Record<string, string[]> | null>(null);
-    
-    const {data, setData, errors, reset} = useForm({
+
+    const { data, setData, errors, reset } = useForm({
         ...createBlankDetails(),
     });
 
@@ -149,103 +149,103 @@ export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: Ba
     };
 
     return (
-            <>
+        <>
             <Dialog
                 open={detailsDialogOpen}
                 onOpenChange={handleDetailsDialogChange}
             >
                 <DialogTrigger asChild>
-                   <Button className="bg-blue-600  hover:bg-blue-700 cursor-pointer">
-                        <Plus/>
+                    <Button className="bg-blue-600  hover:bg-blue-700 cursor-pointer">
+                        <Plus />
                         Register New Barangay
-                   </Button> 
-                </DialogTrigger>
-            <DialogContent 
-                className="sm:max-w-xl cursor-pointer"
-                onInteractOutside={(e) => e.preventDefault()}
-                onEscapeKeyDown={(e) => e.preventDefault()}
-            >
-             <div>
-                <DialogHeader>
-                    <DialogTitle className="text pb-2">Barangay Details</DialogTitle>
-                    <Separator/>
-                </DialogHeader>
-                <FieldGroup>
-                <Field className='gap-4 pt-4'>
-                    <div className="flex flex-col gap-2">
-                    <Label>Name of Barangay:</Label>
-                    <Input 
-                        placeholder="e.g Alawihao" 
-                        value={data.barangay_name}
-                        onChange={(e) => handleBarangayChange(e.target.value)}
-                    />
-                    {serverErrors?.barangay_name ? (
-                        <span className="text-red-500 text-sm">{serverErrors.barangay_name[0]}</span>
-                    ) : isBarangayNameDuplicate ? (
-                        <span className="text-red-500 text-sm">
-                            Barangay name already exists. Please use a different name.
-                        </span>
-                    ) : errors.barangay_name && (
-                        <span className="text-red-500 text-sm">
-                            {errors.barangay_name}
-                        </span>
-                    )}
-                    </div>
-                </Field>
-                <Field className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-2">
-                    <Label>Nurse Assign:</Label>
-                    <Input 
-                        placeholder="e.g Aizel Joy Vasquez" 
-                        autoCapitalize="words"
-                        value={data.nurse_assigned}
-                        onChange={(e) => handleNurseChange(e.target.value)}
-                    />
-                    {serverErrors?.nurse_assigned ? (
-                        <span className="text-red-500 text-sm">{serverErrors.nurse_assigned[0]}</span>
-                    ) : errors.nurse_assigned && (
-                        <span className="text-red-500 text-sm">
-                            {errors.nurse_assigned}
-                        </span>
-                    )}
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                    <Label>Contact:</Label>
-                    <Input
-                        placeholder="e.g 9123456789"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        maxLength={13}
-                        value={normalizeContactDisplay(data.contact_number)}
-                        onChange={(e) => handleContactChange(e.target.value)}
-                    />
-                    {!isContactNumberValid && data.contact_number.length > 0 && (
-                        <span className="text-red-500 text-sm">
-                            Contact must be exactly 10 digits
-                        </span>
-                    )}
-                    {serverErrors?.contact_number ? (
-                        <span className="text-red-500 text-sm">{serverErrors.contact_number[0]}</span>
-                    ) : errors.contact_number && (
-                        <span className="text-red-500 text-sm">
-                            {errors.contact_number}
-                        </span>
-                    )}
-                    </div>
-                </Field>
-                </FieldGroup>
-            </div>
-            <DialogFooter>
-                    <Button
-                        type="button"
-                        disabled={!isFormValid}
-                        onClick={handleNext}
-                        className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
-                    >
-                        Next
                     </Button>
-            </DialogFooter>
+                </DialogTrigger>
+                <DialogContent
+                    className="w-md"
+                    onInteractOutside={(e) => e.preventDefault()}
+                    onEscapeKeyDown={(e) => e.preventDefault()}
+                >
+                    <div>
+                        <DialogHeader>
+                            <DialogTitle className="text-md font-semibold">Barangay Details</DialogTitle>
+                            <Separator />
+                        </DialogHeader>
+                        <div className="flex flex-col gap-4">
+                            <Field className='gap-4 pt-4'>
+                                <div className="flex flex-col gap-2">
+                                    <Label>Name of Barangay:</Label>
+                                    <Input
+                                        placeholder="e.g Alawihao"
+                                        value={data.barangay_name}
+                                        onChange={(e) => handleBarangayChange(e.target.value)}
+                                    />
+                                    {serverErrors?.barangay_name ? (
+                                        <span className="text-red-500 text-sm">{serverErrors.barangay_name[0]}</span>
+                                    ) : isBarangayNameDuplicate ? (
+                                        <span className="text-red-500 text-sm">
+                                            Barangay name already exists. Please use a different name.
+                                        </span>
+                                    ) : errors.barangay_name && (
+                                        <span className="text-red-500 text-sm">
+                                            {errors.barangay_name}
+                                        </span>
+                                    )}
+                                </div>
+                            </Field>
+                            <Field className="grid grid-cols-2">
+                                <div className="flex flex-col gap-2">
+                                    <Label>Nurse Assign:</Label>
+                                    <Input
+                                        placeholder="e.g Aizel Joy Vasquez"
+                                        autoCapitalize="words"
+                                        value={data.nurse_assigned}
+                                        onChange={(e) => handleNurseChange(e.target.value)}
+                                    />
+                                    {serverErrors?.nurse_assigned ? (
+                                        <span className="text-red-500 text-sm">{serverErrors.nurse_assigned[0]}</span>
+                                    ) : errors.nurse_assigned && (
+                                        <span className="text-red-500 text-sm">
+                                            {errors.nurse_assigned}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <Label>Contact:</Label>
+                                    <Input
+                                        placeholder="e.g 9123456789"
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
+                                        maxLength={13}
+                                        value={normalizeContactDisplay(data.contact_number)}
+                                        onChange={(e) => handleContactChange(e.target.value)}
+                                    />
+                                    {!isContactNumberValid && data.contact_number.length > 0 && (
+                                        <span className="text-red-500 text-sm">
+                                            Contact must be exactly 10 digits
+                                        </span>
+                                    )}
+                                    {serverErrors?.contact_number ? (
+                                        <span className="text-red-500 text-sm">{serverErrors.contact_number[0]}</span>
+                                    ) : errors.contact_number && (
+                                        <span className="text-red-500 text-sm">
+                                            {errors.contact_number}
+                                        </span>
+                                    )}
+                                </div>
+                            </Field>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            type="button"
+                            disabled={!isFormValid}
+                            onClick={handleNext}
+                            className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                        >
+                            Next
+                        </Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
             <InputPopulationPage
@@ -259,7 +259,7 @@ export function DetailsPage({ existingBarangays = [] }: { existingBarangays?: Ba
                 }}
                 onServerErrors={(errs: Record<string, string[]>) => setServerErrors(errs)}
             />
-            </>
+        </>
     );
 }
 export default DetailsPage;

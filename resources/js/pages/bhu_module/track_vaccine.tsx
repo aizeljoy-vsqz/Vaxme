@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import track from '@/routes/track';
+import EmptyPage from '@/components/vaccine_components/empty-page';
 
 
 export default function TrackVaccination() {
@@ -106,15 +107,19 @@ export default function TrackVaccination() {
                             </Button>
 
                         </div>
-
                     </div>
 
                 </div>
                 <div className='flex flex-col gap-4 p-4'>
-                    {/* <TrackVaccine /> */}
-                    {filteredRequests.map((request) => (
-                        <TrackVaccine key={request.id} request={request} />
-                    ))}
+                    {/* Empty State */}
+                    {filteredRequests.length === 0 ? (
+                        <EmptyPage title="No Vaccine Requests Found" description="You have no vaccine requests to display." />
+                    ) : (
+                        /* <TrackVaccine /> */
+                        filteredRequests.map((request) => (
+                            <TrackVaccine key={request.id} request={request} />
+                        ))
+                    )}
                 </div>
             </div>
         </>

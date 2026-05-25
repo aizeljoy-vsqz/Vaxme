@@ -8,6 +8,7 @@ use App\Models\VaccineBatch;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class VaccineRequestController extends Controller
 {
@@ -42,7 +43,11 @@ class VaccineRequestController extends Controller
     public function approve(Request $request, ModelsRequest $requestId)
     {
         $validated = $request->validate([
-            'batch_id' => ['nullable', 'exists:vaccine_batches,id'],
+            'batch_id' => [
+                Rule::requiredIf($requestId->type === 'request'),
+                'nullable',
+                'exists:vaccine_batches,id',
+            ],
         ]);
 
         if ($requestId->status === 'approved') {

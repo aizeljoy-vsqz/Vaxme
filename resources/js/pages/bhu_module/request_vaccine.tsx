@@ -14,11 +14,11 @@ interface BhuDashboardProps {
     vaccines: VaccineType[]
 }
 
-export default function BhuDashboard({vaccines}: BhuDashboardProps) {
-    
+export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
+
     console.log(vaccines);
     const [name, setName] = useState("");
-    const { data, setData, post } = useForm({
+    const { data, setData, post, processing } = useForm({
         type: "request",
         status: "submitted",
         vaccine: "",
@@ -33,7 +33,7 @@ export default function BhuDashboard({vaccines}: BhuDashboardProps) {
                     <div className="whitespace-pre-line text-sm">
                         Please enter a name
                     </div>
-                ),
+                ), position: "top-right",
             });
 
             return;
@@ -45,7 +45,7 @@ export default function BhuDashboard({vaccines}: BhuDashboardProps) {
                     <div className="whitespace-pre-line text-sm">
                         Please select a vaccine first
                     </div>
-                ),
+                ), position: "top-right",
             });
 
             return;
@@ -64,6 +64,7 @@ export default function BhuDashboard({vaccines}: BhuDashboardProps) {
                         This name is already in the list
                     </div>
                 ),
+                position: "top-right"
             });
 
             return;
@@ -79,7 +80,7 @@ export default function BhuDashboard({vaccines}: BhuDashboardProps) {
                         Name added to request list
                     </pre>
                 </div>
-                ),
+                ), position: "top-right",
         })
     };
 
@@ -89,9 +90,8 @@ export default function BhuDashboard({vaccines}: BhuDashboardProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
         if (data.items.length === 0) {
-            toast.error("Add at least one entry before submitting");
+            toast.error("Add at least one entry before submitting", { position: "top-right" });
 
             return;
         }
@@ -99,6 +99,7 @@ export default function BhuDashboard({vaccines}: BhuDashboardProps) {
         post("/request/vaccine",
             {
                 onSuccess: () => {
+                    setData("items", []);
                     toast.success("Success", {
                         description:
                             (<div className='flex items-end justify-center gap-2'>
@@ -107,6 +108,7 @@ export default function BhuDashboard({vaccines}: BhuDashboardProps) {
                                 </pre>
                             </div>
                             ),
+                        position: "top-right",
                         action: {
                             label: "x",
                             onClick: () => console.log("Closed"),
@@ -120,12 +122,12 @@ export default function BhuDashboard({vaccines}: BhuDashboardProps) {
                                 {errors.items}
                             </div>
                         ),
+                        position: "top-right"
                     });
                 }
             });
     };
 
-    const canSubmit = data.items.length > 0 && data.vaccine;
 
     return (
         <>
@@ -143,7 +145,7 @@ export default function BhuDashboard({vaccines}: BhuDashboardProps) {
                         </p>
                     </div>
 
-                    <Button disabled={!canSubmit}>
+                    <Button disabled={processing} >
                         Submit <ArrowBigRightDashIcon />
                     </Button>
                 </div>

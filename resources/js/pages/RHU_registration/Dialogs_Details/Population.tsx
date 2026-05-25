@@ -248,7 +248,7 @@ export function InputPopulationPage({
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      {/* <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
           className="sm:max-w-xl"
           onInteractOutside={(e) => e.preventDefault()}
@@ -292,6 +292,61 @@ export function InputPopulationPage({
             </FieldGroup>
 
             <DialogFooter className="pt-6">
+              <Button
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                disabled={isSaving || processing}
+              >
+                {isSaving ? 'Saving...' : 'Save'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog> */}
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent
+          className="w-md"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <form onSubmit={handleSaveUnified}>
+            <DialogHeader>
+              <Label className="text-md font-semibold">Barangay Details</Label>
+              <Separator />
+              <DialogDescription className="mb-2">Barangay Populations</DialogDescription>
+            </DialogHeader>
+
+            <div>
+              {data.populations.map((pop, index) => (
+                <div key={index}>
+                  <Label className=" font-semibold mb-2">{pop.age_range}</Label>
+
+                  <Field className="grid grid-cols-2">
+                    <div className="flex flex-col gap-2 mb-4">
+                      <Label>Total of Male:</Label>
+                      <Input
+                        min="0"
+                        placeholder="e.g 100"
+                        value={pop.male}
+                        onChange={(e) => handleChange(index, 'male', e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <Label>Total of Female:</Label>
+                      <Input
+                        min="0"
+                        placeholder="e.g 100"
+                        value={pop.female}
+                        onChange={(e) => handleChange(index, 'female', e.target.value)}
+                      />
+                    </div>
+                  </Field>
+                </div>
+              ))}
+            </div>
+
+            <DialogFooter className="">
               <Button
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 cursor-pointer"

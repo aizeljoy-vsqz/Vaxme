@@ -36,10 +36,10 @@ export default function DailyBatchesForm({ update_daily_inventory, onOpenDropdow
             onSuccess: () => {
                 toast(
                     <div className="flex gap-1 justify-center">
-                        <CircleCheckBigIcon className="p-1 text-green-500"/>
+                        <CircleCheckBigIcon className="p-1 text-green-500" />
                         <Label>Daily batch updated successfully!</Label>
-                    </div>,{ position: 'top-right' })
-                onOpenDropdown()  
+                    </div>, { position: 'top-right' })
+                onOpenDropdown()
             }
         });
     }
@@ -83,8 +83,8 @@ export default function DailyBatchesForm({ update_daily_inventory, onOpenDropdow
                         <DialogFooter>
                             <DialogClose asChild>
                                 <Button type="button" variant="outline" onClick={() => {
- clearErrors(); onOpenDropdown() 
-}}>
+                                    clearErrors(); onOpenDropdown()
+                                }}>
                                     Cancel
                                 </Button>
                             </DialogClose>

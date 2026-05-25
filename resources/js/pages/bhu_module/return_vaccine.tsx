@@ -7,11 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { dashboard } from '@/routes';
+import EmptyPage from '@/components/vaccine_components/empty-page';
 
 export default function BhuDashboard() {
 
-
-
+    const [processing, setProcessing] = useState(false);
     type RequestItem = {
         id: number;
         name: string;
@@ -35,6 +35,7 @@ export default function BhuDashboard() {
     };
 
     const handleReturn = () => {
+        setProcessing(true);
         if (!selectedRequest) {
             return;
         }
@@ -52,6 +53,7 @@ export default function BhuDashboard() {
             })),
         }, {
             onSuccess: () => {
+                setProcessing(false);
                 setOpen(false);
                 setSelectedRequest(null);
 
@@ -59,11 +61,13 @@ export default function BhuDashboard() {
                     only: ['requests'],
                 });
 
-                toast.success("Return submitted successfully");
+                toast.success("Return submitted successfully", { position: "top-right" });
             },
             onError: (errors) => {
+                setOpen(false);
+                setProcessing(false);
                 if (errors.request_id) {
-                    toast.error(errors.request_id);
+                    toast.error(errors.request_id, { position: "top-right" });
                 }
             }
         });
@@ -91,9 +95,10 @@ export default function BhuDashboard() {
                     </p>
 
                 </div>
-
-                {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto">
+                {/* Empty State */}
+                {requests.length === 0 ? (
+                    <EmptyPage title="No Vaccine To Return Found" description="You have no vaccine to return." />
+                ) : (<div className="flex-1 overflow-y-auto">
 
                     <div className="flex flex-col gap-4 pr-1">
 
@@ -186,7 +191,9 @@ export default function BhuDashboard() {
 
                     </div>
 
-                </div>
+                </div>)}
+                {/* Scrollable Content */}
+
 
             </div>
             <Dialog open={open} onOpenChange={setOpen}>
@@ -197,8 +204,7 @@ export default function BhuDashboard() {
                             Request Items #{selectedRequest?.id}
                         </DialogTitle>
                     </DialogHeader>
-
-                    <div className="space-y-2">
+                    <div className="space-y-2 min-h-48 max-h-48 overflow-y-auto">
                         {selectedRequest?.items
                             ?.filter(item => !item.is_vaccinated)
                             .map((item) => (
@@ -220,7 +226,7 @@ export default function BhuDashboard() {
                             ))}
                     </div>
                     <div className="flex justify-end pt-4 border-t">
-                        <Button onClick={handleReturn}>
+                        <Button onClick={handleReturn} disabled={processing}>
                             Return
                         </Button>
                     </div>

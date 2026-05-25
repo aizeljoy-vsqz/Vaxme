@@ -53,7 +53,7 @@ export default function InventoryByBatch() {
     const { vaccines_data, rhu_id, rhu_vaccines_batches } = usePage<PageProps>().props
     console.log('dss', rhu_vaccines_batches);
 
-    const { data, setData, post, delete: destroy, errors, clearErrors, reset } = useForm({
+    const { data, setData, post, delete: destroy, errors, clearErrors, reset, processing } = useForm({
         rhu_id: rhu_id,
         batch_number: '',
         vaccine_id: '',
@@ -139,7 +139,9 @@ export default function InventoryByBatch() {
 
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button className='bg-blue-600 hover:bg-blue-700' onClick={() => clearErrors()}> <Plus /> Add Inventory</Button>
+                                <Button className='bg-blue-600 hover:bg-blue-700' onClick={() => clearErrors()} disabled={processing}>
+                                    <Plus /> Add Inventory
+                                </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <form onSubmit={handleSubmit}>
@@ -191,7 +193,7 @@ export default function InventoryByBatch() {
                                                         <Button
                                                             variant="outline"
                                                             data-empty={!date}
-                                                            className="w-[212px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+                                                            className="w-[212px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground w-full"
                                                         >
                                                             {date ? format(date, "PPP") : <span>Pick a date</span>}
                                                             <ChevronDownIcon />
@@ -209,6 +211,9 @@ export default function InventoryByBatch() {
                                                                 setDate(date)
                                                                 setData('expiration_date', date.toLocaleDateString())
                                                             }}
+                                                            captionLayout="dropdown"
+                                                            fromYear={2026}
+                                                            toYear={2040}
                                                         />
                                                     </PopoverContent>
                                                 </Popover>
@@ -218,7 +223,9 @@ export default function InventoryByBatch() {
                                     </div>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <Button type={'submit'} className='!bg-blue-600 hover:!bg-blue-700'>Save</Button>
+                                        <Button type={'submit'} className='!bg-blue-600 hover:!bg-blue-700' disabled={processing}>
+                                            Save
+                                        </Button>
                                     </AlertDialogFooter>
                                 </form>
                             </AlertDialogContent>

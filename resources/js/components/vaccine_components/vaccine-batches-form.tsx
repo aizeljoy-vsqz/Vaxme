@@ -40,7 +40,7 @@ interface batchFormType {
 }
 export function VaccineBatchesForm({ update_batch_id, open, onOpenChange }: batchFormType) {
     console.log('check', update_batch_id);
-    const { data, setData, put, errors } = useForm({
+    const { data, setData, put, errors, processing } = useForm({
         batch_number: update_batch_id.batch_number,
         vaccine_id: update_batch_id.vaccine.id,
         expiration_date: update_batch_id.expiration_date.toString(),
@@ -133,7 +133,7 @@ export function VaccineBatchesForm({ update_batch_id, open, onOpenChange }: batc
                                     <Button
                                         variant="outline"
                                         data-empty={!date}
-                                        className="w-[212px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+                                        className="w-[212px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground w-full"
                                     >
                                         {data.expiration_date ? format(data.expiration_date, "PPP") : <span>Pick a date</span>}
                                         <ChevronDownIcon />
@@ -151,6 +151,9 @@ export function VaccineBatchesForm({ update_batch_id, open, onOpenChange }: batc
                                             setDate(date)
                                             setData('expiration_date', format(date, "yyyy-MM-dd"))
                                         }}
+                                        captionLayout="dropdown"
+                                        fromYear={2026}
+                                        toYear={2040}
                                     />
                                 </PopoverContent>
                             </Popover>
@@ -161,7 +164,9 @@ export function VaccineBatchesForm({ update_batch_id, open, onOpenChange }: batc
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>
-                        <Button type="submit">Save changes</Button>
+                        <Button type="submit" disabled={processing}>
+                            Save changes
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

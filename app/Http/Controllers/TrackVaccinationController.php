@@ -14,7 +14,7 @@ class TrackVaccinationController extends Controller
     {
         $user = Auth::user();
         $bhcId = $user->bhc->id;
-        $requests = ModelsRequest::with('items')->where('bhc_id', $bhcId)->lazyByIdDesc();
+        $requests = ModelsRequest::with('items.vaccine')->where('bhc_id', $bhcId)->lazyByIdDesc();
         return Inertia::render('bhu_module/track_vaccine', compact(['requests']));
     }
 

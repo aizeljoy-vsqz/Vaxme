@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import VaccineRequestCard from '@/components/vaccine_components/vaccine-request-card';
 import { vaccineRequest } from '@/routes';
 import type { VaccineBatch } from '../inventory/inventory-vaccine-batches/columns';
+import EmptyPage from '@/components/vaccine_components/empty-page';
 
 export default function VaccineRequest() {
 
@@ -32,6 +33,18 @@ export default function VaccineRequest() {
 
     const { requests, batches } = usePage<PageProps>().props;
 
+    const submittedRequests = requests.filter(
+        (request) => request.status === "submitted"
+    );
+
+    const reviewedRequests = requests.filter(
+        (request) => request.status === "reviewed"
+    );
+
+    const approvedRequests = requests.filter(
+        (request) => request.status === "approved"
+    );
+
     console.log(requests);
     console.log(batches);
 
@@ -46,22 +59,61 @@ export default function VaccineRequest() {
                 <Tabs defaultValue="all" className="w-full">
                     <TabsList className='mb-2'>
                         <TabsTrigger value="all">All</TabsTrigger>
-                        <TabsTrigger value="pending">Pending</TabsTrigger>
+                        <TabsTrigger value="submitted">Submitted</TabsTrigger>
+                        <TabsTrigger value="reviewed">Reviewed</TabsTrigger>
                         <TabsTrigger value="approved">Approved</TabsTrigger>
-                        <TabsTrigger value="rejected">Rejected</TabsTrigger>
                     </TabsList>
-
-                    <TabsContent value='all'>
-                        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-center'>
-                            {requests.map((request) => (
-                                <VaccineRequestCard
-                                    key={request.id}
-                                    request={request}
-                                    batches={batches}
-                                />
-                            ))}
+                    {/* Empty State */}
+                    {requests.length === 0 ? (
+                        <EmptyPage title="No Vaccine Requests Found" description="You have no vaccine requests to display." />
+                    ) : (
+                        <div>
+                            <TabsContent value='all'>
+                                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-center'>
+                                    {requests.map((request) => (
+                                        <VaccineRequestCard
+                                            key={request.id}
+                                            request={request}
+                                            batches={batches}
+                                        />
+                                    ))}
+                                </div>
+                            </TabsContent>
+                            <TabsContent value='submitted'>
+                                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-center'>
+                                    {submittedRequests.map((request) => (
+                                        <VaccineRequestCard
+                                            key={request.id}
+                                            request={request}
+                                            batches={batches}
+                                        />
+                                    ))}
+                                </div>
+                            </TabsContent>
+                            <TabsContent value='reviewed'>
+                                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-center'>
+                                    {reviewedRequests.map((request) => (
+                                        <VaccineRequestCard
+                                            key={request.id}
+                                            request={request}
+                                            batches={batches}
+                                        />
+                                    ))}
+                                </div>
+                            </TabsContent>
+                            <TabsContent value='approved'>
+                                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-center'>
+                                    {approvedRequests.map((request) => (
+                                        <VaccineRequestCard
+                                            key={request.id}
+                                            request={request}
+                                            batches={batches}
+                                        />
+                                    ))}
+                                </div>
+                            </TabsContent>
                         </div>
-                    </TabsContent>
+                    )}
                 </Tabs>
             </div>
         </>

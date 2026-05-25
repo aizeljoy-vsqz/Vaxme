@@ -62,8 +62,11 @@ export default function VaccineRequestCard({ request, batches }: VaccineRequestC
 
     console.log("request batch id:", request.batch_id);
     const [selectedBatch, setSelectedBatch] = useState("");
+    const [openApprove, setOpenApprove] = useState(false);
     const isReturn = request.type === "return";
     const isRequest = request.type === "request";
+    const [processing, setProcessing] = useState(false);
+
     const filteredBatches = batches.filter(
         (batch) =>
             (batch.vaccine.name).toLowerCase() === request.items[0]?.vaccine.name.toLowerCase() &&
@@ -72,23 +75,29 @@ export default function VaccineRequestCard({ request, batches }: VaccineRequestC
     )
 
     const handleApprove = () => {
-            router.put(`/vaccine-request/${request.id}/approve`,
-                {
-                    batch_id: selectedBatch,
-                },
-                {
-                    onSuccess: () => {
-                        toast.success("Approved successfully");
-                    },
-                    onError: (errors) => {
-                        toast.error(errors.request || "Failed to approve request");
-                        console.error(errors);
-                    },
-                }
-            )
+        router.put(`/vaccine-request/${request.id}/approve`,
+            {
+                batch_id: selectedBatch,
+            },
+            {
+                onSuccess: () => {
+                    setOpenApprove(false);
 
-            return;
-        
+                    toast.success("Approved successfully", { position: "top-right" });
+                },
+                onError: (errors) => {
+                    toast.error(errors.request || "Failed to approve request", { position: "top-right" });
+                    console.error(errors);
+                    request.type === "return" && setOpenApprove(false);
+                },
+                onFinish: () => {
+                    setProcessing(false);
+                },
+            }
+        )
+
+        return;
+
     }
 
     return (
@@ -113,19 +122,21 @@ export default function VaccineRequestCard({ request, batches }: VaccineRequestC
 
             <CardContent className="py-2">
 
-                <div>
+                <div className="space-y-4 mb-4">
                     <div>
                         <h4 className="text-xs font-medium text-muted-foreground">
                             Requested Details
                         </h4>
                     </div>
 
-                    <div className="space-y-2 rounded-xl p-4">
-                        {request.items.map((item) => (
-                            <p key={item.id} className="text-xs">
-                                {item.name}
-                            </p>
-                        ))}
+                    <div className="px-2 min-h-32 max-h-32 overflow-y-auto">
+                        <ol className="list-decimal list-inside space-y-2 text-sm">
+                            {request.items.map((item) => (
+                                <li key={item.id} className="text-xs">
+                                    {item.name}
+                                </li>
+                            ))}
+                        </ol>
                     </div>
                 </div>
 
@@ -144,12 +155,15 @@ export default function VaccineRequestCard({ request, batches }: VaccineRequestC
 
             <CardFooter className="flex justify-end gap-3">
                 <Button variant={"outline"} className="border border-red-400 hover:text-red-500 hover:bg-red-50 text-red-500">Reject</Button>
-                {/* <Button variant={"ghost"} className="bg-blue-500 hover:bg-blue-600 hover:text-white text-white">Approve</Button> */}
-                <Dialog>
+                <Dialog open={openApprove} onOpenChange={setOpenApprove}>
                     <DialogTrigger className="py-2 px-4 text-sm rounded-md bg-blue-500 hover:bg-blue-600 hover:text-white text-white">Approve</DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Return to Batch Inventory</DialogTitle>
+                            <DialogTitle>
+                                {isReturn
+                                    ? "Return to Batch Inventory"
+                                    : "Approve Vaccine Request"}
+                            </DialogTitle>
                             <DialogDescription>
                                 {isReturn
                                     ? "Vaccine batch inventory is already linked from its original request."
@@ -197,7 +211,7 @@ export default function VaccineRequestCard({ request, batches }: VaccineRequestC
                             <DialogClose className="w-auto py-1 px-4 border border-red-400 rounded-md hover:text-red-500 hover:bg-red-50 text-red-500">
                                 Cancel
                             </DialogClose>
-                            <Button onClick={handleApprove} variant={"ghost"} className="bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Confirm</Button>
+                            <Button onClick={handleApprove} variant={"ghost"} disabled={processing} className="bg-blue-600 hover:bg-blue-700 hover:text-white text-white">Confirm</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
