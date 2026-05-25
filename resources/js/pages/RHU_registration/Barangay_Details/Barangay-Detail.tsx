@@ -3,7 +3,7 @@
 import { Head } from '@inertiajs/react';
 import { Label } from '@/components/ui/label';
 import { PopulationTable } from './Details/details';
-import ExportDialog from './Dialog_Edit/ExportDetails';
+// import ExportDialog from './Dialog_Edit/ExportDetails';
 
 type PopulationRow = {
     id: string;
@@ -25,7 +25,7 @@ export function BarangayDetails({ populations = [], selectedBarangayId }: { popu
                 <div className="flex flex-col px-2">
                     <div className="flex items-center justify-between">
                         <Label className="text-md">{`Barangay ${barangayName} Registration (${year})`}</Label>
-                        <ExportDialog bhcId={selectedBarangayId} barangayName={barangayName} />
+                        {/* <ExportDialog bhcId={selectedBarangayId} barangayName={barangayName} /> */}
                     </div >
                     <div className=''>
                         <PopulationTable populations={populations} />

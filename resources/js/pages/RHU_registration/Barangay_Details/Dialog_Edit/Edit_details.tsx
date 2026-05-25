@@ -48,114 +48,126 @@ export function EditPopulationDialog({ data, onSave, onClose }: Props) {
             <DialogDescription>Edit Barangay Populations</DialogDescription>
           </DialogHeader>
 
-          <Label className='font-semibold'>All Ages</Label>
-          <Field className="grid grid-cols-2">
-            <div className="flex flex-col gap-2">
-              <Label>Total of Male:</Label>
-              <Input
-                placeholder='e.g 100'
-                value={data.ageRange === "All Ages" ? male : ""}
-                onChange={(e) => setMale(Number(e.target.value))}
-              />
-            </div>
+          <div className="flex flex-col gap-2">
+            <Label className='font-semibold'>All Ages</Label>
+            <Field className="grid grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <Label>Total of Male:</Label>
+                <Input
+                  placeholder='e.g 100'
+                  value={data.ageRange === "All Ages" ? male : ""}
+                  onChange={(e) => setMale(Number(e.target.value))}
+                />
+              </div>
 
-            <div className="flex flex-col gap-2">
-              <Label>Total of Female:</Label>
-              <Input
-                placeholder='e.g 100'
-                value={data.ageRange === "All Ages" ? female : ""}
-                onChange={(e) => setFemale(Number(e.target.value))}
-              />
-            </div>
-          </Field>
-
-
-          <Label className="font-semibold">Under 1 (0-11 months)</Label>
-          <Field className="grid grid-cols-2">
-            <div className="flex flex-col gap-2">
-              <Label>Total of Male:</Label>
-              <Input
-                placeholder='e.g 100'
-                value={data.ageRange === "Under 1 (0-11 months)" ? male : ""}
-                onChange={(e) => setMale(Number(e.target.value))}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label>Total of Female:</Label>
-              <Input
-                placeholder='e.g 100'
-                value={data.ageRange === "Under 1 (0-11 months)" ? female : ""}
-                onChange={(e) => setFemale(Number(e.target.value))}
-              />
-            </div>
-          </Field>
+              <div className="flex flex-col gap-2">
+                <Label>Total of Female:</Label>
+                <Input
+                  placeholder='e.g 100'
+                  value={data.ageRange === "All Ages" ? female : ""}
+                  onChange={(e) => setFemale(Number(e.target.value))}
+                />
+              </div>
+            </Field>
+          </div>
 
 
-          <Label className="font-semibold">Under 0-12 months</Label>
-          <Field className="grid grid-cols-2">
-            <div className="flex flex-col gap-2">
-              <Label>Total of Male:</Label>
-              <Input
-                placeholder='e.g 100'
-                value={data.ageRange === "Under 0-12 months" ? male : ""}
-                onChange={(e) => setMale(Number(e.target.value))}
-              />
-            </div>
+          <div className="flex flex-col gap-2">
+            <Label className="font-semibold">Under 1 (0-11 months)</Label>
+            <Field className="grid grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <Label>Total of Male:</Label>
+                <Input
+                  placeholder='e.g 100'
+                  value={data.ageRange === "Under 1 (0-11 months)" ? male : ""}
+                  onChange={(e) => setMale(Number(e.target.value))}
+                />
+              </div>
 
-            <div className="flex flex-col gap-2">
-              <Label>Total of Female:</Label>
-              <Input
-                placeholder='e.g 100'
-                value={data.ageRange === "Under 0-12 months" ? female : ""}
-                onChange={(e) => setFemale(Number(e.target.value))}
-              />
-            </div>
-          </Field>
+              <div className="flex flex-col gap-2">
+                <Label>Total of Female:</Label>
+                <Input
+                  placeholder='e.g 100'
+                  value={data.ageRange === "Under 1 (0-11 months)" ? female : ""}
+                  onChange={(e) => setFemale(Number(e.target.value))}
+                />
+              </div>
+            </Field>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label className="font-semibold">Under 0-12 months</Label>
+            <Field className="grid grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <Label>Total of Male:</Label>
+                <Input
+                  placeholder='e.g 100'
+                  value={data.ageRange === "Under 0-12 months" ? male : ""}
+                  onChange={(e) => setMale(Number(e.target.value))}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label>Total of Female:</Label>
+                <Input
+                  placeholder='e.g 100'
+                  value={data.ageRange === "Under 0-12 months" ? female : ""}
+                  onChange={(e) => setFemale(Number(e.target.value))}
+                />
+              </div>
+            </Field>
+          </div>
 
 
-          <Label className="font-semibold">Under 0-53 months</Label>
-          <Field className="grid grid-cols-2">
-            <div className="flex flex-col gap-2">
-              <Label>Total of Male:</Label>
-              <Input
-                placeholder='e.g 100'
-                value={data.ageRange === "Under 0-53 months" ? male : ""}
-                onChange={(e) => setMale(Number(e.target.value))}
-              />
-            </div>
+          <div className="flex flex-col gap-2">
+            <Label className="font-semibold">Under 0-53 months</Label>
+            <Field className="grid grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <Label>Total of Male:</Label>
+                <Input
+                  placeholder='e.g 100'
+                  value={data.ageRange === "Under 0-53 months" ? male : ""}
+                  onChange={(e) => setMale(Number(e.target.value))}
+                />
+              </div>
 
-            <div className="flex flex-col gap-2">
-              <Label>Total of Female:</Label>
-              <Input
-                placeholder='e.g 100'
-                value={data.ageRange === "Under 0-53 months" ? female : ""}
-                onChange={(e) => setFemale(Number(e.target.value))}
-              />
-            </div>
-          </Field>
+              <div className="flex flex-col gap-2">
+                <Label>Total of Female:</Label>
+                <Input
+                  placeholder='e.g 100'
+                  value={data.ageRange === "Under 0-53 months" ? female : ""}
+                  onChange={(e) => setFemale(Number(e.target.value))}
+                />
+              </div>
+            </Field>
+          </div>
 
 
-          <Label className="font-semibold">10 years and above</Label>
-          <Field className="grid grid-cols-2">
-            <div className="flex flex-col gap-2">
-              <Label>Total of Male:</Label>
-              <Input
-                placeholder='e.g 100'
-                value={data.ageRange === "10 years and above" ? male : ""}
-                onChange={(e) => setMale(Number(e.target.value))}
-              />
-            </div>
+          <div className="flex flex-col gap-2">
 
-            <div className="flex flex-col gap-2">
-              <Label>Total of Female:</Label>
-              <Input
-                placeholder='e.g 100'
-                value={data.ageRange === "10 years and above" ? female : ""}
-                onChange={(e) => setFemale(Number(e.target.value))}
-              />
-            </div>
-          </Field>
+            <Label className="font-semibold">10 years and above</Label>
+            <Field className="grid grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <Label>Total of Male:</Label>
+                <Input
+                  placeholder='e.g 100'
+                  value={data.ageRange === "10 years and above" ? male : ""}
+                  onChange={(e) => setMale(Number(e.target.value))}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label>Total of Female:</Label>
+                <Input
+                  placeholder='e.g 100'
+                  value={data.ageRange === "10 years and above" ? female : ""}
+                  onChange={(e) => setFemale(Number(e.target.value))}
+                />
+              </div>
+            </Field>
+          </div>
+
+
 
           <DialogFooter>
             <Button
