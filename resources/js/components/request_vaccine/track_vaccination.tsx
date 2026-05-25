@@ -1,9 +1,10 @@
 import { router } from "@inertiajs/react";
-import { BookCheck, Check, CheckCheck, CheckCircle, CheckCircle2, CheckIcon, CheckSquare, LucideCircleCheck, LucideThumbsUp, RefreshCcw, RefreshCcwDotIcon } from "lucide-react";
+import { Check, CheckIcon, LucideThumbsUp, RefreshCcw } from "lucide-react";
 import { useState } from "react";
 
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch"
+import type { VaccineType } from "@/pages/vaccine-management/column";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
@@ -24,7 +25,6 @@ import {
     TableHeader,
     TableRow,
 } from "../ui/table";
-import { VaccineType } from "@/pages/vaccine-management/column";
 
 
 type RequestItem = {

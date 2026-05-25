@@ -33,8 +33,8 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-import type { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns"
 import { Textarea } from "@/components/ui/textarea"
+import type { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns"
 
 interface VaccineRequestCardProps {
     request: {
@@ -95,17 +95,21 @@ export default function VaccineRequestCard({ request, batches }: VaccineRequestC
                     toast.success("Approved successfully", { position: "top-right" });
                 },
                 onError: (errors) => {
-                    toast.error(errors.request || "Failed to approve request", { position: "top-right" });
+                    toast.error(errors.request || "Failed to approve request", {
+                        position: "top-right",
+                    });
+
                     console.error(errors);
-                    request.type === "return" && setOpenApprove(false);
+
+                    if (request.type === "return") {
+                        setOpenApprove(false);
+                    }
                 },
                 onFinish: () => {
                     setProcessing(false);
                 },
             }
         )
-
-        return;
 
     }
 

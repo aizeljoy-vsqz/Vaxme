@@ -1,5 +1,7 @@
 import { usePage } from "@inertiajs/react"
+import { format } from "date-fns";
 import { Bell, AlertTriangle } from 'lucide-react';
+import { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,8 +9,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { VaccineBatch } from '@/pages/inventory/inventory-vaccine-batches/columns';
-import { useEffect, useState } from "react";
-import { format } from "date-fns";
 
 interface PageProps {
   [key: string]: unknown;
@@ -46,7 +46,7 @@ export function NotificationDropdown() {
     if (notificationCount > seenCount) {
       // new notifications arrived
     }
-  }, [notificationCount]);
+  }, [notificationCount, seenCount]);
 
   return (
     <DropdownMenu

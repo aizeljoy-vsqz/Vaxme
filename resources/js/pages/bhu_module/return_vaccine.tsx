@@ -1,14 +1,14 @@
 import { Head, usePage } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
+import { usePoll } from '@inertiajs/react'
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { dashboard } from '@/routes';
 import EmptyPage from '@/components/vaccine_components/empty-page';
-import { usePoll } from '@inertiajs/react'
+import { dashboard } from '@/routes';
 
 export default function BhuDashboard() {
 
@@ -37,6 +37,7 @@ export default function BhuDashboard() {
 
     const handleReturn = () => {
         setProcessing(true);
+
         if (!selectedRequest) {
             return;
         }
@@ -67,6 +68,7 @@ export default function BhuDashboard() {
             onError: (errors) => {
                 setOpen(false);
                 setProcessing(false);
+
                 if (errors.request_id) {
                     toast.error(errors.request_id, { position: "top-right" });
                 }

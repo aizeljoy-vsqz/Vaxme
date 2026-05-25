@@ -1,10 +1,9 @@
-import { Head, usePage, router } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
+import { usePoll } from '@inertiajs/react'
 import { Label } from '@/components/ui/label';
 import { ChartAreaDefault } from '@/components/vaccine_components/dashboard-chart-area';
 import { SectionCards } from '@/components/vaccine_components/dashboard-top-card';
 import { dashboard } from '@/routes';
-import { useEffect, useState } from "react"
-import { usePoll } from '@inertiajs/react'
 
 export default function Dashboard() {
 

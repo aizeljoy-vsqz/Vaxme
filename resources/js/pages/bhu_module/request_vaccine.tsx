@@ -90,6 +90,7 @@ export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
         if (data.items.length === 0) {
             toast.error("Add at least one entry before submitting", { position: "top-right" });
 

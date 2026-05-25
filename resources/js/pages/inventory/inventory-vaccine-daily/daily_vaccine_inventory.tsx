@@ -1,4 +1,5 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
+import { usePoll } from '@inertiajs/react'
 import { CircleAlert, CircleCheckBig, Plus } from 'lucide-react';
 import type { SyntheticEvent } from 'react';
 import { toast } from 'sonner';
@@ -19,7 +20,6 @@ import { DataTable } from '../data-table';
 import type { VaccineBatch } from '../inventory-vaccine-batches/columns';
 import { columns } from './columns';
 import type { DailyVaccine } from './columns';
-import { usePoll } from '@inertiajs/react'
 
 export default function DailyInventory() {
 

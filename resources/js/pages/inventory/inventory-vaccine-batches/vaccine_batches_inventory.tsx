@@ -4,7 +4,6 @@ import { format } from "date-fns"
 import { CircleAlert, CircleCheckBig, Plus } from 'lucide-react';
 import { ChevronDownIcon } from "lucide-react"
 import * as React from "react"
-import { usePoll } from '@inertiajs/react'
 
 import { toast } from 'sonner';
 import {
@@ -125,8 +124,6 @@ export default function InventoryByBatch() {
 
         return true;
     });
-
-    usePoll(2000)
 
     return (
         <>

@@ -15,10 +15,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import EmptyPage from '@/components/vaccine_components/empty-page';
 import registrationRoutes from '@/routes/registration';
 import { DetailsPage } from './Dialogs_Details/Details';
 import { EditBarangayDialog } from './Dialogs_Edit/Edit_barangay';
-import EmptyPage from '@/components/vaccine_components/empty-page';
 
 type Barangay = {
     id: number;

@@ -1,4 +1,3 @@
-import { Syringe } from 'lucide-react';
 
 export default function AppLogo() {
     return (

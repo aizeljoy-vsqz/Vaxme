@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ArrowBigLeftDashIcon, ArrowBigRightDashIcon, Clock, Layers, LayoutGrid, PackageCheck, StickyNote, UsersRound, SquareChartGantt } from 'lucide-react';
+import { ArrowBigLeftDashIcon, ArrowBigRightDashIcon, Layers, LayoutGrid, PackageCheck, StickyNote, UsersRound, SquareChartGantt } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard, batchesVaccineInventory, vaccineManagement, vaccineRequest } from '@/routes';
 import bhc from '@/routes/bhc';
-import history from '@/routes/history';
 import returnMethod from '@/routes/return';
 import track from '@/routes/track';
 import type { NavItem } from '@/types';

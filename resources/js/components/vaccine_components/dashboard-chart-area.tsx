@@ -28,21 +28,6 @@ import {
 
 export const description = "A simple area chart"
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-  { month: "July", desktop: 278 },
-  { month: "August", desktop: 214 },
-  { month: "September", desktop: 300 },
-  { month: "October", desktop: 194 },
-  { month: "November", desktop: 199 },
-  { month: "December", desktop: 259 },
-]
-
 const chartConfig = {
   desktop: {
     label: "Desktop",

@@ -1,4 +1,5 @@
 import { useForm, usePage } from "@inertiajs/react"
+import { usePoll } from '@inertiajs/react'
 import { CircleAlert, CircleCheckBig, Plus, } from "lucide-react"
 import { toast } from "sonner"
 import {
@@ -18,7 +19,6 @@ import EmptyPage from "@/components/vaccine_components/empty-page"
 import type { VaccineType } from "./column";
 import { columns } from "./column"
 import { DataTable } from "./data-table"
-import { usePoll } from '@inertiajs/react'
 
 export default function VaccineManagement() {
     interface PageProps {

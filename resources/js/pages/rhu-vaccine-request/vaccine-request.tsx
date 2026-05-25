@@ -1,11 +1,11 @@
 import { Head, usePage } from '@inertiajs/react';
+import { usePoll } from '@inertiajs/react'
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import EmptyPage from '@/components/vaccine_components/empty-page';
 import VaccineRequestCard from '@/components/vaccine_components/vaccine-request-card';
 import { vaccineRequest } from '@/routes';
 import type { VaccineBatch } from '../inventory/inventory-vaccine-batches/columns';
-import EmptyPage from '@/components/vaccine_components/empty-page';
-import { usePoll } from '@inertiajs/react'
 
 export default function VaccineRequest() {
 
