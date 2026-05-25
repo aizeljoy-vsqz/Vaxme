@@ -1,6 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import { usePoll } from '@inertiajs/react'
+import { CircleAlert, CircleCheckBig } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +10,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Label } from '@/components/ui/label';
 import EmptyPage from '@/components/vaccine_components/empty-page';
 import { dashboard } from '@/routes';
-import { CircleAlert, CircleCheckBig } from 'lucide-react';
 
 export default function BhuDashboard() {
 

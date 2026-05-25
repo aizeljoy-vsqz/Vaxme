@@ -8,8 +8,8 @@ import RequestTable from "@/components/request_vaccine/request_table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { VaccineType } from "../vaccine-management/column";
 import { Label } from "@/components/ui/label";
+import type { VaccineType } from "../vaccine-management/column";
 
 interface BhuDashboardProps {
     vaccines: VaccineType[]
@@ -36,12 +36,13 @@ export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
             //         </div>
             //     ), position: "top-right",
             // });
-                toast(
-                    <div className="flex gap-1 justify-center">
-                        <CircleAlert className="p-1 text-red-500" />
-                        <Label>Name empty.</Label>
-                    </div>, { position: 'top-right' }
-                );
+            toast(
+                <div className="flex gap-1 justify-center">
+                    <CircleAlert className="p-1 text-red-500" />
+                    <Label>Name empty.</Label>
+                </div>, { position: 'top-right' }
+            );
+
             return;
         }
 
@@ -59,7 +60,7 @@ export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
                     <CircleAlert className="p-1 text-red-500" />
                     <Label>No vaccine selected.</Label>
                 </div>, { position: 'top-right' }
-            );  
+            );
 
             return;
         }
@@ -125,6 +126,7 @@ export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
                     <Label>Add at least one entry before submitting.</Label>
                 </div>, { position: 'top-right' }
             );
+
             return;
         }
 
@@ -155,17 +157,24 @@ export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
                 },
                 onError: (errors) => {
                     // toast.error("Duplicate entries found", {
-                    //     description: (
-                    //         <div className="whitespace-pre-line text-sm">
-                    //             {errors.items}
-                    //         </div>
-                    //     ),
+                    // description: (
+                    //     <div className="whitespace-pre-line text-sm">
+                    //         {errors.items}
+                    //     </div>
+                    // ),
                     //     position: "top-right"
                     // });
                     toast(
-                        <div className="flex gap-1 justify-center">
-                            <CircleAlert className="p-1 text-red-500" />
-                            <Label>Duplicate entries found.</Label>
+                        <div className="flex flex-col gap-1 justify-center">
+                            <div className="flex gap-2">
+                                <CircleAlert className="p-1 text-red-500" />
+                                <Label>Duplicate entries found.</Label>
+                            </div>
+
+                            <div className="whitespace-pre-line text-sm pl-8 font-normal">
+                                {errors.items}
+                            </div>
+
                         </div>, { position: 'top-right' }
                     );
                 }

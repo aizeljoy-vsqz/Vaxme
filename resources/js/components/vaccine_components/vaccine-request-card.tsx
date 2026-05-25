@@ -1,5 +1,6 @@
 
 import { router } from "@inertiajs/react"
+import { CircleAlert, CircleCheckBig } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
@@ -35,7 +36,6 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import type { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns"
-import { CircleAlert, CircleCheckBig } from "lucide-react"
 import { Label } from "../ui/label"
 
 interface VaccineRequestCardProps {

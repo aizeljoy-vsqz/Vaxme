@@ -1,5 +1,5 @@
 import { router } from "@inertiajs/react";
-import { Check, CheckIcon, CircleCheckBig, LucideThumbsUp, RefreshCcw } from "lucide-react";
+import { Check, CheckIcon, CircleCheckBig, RefreshCcw } from "lucide-react";
 import { useState } from "react";
 
 import { toast } from "sonner";
