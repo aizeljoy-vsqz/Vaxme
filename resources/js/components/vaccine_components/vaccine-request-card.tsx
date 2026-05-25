@@ -35,6 +35,8 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import type { VaccineBatch } from "@/pages/inventory/inventory-vaccine-batches/columns"
+import { CircleAlert, CircleCheckBig } from "lucide-react"
+import { Label } from "../ui/label"
 
 interface VaccineRequestCardProps {
     request: {
@@ -92,12 +94,24 @@ export default function VaccineRequestCard({ request, batches }: VaccineRequestC
                 onSuccess: () => {
                     setOpenApprove(false);
 
-                    toast.success("Approved successfully", { position: "top-right" });
+                    // toast.success("Approved successfully", { position: "top-right" });
+                    toast(
+                        <div className="flex gap-1 justify-center">
+                            <CircleCheckBig className="p-1 text-green-500" />
+                            <Label>Request approved successfully.</Label>
+                        </div>, { position: 'top-right' }
+                    );
                 },
                 onError: (errors) => {
-                    toast.error(errors.request || "Failed to approve request", {
-                        position: "top-right",
-                    });
+                    // toast.error(errors.request || "Failed to approve request", {
+                    //     position: "top-right",
+                    // });
+                    toast(
+                        <div className="flex gap-1 justify-center">
+                            <CircleAlert className="p-1 text-red-500" />
+                            <Label>{errors.request || "Failed to approve request"}</Label>
+                        </div>, { position: 'top-right' }
+                    );
 
                     console.error(errors);
 
@@ -125,10 +139,15 @@ export default function VaccineRequestCard({ request, batches }: VaccineRequestC
             {
                 onSuccess: () => {
 
-                    toast.success("Request rejected", {
-                        position: "top-right",
-                    });
-
+                    // toast.success("Request rejected", {
+                    //     position: "top-right",
+                    // });
+                    toast(
+                        <div className="flex gap-1 justify-center">
+                            <CircleCheckBig className="p-1 text-green-500" />
+                            <Label>Request rejected.</Label>
+                        </div>, { position: 'top-right' }
+                    );
                     setOpenReject(false);
                     setRejectionReason("");
                 },

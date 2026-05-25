@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Label } from '@/components/ui/label';
 import EmptyPage from '@/components/vaccine_components/empty-page';
 import { dashboard } from '@/routes';
+import { CircleAlert, CircleCheckBig } from 'lucide-react';
 
 export default function BhuDashboard() {
 
@@ -63,14 +64,26 @@ export default function BhuDashboard() {
                     only: ['requests'],
                 });
 
-                toast.success("Return submitted successfully", { position: "top-right" });
+                // toast.success("Return submitted successfully", { position: "top-right" });
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleCheckBig className="p-1 text-green-500" />
+                        <Label>Return submitted successfully.</Label>
+                    </div>, { position: 'top-right' }
+                );
             },
             onError: (errors) => {
                 setOpen(false);
                 setProcessing(false);
 
                 if (errors.request_id) {
-                    toast.error(errors.request_id, { position: "top-right" });
+                    // toast.error(errors.request_id, { position: "top-right" });
+                    toast(
+                        <div className="flex gap-1 justify-center">
+                            <CircleAlert className="p-1 text-red-500" />
+                            <Label>{errors.request_id}</Label>
+                        </div>, { position: 'top-right' }
+                    );
                 }
             }
         });

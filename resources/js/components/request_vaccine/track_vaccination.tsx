@@ -1,5 +1,5 @@
 import { router } from "@inertiajs/react";
-import { Check, CheckIcon, LucideThumbsUp, RefreshCcw } from "lucide-react";
+import { Check, CheckIcon, CircleCheckBig, LucideThumbsUp, RefreshCcw } from "lucide-react";
 import { useState } from "react";
 
 import { toast } from "sonner";
@@ -91,20 +91,26 @@ export default function TrackVaccine({ request }: Props) {
                 onSuccess: () => {
                     setProcessing(false);
                     setOpen(false);
-                    toast("Success", {
-                        description:
-                            (<div className='flex items-end justify-center gap-2'>
-                                <pre className="whitespace-pre-line text-sm w-auto">
-                                    Vaccination updated successfully
-                                </pre>
-                                <LucideThumbsUp className='text-blue-500 py-1' />
-                            </div>
-                            ),
-                        action: {
-                            label: "x",
-                            onClick: () => console.log("Closed"),
-                        },
-                    })
+                    // toast("Success", {
+                    //     description:
+                    //         (<div className='flex items-end justify-center gap-2'>
+                    //             <pre className="whitespace-pre-line text-sm w-auto">
+                    //                 Vaccination updated successfully
+                    //             </pre>
+                    //             <LucideThumbsUp className='text-blue-500 py-1' />
+                    //         </div>
+                    //         ),
+                    //     action: {
+                    //         label: "x",
+                    //         onClick: () => console.log("Closed"),
+                    //     },
+                    // })
+                    toast(
+                        <div className="flex gap-1 justify-center">
+                            <CircleCheckBig className='text-green-500 py-1' />
+                            <Label>Vaccination updated successfully.</Label>
+                        </div>, { position: 'top-right' }
+                    );
                 },
             }
         );

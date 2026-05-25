@@ -1,5 +1,5 @@
 import { Head, useForm } from "@inertiajs/react";
-import { Plus, ArrowBigRightDashIcon } from "lucide-react";
+import { Plus, ArrowBigRightDashIcon, CircleAlert, CircleCheckBig } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { VaccineType } from "../vaccine-management/column";
+import { Label } from "@/components/ui/label";
 
 interface BhuDashboardProps {
     vaccines: VaccineType[]
@@ -28,25 +29,37 @@ export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
     // ADD ITEM
     const handleAdd = () => {
         if (!name.trim()) {
-            toast.error("Name empty", {
-                description: (
-                    <div className="whitespace-pre-line text-sm">
-                        Please enter a name
-                    </div>
-                ), position: "top-right",
-            });
-
+            // toast.error("Name empty", {
+            //     description: (
+            //         <div className="whitespace-pre-line text-sm">
+            //             Please enter a name
+            //         </div>
+            //     ), position: "top-right",
+            // });
+                toast(
+                    <div className="flex gap-1 justify-center">
+                        <CircleAlert className="p-1 text-red-500" />
+                        <Label>Name empty.</Label>
+                    </div>, { position: 'top-right' }
+                );
             return;
         }
 
         if (!data.vaccine) {
-            toast.error("No vaccine selected", {
-                description: (
-                    <div className="whitespace-pre-line text-sm">
-                        Please select a vaccine first
-                    </div>
-                ), position: "top-right",
-            });
+            // toast.error("No vaccine selected", {
+            //     description: (
+            //         <div className="whitespace-pre-line text-sm">
+            //             Please select a vaccine first
+            //         </div>
+            //     ), position: "top-right",
+            // });
+
+            toast(
+                <div className="flex gap-1 justify-center">
+                    <CircleAlert className="p-1 text-red-500" />
+                    <Label>No vaccine selected.</Label>
+                </div>, { position: 'top-right' }
+            );  
 
             return;
         }
@@ -58,14 +71,20 @@ export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
         );
 
         if (exists) {
-            toast.error("Duplicate name", {
-                description: (
-                    <div className="whitespace-pre-line text-sm">
-                        This name is already in the list
-                    </div>
-                ),
-                position: "top-right"
-            });
+            // toast.error("Duplicate name", {
+            //     description: (
+            //         <div className="whitespace-pre-line text-sm">
+            //             This name is already in the list
+            //         </div>
+            //     ),
+            //     position: "top-right"
+            // });
+            toast(
+                <div className="flex gap-1 justify-center">
+                    <CircleAlert className="p-1 text-red-500" />
+                    <Label>Duplicate name.</Label>
+                </div>, { position: 'top-right' }
+            );
 
             return;
         }
@@ -73,15 +92,22 @@ export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
         setData("items", [...data.items, { name: name.trim() }]);
         setName("");
 
-        toast.success("Added", {
-            description:
-                (<div className='flex items-end justify-center gap-2'>
-                    <pre className="whitespace-pre-line text-sm w-auto">
-                        Name added to request list
-                    </pre>
-                </div>
-                ), position: "top-right",
-        })
+        // toast.success("Added", {
+        //     description:
+        //         (<div className='flex items-end justify-center gap-2'>
+        //             <pre className="whitespace-pre-line text-sm w-auto">
+        //                 Name added to request list
+        //             </pre>
+        //         </div>
+        //         ), position: "top-right",
+        // })
+
+        toast(
+            <div className="flex gap-1 justify-center">
+                <CircleCheckBig className="p-1 text-green-500" />
+                <Label>Name added to request list.</Label>
+            </div>, { position: 'top-right' }
+        );
     };
 
     const handleRemove = (index: number) => {
@@ -92,8 +118,13 @@ export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
         e.preventDefault();
 
         if (data.items.length === 0) {
-            toast.error("Add at least one entry before submitting", { position: "top-right" });
-
+            // toast.error("Add at least one entry before submitting", { position: "top-right" });
+            toast(
+                <div className="flex gap-1 justify-center">
+                    <CircleAlert className="p-1 text-red-500" />
+                    <Label>Add at least one entry before submitting.</Label>
+                </div>, { position: 'top-right' }
+            );
             return;
         }
 
@@ -101,30 +132,42 @@ export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
             {
                 onSuccess: () => {
                     setData("items", []);
-                    toast.success("Success", {
-                        description:
-                            (<div className='flex items-end justify-center gap-2'>
-                                <pre className="whitespace-pre-line text-sm w-auto">
-                                    Request sent to the RHU successfully
-                                </pre>
-                            </div>
-                            ),
-                        position: "top-right",
-                        action: {
-                            label: "x",
-                            onClick: () => console.log("Closed"),
-                        },
-                    })
+                    // toast.success("Success", {
+                    //     description:
+                    //         (<div className='flex items-end justify-center gap-2'>
+                    //             <pre className="whitespace-pre-line text-sm w-auto">
+                    //                 Request sent to the RHU successfully
+                    //             </pre>
+                    //         </div>
+                    //         ),
+                    //     position: "top-right",
+                    //     action: {
+                    //         label: "x",
+                    //         onClick: () => console.log("Closed"),
+                    //     },
+                    // })
+                    toast(
+                        <div className="flex gap-1 justify-center">
+                            <CircleCheckBig className="p-1 text-green-500" />
+                            <Label>Request sent to the RHU successfully.</Label>
+                        </div>, { position: 'top-right' }
+                    );
                 },
                 onError: (errors) => {
-                    toast.error("Duplicate entries found", {
-                        description: (
-                            <div className="whitespace-pre-line text-sm">
-                                {errors.items}
-                            </div>
-                        ),
-                        position: "top-right"
-                    });
+                    // toast.error("Duplicate entries found", {
+                    //     description: (
+                    //         <div className="whitespace-pre-line text-sm">
+                    //             {errors.items}
+                    //         </div>
+                    //     ),
+                    //     position: "top-right"
+                    // });
+                    toast(
+                        <div className="flex gap-1 justify-center">
+                            <CircleAlert className="p-1 text-red-500" />
+                            <Label>Duplicate entries found.</Label>
+                        </div>, { position: 'top-right' }
+                    );
                 }
             });
     };
