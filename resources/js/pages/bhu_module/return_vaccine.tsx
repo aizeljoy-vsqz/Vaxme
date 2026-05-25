@@ -232,7 +232,7 @@ export default function BhuDashboard() {
                             ))}
                     </div>
                     <div className="flex justify-end pt-4 border-t">
-                        <Button onClick={handleReturn} disabled={processing}>
+                        <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleReturn} disabled={processing}>
                             Return
                         </Button>
                     </div>
