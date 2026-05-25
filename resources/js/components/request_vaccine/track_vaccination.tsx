@@ -172,7 +172,7 @@ export default function TrackVaccine({ request }: Props) {
                         <div
                             className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-medium transition-colors
                 ${["submitted", "reviewed", "approved"].includes(request.status)
-                                    ? "bg-primary text-primary-foreground border-primary"
+                                    ? "bg-blue-600 text-primary-foreground border-blue-700"
                                     : "bg-muted text-muted-foreground"
                                 }`}
                         >
@@ -189,7 +189,7 @@ export default function TrackVaccine({ request }: Props) {
                     <div
                         className={`h-[2px] flex-1 mx-2
             ${["reviewed", "approved"].includes(request.status)
-                                ? "bg-primary"
+                                ? "bg-blue-600"
                                 : "bg-border"
                             }`}
                     />
@@ -200,7 +200,7 @@ export default function TrackVaccine({ request }: Props) {
                         <div
                             className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-medium transition-colors
                 ${["reviewed", "approved"].includes(request.status)
-                                    ? "bg-primary text-primary-foreground border-primary"
+                                    ? "bg-blue-600 text-primary-foreground border-blue-700"
                                     : "bg-muted text-muted-foreground"
                                 }`}
                         >
@@ -222,7 +222,7 @@ export default function TrackVaccine({ request }: Props) {
                     <div
                         className={`h-[2px] flex-1 mx-2
             ${request.status === "approved"
-                                ? "bg-primary"
+                                ? "bg-blue-600"
                                 : "bg-border"
                             }`}
                     />
@@ -231,7 +231,7 @@ export default function TrackVaccine({ request }: Props) {
                     <div className="flex flex-col items-center gap-2">
 
                         <div
-                            className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-medium transition-colors ${request.status === "approved" ? "bg-primary text-primary-foreground border-primary" : "bg-muted text-muted-foreground"}`}>
+                            className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-medium transition-colors ${request.status === "approved" ? "bg-blue-600 text-primary-foreground border-blue-700" : "bg-muted text-muted-foreground"}`}>
                             {request.status === "approved" ? (
                                 <Check className="h-4 w-4" />
                             ) : ("3")}
@@ -343,7 +343,7 @@ export default function TrackVaccine({ request }: Props) {
 
                             </div>
 
-                            <Badge className="rounded-full">
+                            <Badge className="rounded-full" variant="secondary">
 
                                 {isReturnRequest
                                     ? "Read Only"
@@ -485,7 +485,7 @@ export default function TrackVaccine({ request }: Props) {
                                         This request is ready for vaccination updates.
                                     </p>
 
-                                    <Button onClick={saveChanges} disabled={processing}>
+                                    <Button className="bg-blue-600 hover:bg-blue-700" onClick={saveChanges} disabled={processing}>
                                         Save Changes
                                     </Button>
                                 </>

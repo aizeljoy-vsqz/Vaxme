@@ -146,7 +146,7 @@ export default function BhuDashboard({ vaccines }: BhuDashboardProps) {
                         </p>
                     </div>
 
-                    <Button disabled={processing} >
+                    <Button disabled={processing} className="bg-blue-600 hover:bg-blue-700" >
                         Submit <ArrowBigRightDashIcon />
                     </Button>
                 </div>

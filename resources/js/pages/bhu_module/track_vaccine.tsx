@@ -88,6 +88,7 @@ export default function TrackVaccination() {
 
                             <Button
                                 type="button"
+                                className={"type-filter-button" + (typeFilter === 'all' ? ' bg-blue-600 hover:bg-blue-700 text-white' : '')}
                                 variant={typeFilter === 'all' ? 'default' : 'outline'}
                                 onClick={() => setTypeFilter('all')}
                             >
@@ -96,6 +97,7 @@ export default function TrackVaccination() {
 
                             <Button
                                 type="button"
+                                className={"type-filter-button" + (typeFilter === 'request' ? ' bg-blue-600 hover:bg-blue-700 text-white' : '')}
                                 variant={typeFilter === 'request' ? 'default' : 'outline'}
                                 onClick={() => setTypeFilter('request')}
                             >
@@ -104,6 +106,7 @@ export default function TrackVaccination() {
 
                             <Button
                                 type="button"
+                                className={"type-filter-button" + (typeFilter === 'return' ? ' bg-blue-600 hover:bg-blue-700 text-white' : '')}
                                 variant={typeFilter === 'return' ? 'default' : 'outline'}
                                 onClick={() => setTypeFilter('return')}
                             >
