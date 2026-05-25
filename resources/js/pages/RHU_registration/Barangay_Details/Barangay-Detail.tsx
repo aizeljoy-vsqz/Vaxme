@@ -14,7 +14,8 @@ type PopulationRow = {
     total: number;
 };
 
-export function BarangayDetails({ populations = [], selectedBarangayId }: { populations?: PopulationRow[]; selectedBarangayId?: string }) {
+// export function BarangayDetails({ populations = [], selectedBarangayId }: { populations?: PopulationRow[]; selectedBarangayId?: string }) {
+export function BarangayDetails({ populations = [] }: { populations?: PopulationRow[]; selectedBarangayId?: string }) {
     const barangayName = populations?.[0]?.barangayName ?? 'Barangay';
     const year = new Date().getFullYear();
 
