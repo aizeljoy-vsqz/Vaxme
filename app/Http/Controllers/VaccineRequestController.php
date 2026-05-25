@@ -23,6 +23,7 @@ class VaccineRequestController extends Controller
         $requests = ModelsRequest::where('rhu_id', $rhu->id)
             ->with([
                 'bhc',
+                'batch',
                 'items.vaccine',
             ])
             ->latest()
@@ -53,6 +54,13 @@ class VaccineRequestController extends Controller
         if ($requestId->status === 'approved') {
             return back()->withErrors([
                 'request' => 'Request is already approved.',
+            ]);
+        }
+
+        if ($requestId->status === 'rejected') {
+
+            return back()->withErrors([
+                'request' => 'Approved requests cannot be rejected.',
             ]);
         }
 
@@ -118,5 +126,48 @@ class VaccineRequestController extends Controller
 
 
         return back();
+    }
+
+    public function reject(Request $request, ModelsRequest $requestId)
+    {
+
+        $validated = $request->validate([
+            'rejection_reason' => [
+                'required',
+                'string',
+                'max:500',
+            ],
+        ]);
+
+        if ($requestId->status === 'approved') {
+
+            return back()->withErrors([
+                'request' => 'Approved requests cannot be rejected.',
+            ]);
+        }
+
+        if ($requestId->status === 'rejected') {
+
+            return back()->withErrors([
+                'request' => 'Request is already rejected.',
+            ]);
+        }
+
+        $requestId->update([
+            'status' => 'rejected',
+            'rejection_reason' => $validated['rejection_reason'],
+        ]);
+
+        // if ($requestId->status === 'rejected') {
+        //     return back()->withErrors([
+        //         'request' => 'Request is already rejected.',
+        //     ]);
+        // }
+
+        // $requestId->update([
+        //     'status' => 'rejected',
+        // ]);
+
+        // return back();
     }
 }

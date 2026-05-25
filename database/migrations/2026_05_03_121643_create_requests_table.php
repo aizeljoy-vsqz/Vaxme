@@ -18,7 +18,8 @@ return new class extends Migration
             $table->foreignId('batch_id')->nullable()->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('original_request_id')->nullable()->constrained('requests')->nullOnDelete();
             $table->enum('type', ['request', 'return']);
-            $table->enum('status', ['submitted', 'reviewed', 'approved']);
+            $table->enum('status', ['submitted', 'reviewed', 'approved', 'rejected'])->default('submitted');
+            $table->text('rejection_reason')->nullable();
             $table->timestamps();
         });
     }

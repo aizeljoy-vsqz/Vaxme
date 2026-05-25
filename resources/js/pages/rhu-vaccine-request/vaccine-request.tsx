@@ -22,7 +22,7 @@ export default function VaccineRequest() {
     type VaccineRequest = {
         id: number;
         type: 'request' | 'return';
-        status: 'submitted' | 'reviewed' | 'approved';
+        status: 'submitted' | 'reviewed' | 'approved' | 'rejected';
         created_at: string;
         items: RequestItem[];
     };
@@ -38,8 +38,8 @@ export default function VaccineRequest() {
         (request) => request.status === "submitted"
     );
 
-    const reviewedRequests = requests.filter(
-        (request) => request.status === "reviewed"
+    const rejectedRequests = requests.filter(
+        (request) => request.status === "rejected"
     );
 
     const approvedRequests = requests.filter(
@@ -64,7 +64,7 @@ export default function VaccineRequest() {
                     <TabsList className='mb-2'>
                         <TabsTrigger value="all">All</TabsTrigger>
                         <TabsTrigger value="submitted">Submitted</TabsTrigger>
-                        <TabsTrigger value="reviewed">Reviewed</TabsTrigger>
+                        <TabsTrigger value="rejected">Rejected</TabsTrigger>
                         <TabsTrigger value="approved">Approved</TabsTrigger>
                     </TabsList>
                     {/* Empty State */}
@@ -94,9 +94,9 @@ export default function VaccineRequest() {
                                     ))}
                                 </div>
                             </TabsContent>
-                            <TabsContent value='reviewed'>
+                            <TabsContent value='rejected'>
                                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-center'>
-                                    {reviewedRequests.map((request) => (
+                                    {rejectedRequests.map((request) => (
                                         <VaccineRequestCard
                                             key={request.id}
                                             request={request}
