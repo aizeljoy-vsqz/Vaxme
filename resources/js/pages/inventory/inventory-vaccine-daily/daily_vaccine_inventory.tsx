@@ -19,6 +19,8 @@ import { DataTable } from '../data-table';
 import type { VaccineBatch } from '../inventory-vaccine-batches/columns';
 import { columns } from './columns';
 import type { DailyVaccine } from './columns';
+import { usePoll } from '@inertiajs/react'
+
 export default function DailyInventory() {
 
     interface PageProps {
@@ -74,6 +76,8 @@ export default function DailyInventory() {
     }
     console.log(errors);
     console.log(vaccine_name);
+
+    usePoll(2000)
 
     return (
         <>

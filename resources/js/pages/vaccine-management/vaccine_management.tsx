@@ -18,12 +18,13 @@ import EmptyPage from "@/components/vaccine_components/empty-page"
 import type { VaccineType } from "./column";
 import { columns } from "./column"
 import { DataTable } from "./data-table"
+import { usePoll } from '@inertiajs/react'
 
 export default function VaccineManagement() {
     interface PageProps {
         [key: string]: unknown
         rhu_associated_vaccines: VaccineType[]
-        rhu_id:number
+        rhu_id: number
     }
     const { rhu_id, rhu_associated_vaccines } = usePage<PageProps>().props
 
@@ -61,6 +62,9 @@ export default function VaccineManagement() {
             }
         });
     }
+
+    usePoll(2000)
+
 
     return (
         <>
