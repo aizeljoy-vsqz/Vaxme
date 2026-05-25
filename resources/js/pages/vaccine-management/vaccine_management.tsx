@@ -79,7 +79,7 @@ export default function VaccineManagement() {
                                 </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
-                                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                                <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Vaccine Details</AlertDialogTitle>
                                         <AlertDialogDescription>
