@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\VaccineBatch;
+use Carbon\Carbon;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -61,6 +62,40 @@ class HandleInertiaRequests extends Middleware
                     ->with('vaccine')
                     ->where('current_balance', '<=', 100)
                     ->where('status', true)
+                    ->latest()
+                    ->get();
+            },
+            'nearExpiryBatches' => function () use ($request) {
+
+                $user = $request->user();
+
+                if (!$user || !$user->rhu) {
+                    return [];
+                }
+
+                return $user->rhu
+                    ->vaccineBatches()
+                    ->with('vaccine')
+                    ->where('status', true)
+                    ->whereDate('expiration_date', '>=', Carbon::today())
+                    ->whereDate('expiration_date', '<=', Carbon::today()->addDays(30))
+                    ->latest()
+                    ->get();
+            },
+            'expiredBatches' => function () use ($request) {
+
+                $user = $request->user();
+
+                if (!$user || !$user->rhu) {
+                    return [];
+                }
+
+                return $user->rhu
+                    ->vaccineBatches()
+                    ->with('vaccine')
+                    ->where('status', true)
+                    ->whereDate('expiration_date', '<', Carbon::today())
+                    ->latest()
                     ->get();
             },
         ];

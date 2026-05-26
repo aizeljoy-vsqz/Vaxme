@@ -1,4 +1,5 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
+import { usePoll } from '@inertiajs/react'
 import { CircleAlert, CircleCheckBig, Plus } from 'lucide-react';
 import type { SyntheticEvent } from 'react';
 import { toast } from 'sonner';
@@ -19,6 +20,7 @@ import { DataTable } from '../data-table';
 import type { VaccineBatch } from '../inventory-vaccine-batches/columns';
 import { columns } from './columns';
 import type { DailyVaccine } from './columns';
+
 export default function DailyInventory() {
 
     interface PageProps {
@@ -27,16 +29,16 @@ export default function DailyInventory() {
         daily_inventory: DailyVaccine[]
         vaccine_name: string
 
-        selected_vaccine_batch:VaccineBatch
+        selected_vaccine_batch: VaccineBatch
     }
 
     const { batch_id, daily_inventory, vaccine_name, selected_vaccine_batch } = usePage<PageProps>().props
-    
+
     const expired = selected_vaccine_batch.status
-    
+
 
     // For Form Submission
-    const { data, setData, post, errors, reset, clearErrors } = useForm({
+    const { data, setData, post, errors, reset, clearErrors, processing } = useForm({
         vaccine_batch_id: batch_id,
         stock_transferred: '',
         daily_dispense: '',
@@ -75,6 +77,8 @@ export default function DailyInventory() {
     console.log(errors);
     console.log(vaccine_name);
 
+    usePoll(2000)
+
     return (
         <>
             <Head title="Daily Inventory" />
@@ -87,7 +91,9 @@ export default function DailyInventory() {
                             <AlertDialog>
                                 {expired ?
                                     <AlertDialogTrigger asChild>
-                                        <Button onClick={() => clearErrors()} className='bg-blue-600 hover:bg-blue-700'><Plus /> Add Inventory</Button>
+                                        <Button onClick={() => clearErrors()} className='bg-blue-600 hover:bg-blue-700' disabled={processing}>
+                                            <Plus /> Add Inventory
+                                        </Button>
                                     </AlertDialogTrigger>
                                     :
                                     <AlertDialogTrigger asChild>
@@ -131,7 +137,9 @@ export default function DailyInventory() {
                                         </div>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <Button type='submit' className='!bg-blue-600 hover:!bg-blue-700'>Save</Button>
+                                            <Button type='submit' className='!bg-blue-600 hover:!bg-blue-700' disabled={processing}>
+                                                Save
+                                            </Button>
                                         </AlertDialogFooter>
                                     </form>
                                 </AlertDialogContent>

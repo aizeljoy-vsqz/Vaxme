@@ -15,7 +15,7 @@ class VaccineManagementController extends Controller
         $current_user_id = $request->user()->id;
         $rhu_id = User::with('rhu')->findOrFail($current_user_id)->id;
         $rhu_associated_vaccines = User::with('rhu.vaccines')->findOrFail($current_user_id);
-        $rhu_associated_vaccines = $rhu_associated_vaccines->rhu->vaccines;
+        $rhu_associated_vaccines = $rhu_associated_vaccines->rhu->vaccines()->latest()->get();
         return Inertia::render('vaccine-management/vaccine_management', compact(['rhu_associated_vaccines', 'rhu_id']));
     }
 

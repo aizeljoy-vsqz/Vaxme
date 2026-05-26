@@ -21,7 +21,7 @@ export default function Request_Select({ value, vaccines, onChange }: RequestSel
             <SelectTrigger className="flex-1">
                 <SelectValue placeholder="Select Vaccine" />
             </SelectTrigger>
-            <SelectContent position="item-aligned">
+            <SelectContent position="popper" side="bottom">
                 <SelectGroup>
                     {vaccines.map((vaccine) => (
                         <SelectItem

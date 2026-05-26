@@ -1,4 +1,4 @@
-import { TrashIcon } from "lucide-react"
+import { Trash2, TrashIcon } from "lucide-react"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -24,8 +24,8 @@ export default function DeleteConfirmation({handleDelete, delete_vaccine_id}:han
             </AlertDialogTrigger>
             <AlertDialogContent size="sm">
                 <AlertDialogHeader className="flex flex-col gap-3">
-                    <div className="p-2 rounded-md bg-red-100 text-destructive dark:bg-destructive/20 dark:text-destructive">
-                        <TrashIcon/>
+                    <div className="p-2 rounded-3xl bg-red-100 text-destructive dark:bg-destructive/20 dark:text-destructive">
+                        <Trash2 className="p-1"/>
                     </div>
                     <div className="flex flex-col gap-1">
                         <span className="font-medium">Delete vaccine?</span>

@@ -41,10 +41,10 @@ export function DeleteConfirmDialog({
           <div className="rounded-3xl bg-red-50 p-3 text-red-500 shadow-sm ring-1 ring-red-100">
             <Trash2 className="h-4 w-4" />
           </div>
-          <DialogTitle className="text-lg font-medium text-gray-900">
+          <DialogTitle className="text-md font-medium">
             {title}
           </DialogTitle>
-          <DialogDescription className="text-center text-sm leading-6 text-gray-500">
+          <DialogDescription className="text-center text-sm text-muted-foreground">
             {description}
           </DialogDescription>
         </DialogHeader>

@@ -1,11 +1,11 @@
 "use client";
 
-import { useForm } from "@inertiajs/react";
+// import { useForm } from "@inertiajs/react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { CircleCheckBig } from 'lucide-react';
-import { useState } from 'react';
-import { toast } from 'sonner';
-import DeleteConfirmDialog from '@/components/feedback/DeleteConfirmDialog';
+import { PencilIcon } from 'lucide-react';
+// import { useState } from 'react';
+// import { toast } from 'sonner';
+// import DeleteConfirmDialog from '@/components/feedback/DeleteConfirmDialog';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -26,38 +26,38 @@ function ActionCell({
   population: PopulationData;
   setSelectedRow: (row: PopulationData) => void;
 }) {
-  const { delete: destroy } = useForm();
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  // const { delete: destroy } = useForm();
+  // const [deleteOpen, setDeleteOpen] = useState(false);
+  // const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDelete = () => {
-    setDeleteOpen(true);
-  };
+  // const handleDelete = () => {
+  //   setDeleteOpen(true);
+  // };
 
-  const confirmDelete = () => {
-    setIsDeleting(true);
+  // const confirmDelete = () => {
+  //   setIsDeleting(true);
 
-    destroy(`/registration/population/${population.id}`, {
-      preserveScroll: true,
-      onSuccess: () => {
-        setDeleteOpen(false);
-        toast(
-          <div className="flex items-center gap-2">
-            <CircleCheckBig className="h-4 w-4 text-emerald-600" />
-            Successfully deleted.
-          </div>,
-          { position: 'top-right' }
-        );
-        window.location.reload();
-      },
-      onError: () => {
-        setDeleteOpen(false);
-      },
-      onFinish: () => {
-        setIsDeleting(false);
-      },
-    });
-  };
+  //   destroy(`/registration/population/${population.id}`, {
+  //     preserveScroll: true,
+  //     onSuccess: () => {
+  //       setDeleteOpen(false);
+  //       toast(
+  //         <div className="flex items-center gap-2">
+  //           <CircleCheckBig className="h-4 w-4 text-emerald-600" />
+  //           Successfully deleted.
+  //         </div>,
+  //         { position: 'top-right' }
+  //       );
+  //       window.location.reload();
+  //     },
+  //     onError: () => {
+  //       setDeleteOpen(false);
+  //     },
+  //     onFinish: () => {
+  //       setIsDeleting(false);
+  //     },
+  //   });
+  // };
 
   return (
     <DropdownMenu>
@@ -72,24 +72,25 @@ function ActionCell({
           onClick={() => setSelectedRow(population)}
           className="cursor-pointer"
         >
+          <PencilIcon/>
           Edit
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={handleDelete}>
+        {/* <DropdownMenuItem onClick={handleDelete}>
           <span className="text-red-600 hover:text-red-700 cursor-pointer transition-colors">
             Delete
           </span>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuContent>
 
-      <DeleteConfirmDialog
+      {/* <DeleteConfirmDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         title="Delete population record?"
         description={`This will permanently delete the population data for ${population.ageRange}.`}
         onConfirm={confirmDelete}
         isProcessing={isDeleting}
-      />
+      /> */}
     </DropdownMenu>
   );
 }

@@ -66,7 +66,7 @@ export default function VaccineForm({ update_vaccine_id, onOpenDropdown }: Vacci
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 mt-2">
                         <Label>Name</Label>
                         <Input
                             value={data.name}
@@ -78,7 +78,7 @@ export default function VaccineForm({ update_vaccine_id, onOpenDropdown }: Vacci
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 mb-2">
                         <Label>Description</Label>
                         <Input
                             value={data.description}
@@ -93,13 +93,13 @@ export default function VaccineForm({ update_vaccine_id, onOpenDropdown }: Vacci
                     <DialogFooter>
                         <DialogClose asChild>
                             <Button type="button" variant="outline" onClick={() => {
-clearErrors(); onOpenDropdown()
-}}>
+                                clearErrors(); onOpenDropdown()
+                            }}>
                                 Cancel
                             </Button>
                         </DialogClose>
 
-                        <Button type="submit" disabled={processing}>
+                        <Button className="bg-blue-600 hover:bg-blue-700" type="submit" disabled={processing}>
                             Save changes
                         </Button>
                     </DialogFooter>

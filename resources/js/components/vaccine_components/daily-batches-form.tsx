@@ -1,5 +1,5 @@
 import { useForm } from "@inertiajs/react"
-import { CircleCheckBigIcon } from "lucide-react"
+import { CircleCheckBigIcon, PencilIcon } from "lucide-react"
 import type { SyntheticEvent } from "react"
 import { toast } from "sonner"
 import {
@@ -36,17 +36,20 @@ export default function DailyBatchesForm({ update_daily_inventory, onOpenDropdow
             onSuccess: () => {
                 toast(
                     <div className="flex gap-1 justify-center">
-                        <CircleCheckBigIcon className="p-1 text-green-500"/>
+                        <CircleCheckBigIcon className="p-1 text-green-500" />
                         <Label>Daily batch updated successfully!</Label>
-                    </div>,{ position: 'top-right' })
-                onOpenDropdown()  
+                    </div>, { position: 'top-right' })
+                onOpenDropdown()
             }
         });
     }
 
     return (
         <Dialog>
-            <DialogTrigger>Edit</DialogTrigger>
+            <DialogTrigger className='flex items-center hover:bg-muted rounded-md p-1 text-sm w-full text-left'>
+                <PencilIcon className="p-1" />
+                Edit
+                </DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleEdit}>
                     <DialogHeader>
@@ -54,7 +57,7 @@ export default function DailyBatchesForm({ update_daily_inventory, onOpenDropdow
                         <DialogDescription>
                             Modify the details of the daily batch inventory.
                         </DialogDescription>
-                        <div className='flex flex-col gap-4'>
+                        <div className='flex flex-col gap-2'>
                             <div className='flex gap-4'>
                                 <div className='flex flex-col w-full gap-2'>
                                     <Label>Daily Dispensed:</Label>
@@ -83,13 +86,13 @@ export default function DailyBatchesForm({ update_daily_inventory, onOpenDropdow
                         <DialogFooter>
                             <DialogClose asChild>
                                 <Button type="button" variant="outline" onClick={() => {
- clearErrors(); onOpenDropdown() 
-}}>
+                                    clearErrors(); onOpenDropdown()
+                                }}>
                                     Cancel
                                 </Button>
                             </DialogClose>
 
-                            <Button type="submit" disabled={processing}>
+                            <Button className="bg-blue-600 hover:bg-blue-700" type="submit" disabled={processing}>
                                 Save changes
                             </Button>
                         </DialogFooter>

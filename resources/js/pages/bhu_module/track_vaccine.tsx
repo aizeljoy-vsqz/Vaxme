@@ -1,27 +1,30 @@
 import { Head, usePage } from '@inertiajs/react';
+import { usePoll } from '@inertiajs/react'
 import { useMemo, useState } from 'react';
 import TrackVaccine from '@/components/request_vaccine/track_vaccination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import EmptyPage from '@/components/vaccine_components/empty-page';
 import track from '@/routes/track';
-
+import type { VaccineType } from '../vaccine-management/column';
 
 export default function TrackVaccination() {
 
     type RequestItem = {
         id: number;
         name: string;
-        vaccine: string;
+        vaccine: VaccineType;
         is_vaccinated: boolean;
     };
 
     type VaccineRequest = {
         id: number;
         type: 'request' | 'return';
-        status: 'submitted' | 'reviewed' | 'approved';
+        status: 'submitted' | 'reviewed' | 'approved' | 'rejected';
         created_at: string;
         items: RequestItem[];
+        rejection_reason: string
     };
 
     type PageProps = {
@@ -43,6 +46,8 @@ export default function TrackVaccination() {
     }, [requests, typeFilter]);
 
     console.log(requests);
+
+    usePoll(2000)
 
     return (
         <>
@@ -83,6 +88,7 @@ export default function TrackVaccination() {
 
                             <Button
                                 type="button"
+                                className={"type-filter-button" + (typeFilter === 'all' ? ' bg-blue-600 hover:bg-blue-700 text-white' : '')}
                                 variant={typeFilter === 'all' ? 'default' : 'outline'}
                                 onClick={() => setTypeFilter('all')}
                             >
@@ -91,6 +97,7 @@ export default function TrackVaccination() {
 
                             <Button
                                 type="button"
+                                className={"type-filter-button" + (typeFilter === 'request' ? ' bg-blue-600 hover:bg-blue-700 text-white' : '')}
                                 variant={typeFilter === 'request' ? 'default' : 'outline'}
                                 onClick={() => setTypeFilter('request')}
                             >
@@ -99,6 +106,7 @@ export default function TrackVaccination() {
 
                             <Button
                                 type="button"
+                                className={"type-filter-button" + (typeFilter === 'return' ? ' bg-blue-600 hover:bg-blue-700 text-white' : '')}
                                 variant={typeFilter === 'return' ? 'default' : 'outline'}
                                 onClick={() => setTypeFilter('return')}
                             >
@@ -106,15 +114,19 @@ export default function TrackVaccination() {
                             </Button>
 
                         </div>
-
                     </div>
 
                 </div>
                 <div className='flex flex-col gap-4 p-4'>
-                    {/* <TrackVaccine /> */}
-                    {filteredRequests.map((request) => (
-                        <TrackVaccine key={request.id} request={request} />
-                    ))}
+                    {/* Empty State */}
+                    {filteredRequests.length === 0 ? (
+                        <EmptyPage title="No Vaccine Requests Found" description="You have no vaccine requests to display." />
+                    ) : (
+                        /* <TrackVaccine /> */
+                        filteredRequests.map((request) => (
+                            <TrackVaccine key={request.id} request={request} />
+                        ))
+                    )}
                 </div>
             </div>
         </>

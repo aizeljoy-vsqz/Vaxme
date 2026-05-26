@@ -38,7 +38,7 @@ export default function Welcome() {
                                             : dashboard()
                                     }
                                 >
-                                    <Button size="sm">
+                                    <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
                                         Dashboard
                                     </Button>
                                 </Link>
@@ -49,7 +49,7 @@ export default function Welcome() {
 
                 {/* HERO */}
                 <main className="mx-auto flex flex-1 max-w-6xl flex-col items-center px-6 py-8 text-center">
-                    <img src="/vaxme_logo.png" alt="Vaxme Logo" className="h-24 w-24" />
+                    <img src="/vaxme_logo.png" alt="Vaxme Logo" className="h-18 w-18 mb-4" />
 
                     <div className="mb-6 inline-flex items-center gap-2 rounded-full border bg-muted px-4 py-1 text-xs text-muted-foreground">
                         <span className="h-1.5 w-1.5 rounded-full bg-primary" />
@@ -74,7 +74,7 @@ export default function Welcome() {
                                     : dashboard()
                                 : login()
                         }>
-                            <Button size="lg">
+                            <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
                                 Get Started
                             </Button>
                         </Link>

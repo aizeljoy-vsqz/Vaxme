@@ -8,6 +8,7 @@ use App\Models\VaccineBatch;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class VaccineRequestController extends Controller
 {
@@ -22,6 +23,7 @@ class VaccineRequestController extends Controller
         $requests = ModelsRequest::where('rhu_id', $rhu->id)
             ->with([
                 'bhc',
+                'batch',
                 'items.vaccine',
             ])
             ->latest()
@@ -42,12 +44,23 @@ class VaccineRequestController extends Controller
     public function approve(Request $request, ModelsRequest $requestId)
     {
         $validated = $request->validate([
-            'batch_id' => ['nullable', 'exists:vaccine_batches,id'],
+            'batch_id' => [
+                Rule::requiredIf($requestId->type === 'request'),
+                'nullable',
+                'exists:vaccine_batches,id',
+            ],
         ]);
 
         if ($requestId->status === 'approved') {
             return back()->withErrors([
                 'request' => 'Request is already approved.',
+            ]);
+        }
+
+        if ($requestId->status === 'rejected') {
+
+            return back()->withErrors([
+                'request' => 'Approved requests cannot be rejected.',
             ]);
         }
 
@@ -113,5 +126,48 @@ class VaccineRequestController extends Controller
 
 
         return back();
+    }
+
+    public function reject(Request $request, ModelsRequest $requestId)
+    {
+
+        $validated = $request->validate([
+            'rejection_reason' => [
+                'required',
+                'string',
+                'max:500',
+            ],
+        ]);
+
+        if ($requestId->status === 'approved') {
+
+            return back()->withErrors([
+                'request' => 'Approved requests cannot be rejected.',
+            ]);
+        }
+
+        if ($requestId->status === 'rejected') {
+
+            return back()->withErrors([
+                'request' => 'Request is already rejected.',
+            ]);
+        }
+
+        $requestId->update([
+            'status' => 'rejected',
+            'rejection_reason' => $validated['rejection_reason'],
+        ]);
+
+        // if ($requestId->status === 'rejected') {
+        //     return back()->withErrors([
+        //         'request' => 'Request is already rejected.',
+        //     ]);
+        // }
+
+        // $requestId->update([
+        //     'status' => 'rejected',
+        // ]);
+
+        // return back();
     }
 }

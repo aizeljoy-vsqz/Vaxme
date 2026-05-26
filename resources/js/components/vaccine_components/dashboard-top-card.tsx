@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card"
 
 interface CardProps {
-    total: string | number
+    total: number
     title: string
     description: string
 }

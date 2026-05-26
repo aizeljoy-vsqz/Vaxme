@@ -1,9 +1,10 @@
 import { router } from "@inertiajs/react";
-import { Check, LucideThumbsUp } from "lucide-react";
+import { Check, CheckIcon, CircleCheckBig, RefreshCcw } from "lucide-react";
 import { useState } from "react";
 
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch"
+import type { VaccineType } from "@/pages/vaccine-management/column";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
@@ -29,17 +30,17 @@ import {
 type RequestItem = {
     id: number;
     name: string;
-    vaccine: string;
+    vaccine: VaccineType;
     is_vaccinated: boolean;
 };
 
 type VaccineRequest = {
     id: number;
     type: "request" | "return";
-    status: "submitted" | "reviewed" | "approved";
+    status: "submitted" | "reviewed" | "approved" | "rejected";
     created_at: string;
-
-    items: RequestItem[];
+    items: RequestItem[],
+    rejection_reason: string
 };
 
 type Props = {
@@ -48,7 +49,9 @@ type Props = {
 
 export default function TrackVaccine({ request }: Props) {
 
+    const isRejected = request.status === "rejected";
     const [open, setOpen] = useState(false);
+    const [processing, setProcessing] = useState(false);
     const [items, setItems] = useState(request.items);
     const isReturnRequest = request.type === "return";
     const canEdit = request.type === "request" && request.status === "approved";
@@ -57,7 +60,27 @@ export default function TrackVaccine({ request }: Props) {
         item => item.is_vaccinated
     ).length;
 
+    const vaccinateAll = () => {
+        setItems(prev =>
+            prev.map(item => ({
+                ...item,
+                is_vaccinated: true,
+            }))
+        );
+    };
+
+    const unvaccinateAll = () => {
+        setItems(prev =>
+            prev.map(item => ({
+                ...item,
+                is_vaccinated: false,
+            }))
+        );
+    };
+
     const saveChanges = () => {
+
+        setProcessing(true);
 
         router.put(
             `/request/${request.id}/vaccination-status`,
@@ -66,21 +89,28 @@ export default function TrackVaccine({ request }: Props) {
             },
             {
                 onSuccess: () => {
+                    setProcessing(false);
                     setOpen(false);
-                    toast("Success", {
-                        description:
-                            (<div className='flex items-end justify-center gap-2'>
-                                <pre className="whitespace-pre-line text-sm w-auto">
-                                    Vaccination updated successfully
-                                </pre>
-                                <LucideThumbsUp className='text-blue-500 py-1' />
-                            </div>
-                            ),
-                        action: {
-                            label: "x",
-                            onClick: () => console.log("Closed"),
-                        },
-                    })
+                    // toast("Success", {
+                    //     description:
+                    //         (<div className='flex items-end justify-center gap-2'>
+                    //             <pre className="whitespace-pre-line text-sm w-auto">
+                    //                 Vaccination updated successfully
+                    //             </pre>
+                    //             <LucideThumbsUp className='text-blue-500 py-1' />
+                    //         </div>
+                    //         ),
+                    //     action: {
+                    //         label: "x",
+                    //         onClick: () => console.log("Closed"),
+                    //     },
+                    // })
+                    toast(
+                        <div className="flex gap-1 justify-center">
+                            <CircleCheckBig className='text-green-500 py-1' />
+                            <Label>Vaccination updated successfully.</Label>
+                        </div>, { position: 'top-right' }
+                    );
                 },
             }
         );
@@ -148,7 +178,7 @@ export default function TrackVaccine({ request }: Props) {
                         <div
                             className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-medium transition-colors
                 ${["submitted", "reviewed", "approved"].includes(request.status)
-                                    ? "bg-primary text-primary-foreground border-primary"
+                                    ? "bg-blue-600 text-primary-foreground border-blue-700"
                                     : "bg-muted text-muted-foreground"
                                 }`}
                         >
@@ -165,7 +195,7 @@ export default function TrackVaccine({ request }: Props) {
                     <div
                         className={`h-[2px] flex-1 mx-2
             ${["reviewed", "approved"].includes(request.status)
-                                ? "bg-primary"
+                                ? "bg-blue-600"
                                 : "bg-border"
                             }`}
                     />
@@ -176,7 +206,7 @@ export default function TrackVaccine({ request }: Props) {
                         <div
                             className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-medium transition-colors
                 ${["reviewed", "approved"].includes(request.status)
-                                    ? "bg-primary text-primary-foreground border-primary"
+                                    ? "bg-blue-600 text-primary-foreground border-blue-700"
                                     : "bg-muted text-muted-foreground"
                                 }`}
                         >
@@ -198,7 +228,7 @@ export default function TrackVaccine({ request }: Props) {
                     <div
                         className={`h-[2px] flex-1 mx-2
             ${request.status === "approved"
-                                ? "bg-primary"
+                                ? "bg-blue-600"
                                 : "bg-border"
                             }`}
                     />
@@ -207,17 +237,10 @@ export default function TrackVaccine({ request }: Props) {
                     <div className="flex flex-col items-center gap-2">
 
                         <div
-                            className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-medium transition-colors
-                ${request.status === "approved"
-                                    ? "bg-primary text-primary-foreground border-primary"
-                                    : "bg-muted text-muted-foreground"
-                                }`}
-                        >
+                            className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-medium transition-colors ${request.status === "approved" ? "bg-blue-600 text-primary-foreground border-blue-700" : "bg-muted text-muted-foreground"}`}>
                             {request.status === "approved" ? (
                                 <Check className="h-4 w-4" />
-                            ) : (
-                                "3"
-                            )}
+                            ) : ("3")}
                         </div>
 
                         <span className="text-xs text-muted-foreground">
@@ -231,7 +254,7 @@ export default function TrackVaccine({ request }: Props) {
                 {/* approval message */}
                 {request.status === "approved" && (
                     <div
-                        className={`w-full mt-4 rounded-xl border px-4 py-3 text-sm border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-900 dark:bg-slate-800 dark:text-slate-100`}
+                        className={`w-full mt-4 rounded-xl border px-4 py-3 text-sm border-green-200 bg-green-50 text-green-600 dark:border-slate-900 dark:bg-slate-800 dark:text-slate-100`}
                     >
                         {request.type === "request" ? (
                             <>
@@ -252,6 +275,27 @@ export default function TrackVaccine({ request }: Props) {
                                 </p>
                             </>
                         )}
+                    </div>
+                )}
+
+
+                {isRejected && (
+                    <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-red-600">
+                                {request.type === "return"
+                                    ? "Return Rejected"
+                                    : "Request Rejected"}
+                            </span>
+                        </div>
+
+                        {request.rejection_reason && (
+                            <p className="text-xs text-red-500 mt-1">
+                                Reason: {request.rejection_reason}
+                            </p>
+                        )}
+
                     </div>
                 )}
 
@@ -305,7 +349,7 @@ export default function TrackVaccine({ request }: Props) {
 
                             </div>
 
-                            <Badge className="rounded-full">
+                            <Badge className="rounded-full" variant="secondary">
 
                                 {isReturnRequest
                                     ? "Read Only"
@@ -319,93 +363,116 @@ export default function TrackVaccine({ request }: Props) {
 
                     </div>
 
+                    {canEdit && (
+                        <div className="flex items-center justify-end gap-2">
 
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                onClick={unvaccinateAll}
+                            >
+                                <RefreshCcw />
+                            </Button>
 
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                onClick={vaccinateAll}
+                            >
+                                <CheckIcon />
+                                {/* Vaccinate All */}
+                            </Button>
 
-                    <Table>
+                        </div>
+                    )}
+                    <div className="min-h-48 max-h-48 overflow-y-auto">
+                        <Table>
 
-                        <TableHeader>
+                            <TableHeader>
 
-                            <TableRow>
+                                <TableRow>
 
-                                <TableHead>Name</TableHead>
+                                    <TableHead>Name</TableHead>
 
-                                <TableHead>Vaccine</TableHead>
+                                    <TableHead>Vaccine</TableHead>
 
-                                <TableHead>Status</TableHead>
-
-                            </TableRow>
-
-                        </TableHeader>
-
-                        <TableBody>
-
-                            {items.map((item) => (
-
-                                <TableRow
-                                    key={item.id}
-                                    className={
-                                        item.is_vaccinated
-                                            ? "dark:bg-green-950/10"
-                                            : ""
-                                    }
-                                >
-
-                                    <TableCell>
-                                        {item.name}
-                                    </TableCell>
-
-                                    <TableCell>
-                                        {item.vaccine}
-                                    </TableCell>
-
-                                    <TableCell>
-
-                                        <div className="flex items-center space-x-2">
-
-                                            <Switch
-                                                id={`vaccinated-${item.id}`}
-                                                checked={item.is_vaccinated}
-                                                disabled={!canEdit}
-                                                onCheckedChange={(checked) => {
-                                                    if (!canEdit) {
-return;
-}
-
-                                                    setItems(prev =>
-                                                        prev.map(i =>
-                                                            i.id === item.id
-                                                                ? {
-                                                                    ...i,
-                                                                    is_vaccinated: checked
-                                                                }
-                                                                : i
-                                                        )
-                                                    );
-
-                                                }}
-                                            />
-
-                                            <Label htmlFor={`vaccinated-${item.id}`}>
-
-                                                {item.is_vaccinated
-                                                    ? "Vaccinated"
-                                                    : "Not Vaccinated"}
-
-                                            </Label>
-
-                                        </div>
-
-                                    </TableCell>
+                                    <TableHead>Status</TableHead>
 
                                 </TableRow>
 
+                            </TableHeader>
 
-                            ))}
+                            <TableBody>
 
-                        </TableBody>
+                                {items.map((item) => (
 
-                    </Table>
+                                    <TableRow
+                                        key={item.id}
+                                        className={
+                                            item.is_vaccinated
+                                                ? "dark:bg-green-950/10"
+                                                : ""
+                                        }
+                                    >
+
+                                        <TableCell>
+                                            {item.name}
+                                        </TableCell>
+
+                                        <TableCell>
+                                            {item.vaccine?.name}
+                                        </TableCell>
+
+                                        <TableCell>
+
+                                            <div className="flex items-center space-x-2">
+
+                                                <Switch
+                                                    id={`vaccinated-${item.id}`}
+                                                    checked={item.is_vaccinated}
+                                                    disabled={!canEdit}
+                                                    onCheckedChange={(checked) => {
+                                                        if (!canEdit) {
+                                                            return;
+                                                        }
+
+                                                        setItems(prev =>
+                                                            prev.map(i =>
+                                                                i.id === item.id
+                                                                    ? {
+                                                                        ...i,
+                                                                        is_vaccinated: checked
+                                                                    }
+                                                                    : i
+                                                            )
+                                                        );
+
+                                                    }}
+                                                />
+
+                                                <Label htmlFor={`vaccinated-${item.id}`}>
+
+                                                    {item.is_vaccinated
+                                                        ? "Vaccinated"
+                                                        : "Not Vaccinated"}
+
+                                                </Label>
+
+                                            </div>
+
+                                        </TableCell>
+
+                                    </TableRow>
+
+
+                                ))}
+
+                            </TableBody>
+
+                        </Table>
+                    </div>
 
                     {request.type === "request" && (
 
@@ -424,7 +491,7 @@ return;
                                         This request is ready for vaccination updates.
                                     </p>
 
-                                    <Button onClick={saveChanges}>
+                                    <Button className="bg-blue-600 hover:bg-blue-700" onClick={saveChanges} disabled={processing}>
                                         Save Changes
                                     </Button>
                                 </>

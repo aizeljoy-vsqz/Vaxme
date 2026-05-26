@@ -2,7 +2,7 @@
 
 import { Link } from "@inertiajs/react"
 import type { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, Ellipsis } from "lucide-react"
+import { ArrowUpDown, Ellipsis, PencilIcon } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -50,12 +50,13 @@ function ActionCell({ row, handleDelete }: ActionCellProps) {
 
                 <DropdownMenuContent>
                     <button
-                        className="w-full text-left px-2 py-1"
+                        className="flex items-center hover:bg-muted rounded-md p-1 text-sm w-full text-left'"
                         onClick={() => {
                             setOpenEdit(true)
                             setOpenDropdown(false)
                         }}
                     >
+                        <PencilIcon className="p-1" />
                         Edit
                     </button>
 

@@ -1,4 +1,5 @@
 import { useForm, usePage } from "@inertiajs/react"
+import { usePoll } from '@inertiajs/react'
 import { CircleAlert, CircleCheckBig, Plus, } from "lucide-react"
 import { toast } from "sonner"
 import {
@@ -23,11 +24,11 @@ export default function VaccineManagement() {
     interface PageProps {
         [key: string]: unknown
         rhu_associated_vaccines: VaccineType[]
-        rhu_id:number
+        rhu_id: number
     }
     const { rhu_id, rhu_associated_vaccines } = usePage<PageProps>().props
 
-    const { data, setData, post, delete: destroy, errors, reset, clearErrors } = useForm({
+    const { data, setData, post, delete: destroy, errors, reset, clearErrors, processing } = useForm({
         rhu_id: rhu_id,
         name: "",
         description: "",
@@ -62,6 +63,9 @@ export default function VaccineManagement() {
         });
     }
 
+    usePoll(2000)
+
+
     return (
         <>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
@@ -70,10 +74,12 @@ export default function VaccineManagement() {
                         <Label className='text-md flex items-center'>Vaccine Management</Label>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button onClick={() => clearErrors()} className='bg-blue-600 hover:bg-blue-700'> <Plus /> Add Inventory</Button>
+                                <Button onClick={() => clearErrors()} className='bg-blue-600 hover:bg-blue-700' disabled={processing}>
+                                    <Plus /> Add Inventory
+                                </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
-                                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                                <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Vaccine Details</AlertDialogTitle>
                                         <AlertDialogDescription>
@@ -94,7 +100,9 @@ export default function VaccineManagement() {
                                     </div>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <Button type="submit" className='!bg-blue-600 hover:!bg-blue-700'>Save</Button>
+                                        <Button type="submit" className='!bg-blue-600 hover:!bg-blue-700' disabled={processing}>
+                                            Save
+                                        </Button>
                                     </AlertDialogFooter>
                                 </form>
                             </AlertDialogContent>

@@ -24,6 +24,7 @@ Route::inertia('/', 'welcome', [
 Route::middleware(['auth', 'verified', 'user_type:rhu'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
     Route::put('/vaccine-request/{requestId}/approve', [VaccineRequestController::class, 'approve'])->name('vaccine-request.approve');
+    Route::put('/vaccine-request/{requestId}/reject', [VaccineRequestController::class, 'reject']);
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -99,7 +100,7 @@ Route::middleware(['auth', ForcePasswordChange::class, 'verified'])->group(funct
 });
 
 Route::middleware(['auth', 'verified', 'user_type:bhc'])->group(function () {
-    Route::get('bhc/dashboard', [RequestController ::class, 'index'])->name('bhc.dashboard');
+    Route::get('bhc/dashboard', [RequestController::class, 'index'])->name('bhc.dashboard');
     Route::get('bhc/return/vaccines', [ReturnVaccineController::class, 'index'])->name('return.vaccine');
     Route::post('bhc/return/vaccines/store', [ReturnVaccineController::class, 'store'])->name('return.vaccine.store');
     Route::get('bhc/track/vaccination', [TrackVaccinationController::class, 'index'])->name('track.vaccination');

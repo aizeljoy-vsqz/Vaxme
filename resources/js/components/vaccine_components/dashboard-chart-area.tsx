@@ -14,26 +14,19 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent
-  
+
 } from "@/components/ui/chart"
-import type {ChartConfig} from "@/components/ui/chart";
+import type { ChartConfig } from "@/components/ui/chart";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export const description = "A simple area chart"
-
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-  { month: "July", desktop: 278 },
-  { month: "August", desktop: 214 },
-  { month: "September", desktop: 300 },
-  { month: "October", desktop: 194 },
-  { month: "November", desktop: 199 },
-  { month: "December", desktop: 259 },
-]
 
 const chartConfig = {
   desktop: {
@@ -42,20 +35,39 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartAreaDefault() {
+export function ChartAreaDefault({ data, selectedVaccine, vaccines, onSelectVaccine }: any) { // ngett baguhin mo yung any!
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Vaccine Usage</CardTitle>
-        <CardDescription>
-          January - June 2024
-        </CardDescription>
+      <CardHeader className="flex">
+        <div className="w-full">
+          <CardTitle>Vaccine Usage</CardTitle>
+          <CardDescription>
+            2026
+          </CardDescription>
+        </div>
+        <Select
+          value={selectedVaccine}
+          onValueChange={onSelectVaccine}
+        >
+          <SelectTrigger className="w-auto">
+            <SelectValue placeholder="Select vaccine" />
+          </SelectTrigger>
+
+          <SelectContent>
+            {vaccines?.map((vaccine: string) => (
+              <SelectItem key={vaccine} value={vaccine}>
+                {vaccine}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="aspect-auto h-[220px] w-full"
+        >
           <AreaChart
             accessibilityLayer
-            data={chartData}
+            data={data}
             margin={{
               left: 12,
               right: 12,
@@ -74,7 +86,7 @@ export function ChartAreaDefault() {
               content={<ChartTooltipContent indicator="line" />}
             />
             <Area
-              dataKey="desktop"
+              dataKey="value"
               type="natural"
               fill="var(--color-desktop)"
               fillOpacity={0.4}
@@ -87,7 +99,7 @@ export function ChartAreaDefault() {
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Highest and lowest vaccination rates by barangay.
+              Monthly vaccination usage.
             </div>
           </div>
         </div>

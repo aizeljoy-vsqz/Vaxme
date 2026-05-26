@@ -45,16 +45,17 @@ export function ConfirmDialog({
         onEscapeKeyDown={(event) => event.preventDefault()}
       >
         <DialogHeader className="flex flex-col items-center px-6 pt-8 pb-4 text-center">
-          <div className="rounded-3xl bg-blue-50 p-3 text-blue-600 shadow-sm ring-1 ring-blue-100">
+          <div className="rounded-3xl bg-green-50 p-2 text-green-500 shadow-sm ring-1 ring-green-100">
             <Check className="h-4 w-4" />
           </div>
-          <DialogTitle className="text-lg font-medium text-gray-900">{title}</DialogTitle>
-          <DialogDescription className="text-center text-sm leading-6 text-gray-500">
+          <DialogTitle className="text-md font-medium">{title}</DialogTitle>
+          <DialogDescription className="text-center text-sm text-muted-foreground">
             {description}
           </DialogDescription>
         </DialogHeader>
-
+      
         <div className="mx-6 border-t border-gray-100" />
+        
 
         <DialogFooter className="flex flex-col gap-2 px-6 py-4 sm:flex-row sm:gap-2">
           <Button
