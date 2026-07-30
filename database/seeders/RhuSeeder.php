@@ -21,6 +21,7 @@ class RhuSeeder extends Seeder
                 'email' => 'rhu1@ruralhealth.daet',
                 'facility_name' => 'Rural Health Unit 1',
                 'nurse_assigned' => 'Nurse 1',
+                'password' => 'password'
             ],
 
             [
